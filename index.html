@@ -186,6 +186,78 @@
     .footer-inner { display: flex; justify-content: space-between; gap: 12px; align-items: center; font-size: 12px; color: #71819d; }
     .footer-inner a { color: #9db0d1; }
     .footer-inner a:hover { color: var(--cyan); }
+    /* Date navigator and format-aware archive */
+    select { font: inherit; }
+    .file-tools { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; margin: -10px 0 25px; }
+    .select-box { color: #a4b3cc; font-size: 11px; font-weight: 700; display: inline-flex; align-items: center; gap: 8px; }
+    .select-box select { appearance: none; min-height: 38px; max-width: min(65vw, 260px); border: 1px solid var(--line); border-radius: 10px; padding: 7px 30px 7px 12px; color: #e0eaf9; background: #141d30 url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='m1 1 5 5 5-5' fill='none' stroke='%2393a1ba' stroke-width='1.5'/%3E%3C/svg%3E") no-repeat right 11px center; cursor: pointer; }
+    .select-box select:focus-visible { outline: 2px solid var(--cyan); }
+    .quick-dates { display: flex; gap: 9px; flex-wrap: wrap; align-items: center; margin: 0 0 27px; }
+    .quick-dates > strong { color: #aebcd3; font-size: 11px; font-weight: 750; margin-right: 5px; }
+    .date-chip { padding: 7px 12px; color: #c1d0e5; background: rgba(121,158,230,.06); border: 1px solid rgba(168,198,242,.17); border-radius: 999px; font-size: 11px; transition: .2s; }
+    .date-chip:hover, .date-chip[aria-pressed='true'] { background: rgba(105,231,223,.14); border-color: rgba(105,231,223,.5); color: var(--cyan); }
+    .date-groups { display: grid; gap: 13px; }
+    .date-group { border: 1px solid rgba(160,192,239,.16); border-radius: 15px; padding: 0 20px 20px; background: rgba(13,22,37,.5); }
+    .date-group > summary { cursor: pointer; list-style: none; display: flex; gap: 14px; align-items: center; padding: 19px 2px; }
+    .date-group > summary::-webkit-details-marker { display: none; }
+    .date-symbol { flex: none; width: 40px; height: 43px; background: rgba(105,231,223,.08); border: 1px solid rgba(105,231,223,.15); border-radius: 11px; display: grid; place-items: center; color: var(--cyan); }
+    .date-label-text { flex: 1; min-width: 0; }
+    .date-label-text strong { display: block; letter-spacing: -.025em; font-size: 16px; color: #e7f2ff; }
+    .date-label-text small { display: block; color: #8d9eba; font-size: 11px; }
+    .chevron { color: #91a8ca; font-size: 18px; transform: rotate(90deg); transition: transform .2s; }
+    .date-group[open] .chevron { transform: rotate(-90deg); }
+    .day-section-label { margin: 8px 0 12px; font-size: 12px; font-weight: 760; letter-spacing: .02em; color: #b5c7e5; }
+    .day-section + .day-section { margin-top: 22px; }
+    .file-card { min-height: 184px; }
+    .file-card .card-actions { flex-wrap: wrap; }
+    .card-actions button { padding: 0; color: var(--cyan); font-size: 11px; font-weight: 780; border: 0; background: none; }
+    .card-actions button:hover { color: #fff; }
+    .note-category .category-head { margin-bottom: 20px; }
+    .reader { border: 1px solid rgba(185,215,255,.23); border-radius: 20px; background: #0c1322; color: #edf4ff; padding: 0; width: min(1100px, calc(100vw - 30px)); max-width: none; height: min(91vh, 1100px); max-height: none; box-shadow: 0 35px 110px #000b; overflow: hidden; }
+    .reader::backdrop { background: rgba(1,5,14,.78); backdrop-filter: blur(7px); }
+    .reader-shell { display: flex; flex-direction: column; height: 100%; min-height: 0; }
+    .reader-top { display: flex; align-items: center; gap: 16px; justify-content: space-between; padding: 17px 21px; border-bottom: 1px solid rgba(178,201,246,.14); background: rgba(21,31,50,.96); }
+    .reader-heading { min-width: 0; }
+    .reader-heading strong { display: block; font-size: 17px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .reader-heading small { display: block; margin-top: 3px; color: #9aacc8; font-size: 11px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .reader-nav { display: flex; gap: 8px; flex: none; align-items: center; }
+    .reader-nav a, .reader-close { font-size: 12px; font-weight: 700; border: 1px solid rgba(184,206,245,.15); border-radius: 9px; background: rgba(255,255,255,.035); color: #c0cfe8; padding: 8px 12px; white-space: nowrap; }
+    .reader-nav a:hover, .reader-close:hover { border-color: rgba(105,231,223,.5); color: #fff; }
+    .reader-close { padding: 7px 12px; font-size: 21px; line-height: 1; }
+    .reader-content { background: #fff; overflow: auto; flex: 1; min-height: 0; }
+    .reader-frame { display: block; border: 0; width: 100%; height: 100%; min-height: 460px; background: white; }
+    .reader-loading { padding: 32px; color: #607089; font-size: 14px; }
+    .reader-content[data-mode='code'] { background: #0b1220; }
+    .code-view { margin: 0; padding: 28px 30px; min-height: 100%; overflow: auto; font: 13px/1.8 SFMono-Regular, Consolas, 'Liberation Mono', monospace; color: #d3dffa; tab-size: 4; }
+    .code-view code { white-space: pre; }
+    .reader-content[data-mode='markdown'] { background: #f9fbff; }
+    .markdown-view { max-width: 860px; padding: 38px clamp(22px,5vw,60px) 75px; margin: auto; font: 16px/1.78 system-ui, sans-serif; color: #24314a; overflow-wrap: anywhere; }
+    .markdown-view h1, .markdown-view h2, .markdown-view h3, .markdown-view h4 { color: #101d33; letter-spacing: -.035em; line-height: 1.25; margin: 1.5em 0 .5em; }
+    .markdown-view h1 { font-size: 35px; } .markdown-view h2 { font-size: 26px; border-bottom: 1px solid #dce4f1; padding-bottom: 9px; } .markdown-view h3 { font-size: 20px; }
+    .markdown-view a { color: #2459c3; text-decoration: underline; }
+    .markdown-view ul, .markdown-view ol { padding-left: 28px; } .markdown-view li { margin-bottom: 5px; }
+    .markdown-view blockquote { border-left: 4px solid #73bde3; margin: 18px 0; padding: 10px 18px; background: #eef5ff; color: #4d607b; }
+    .markdown-view code { background: #eaf0f9; border-radius: 5px; padding: 2px 5px; font: .88em SFMono-Regular, Consolas, monospace; }
+    .markdown-view pre { overflow: auto; background: #131d2d; border-radius: 12px; padding: 18px; color: #e0eafd; }
+    .markdown-view pre code { color: inherit; padding: 0; background: transparent; }
+    .markdown-view img { max-width: 100%; height: auto; border-radius: 8px; }
+    .markdown-view table { border-collapse: collapse; display: block; max-width: 100%; overflow-x: auto; margin: 20px 0; }
+    .markdown-view td, .markdown-view th { border: 1px solid #d7dfeb; padding: 8px 12px; text-align: left; }
+    .markdown-view th { background: #eaf0fa; }
+    .markdown-view hr { border: 0; border-top: 1px solid #dce4f1; margin: 28px 0; }
+    .reader-error { padding: 40px; max-width: 630px; color: #24314a; }
+    .reader-error h3 { color: #16233d; }
+    @media (max-width: 700px) {
+      .file-tools { align-items: stretch; } .select-box { flex: 1 1 180px; flex-wrap: wrap; }
+      .select-box select { max-width: 100%; flex: 1; }
+      .date-group { padding: 0 12px 13px; } .date-group > summary { padding: 13px 0; }
+      .reader { width: 100vw; height: 100dvh; border-radius: 0; }
+      .reader-top { padding: 13px; gap: 8px; } .reader-heading strong { font-size: 14px; }
+      .reader-nav { gap: 5px; } .reader-nav a { padding: 8px; font-size: 11px; }
+      .reader-nav .reader-source { display: none; }
+      .code-view { padding: 18px; font-size: 12px; }
+      .markdown-view { padding: 20px; font-size: 15px; }
+    }
     @keyframes float { 0%,100% { transform: translateY(0) rotate(2deg); } 50% { transform: translateY(-12px) rotate(1deg); } }
     @keyframes pulse { to { transform: scale(1.2); opacity: .65; } }
     @keyframes rise { from { opacity: 0; transform: translateY(13px); } to { opacity: 1; transform: translateY(0); } }
@@ -263,7 +335,7 @@
       <div>
         <div class="eyebrow">The engineering archive</div>
         <h1 id="hero-title">Ideas into code.<br><span class="gradient-text">Code into reality.</span></h1>
-        <p class="hero-description">A home for my EGRE 245 coursework at Virginia Commonwealth University — notes, lab work, and projects, all organized in one place and ready to explore.</p>
+        <p class="hero-description">A living archive of class notes, programming projects, and labs. Browse lessons by date, read Markdown, preview HTML, and explore C source code.</p>
         <div class="hero-buttons">
           <a href="#library" class="button-primary">Explore the library <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14m-6-6 6 6-6 6"/></svg></a>
           <a href="https://github.com/JonahKarafotis/EGRE-245-VCU" target="_blank" rel="noopener noreferrer" class="button-secondary">Browse source <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7M8 7h9v9"/></svg></a>
@@ -288,13 +360,13 @@
             <div class="window-bottom"><span class="live-dot"></span> <span>Connected to the main branch</span></div>
           </div>
         </div>
-        <div class="float-label"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m20 6-11 11-5-5"/></svg> Browse published HTML</div>
+        <div class="float-label"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m20 6-11 11-5-5"/></svg> Read notes &amp; code</div>
       </div>
     </section>
 
     <section class="stats wrap" aria-label="Archive at a glance">
-      <div class="stat"><strong id="stat-pages">—</strong><span>HTML pages</span></div>
-      <div class="stat"><strong id="stat-folders">—</strong><span>Collections</span></div>
+      <div class="stat"><strong id="stat-pages">—</strong><span>Readable files</span></div>
+      <div class="stat"><strong id="stat-folders">—</strong><span>Class note dates</span></div>
       <div class="stat"><strong>main</strong><span>GitHub branch</span></div>
     </section>
 
@@ -303,13 +375,13 @@
         <div>
           <div class="eyebrow">Discover &amp; explore</div>
           <h2 id="library-heading">The file library<span style="color:var(--cyan)">.</span></h2>
-          <p>Your coursework HTML pages, collected and linked in one place.</p>
+          <p>Find lectures by date, preview rendered HTML, read Markdown, and explore C source—all without leaving the site.</p>
         </div>
         <div class="status" id="status" data-state="loading" role="status" aria-live="polite"><span class="status-dot"></span><span id="status-text">Connecting to GitHub…</span></div>
       </div>
       <div class="toolbar">
         <label class="search-shell">
-          <span class="visually-hidden">Search HTML files</span>
+          <span class="visually-hidden">Search notes and code files</span>
           <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/></svg>
           <input id="search" type="search" placeholder="Search notes, labs, and projects…" autocomplete="off">
           <kbd>⌘ K</kbd>
@@ -317,7 +389,21 @@
         <button id="refresh" class="refresh" type="button" aria-label="Refresh file list"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 7v5h-5M4 17v-5h5"/><path d="M6.3 9A7 7 0 0 1 18 6l2 6M4 12l2 6a7 7 0 0 0 11.7-3"/></svg> Refresh</button>
       </div>
       <div class="filters" id="filters" role="group" aria-label="Filter by collection"><button class="filter" type="button" aria-pressed="true" data-folder="all">All files</button></div>
-      <div class="results-row"><span id="result-count" aria-live="polite">Looking for pages…</span><span>HTML / HTM files</span></div>
+      <div class="file-tools" aria-label="Organize the library">
+        <label class="select-box">Lecture date
+          <select id="date-filter" aria-label="Filter class notes by date"><option value="all">All dates</option></select>
+        </label>
+        <label class="select-box">Format
+          <select id="type-filter" aria-label="Filter by file format">
+            <option value="all">All readable formats</option><option value="html">HTML pages</option><option value="markdown">Markdown notes</option><option value="code">C / C++ code</option><option value="text">Plain text</option>
+          </select>
+        </label>
+        <label class="select-box">Order
+          <select id="sort-order" aria-label="Sort dates"><option value="newest">Newest dates first</option><option value="oldest">Oldest dates first</option></select>
+        </label>
+      </div>
+      <div class="quick-dates" id="quick-dates" hidden></div>
+      <div class="results-row"><span id="result-count" aria-live="polite">Scanning repository…</span><span>HTML · Markdown · C · Text</span></div>
       <div id="results">
         <div class="cards" aria-hidden="true"><div class="skeleton"></div><div class="skeleton"></div><div class="skeleton"></div></div>
       </div>
@@ -327,25 +413,40 @@
       <div class="about-panel">
         <div>
           <h2 id="about-title">Curiosity, compiled.</h2>
-          <p>This site is generated from the public EGRE 245 GitHub repository. New HTML notes, exercises, and demos are discovered automatically when the repository changes. The full source is always available on GitHub.</p>
+          <p>This site is generated from the public EGRE 245 GitHub repository. New HTML pages, Markdown notes, and source files are discovered recursively whenever the repository changes. The full source is always available on GitHub.</p>
         </div>
         <a class="button-secondary" href="https://github.com/JonahKarafotis/EGRE-245-VCU" target="_blank" rel="noopener noreferrer">View repository <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M8 7h9v9"/></svg></a>
       </div>
     </section>
   </main>
+  <dialog id="reader" class="reader" aria-labelledby="reader-title">
+    <div class="reader-shell">
+      <header class="reader-top">
+        <div class="reader-heading"><strong id="reader-title">Document preview</strong><small id="reader-path"></small></div>
+        <nav class="reader-nav" aria-label="Document actions">
+          <a id="reader-original" href="#" target="_blank" rel="noopener noreferrer">Open file ↗</a>
+          <a id="reader-source" class="reader-source" href="#" target="_blank" rel="noopener noreferrer">GitHub ↗</a>
+          <button id="reader-close" class="reader-close" type="button" aria-label="Close document preview">×</button>
+        </nav>
+      </header>
+      <div id="reader-content" class="reader-content" aria-live="polite"></div>
+    </div>
+  </dialog>
   <footer><div class="wrap footer-inner"><span>© <span id="year"></span> Jonah Karafotis · EGRE 245 at VCU</span><span>Made with HTML, CSS &amp; a little JavaScript · <a href="https://github.com/JonahKarafotis/EGRE-245-VCU" target="_blank" rel="noopener noreferrer">Open source ↗</a></span></div></footer>
 
-  <script>
+  <script src="https://cdn.jsdelivr.net/npm/marked@15.0.12/marked.min.js" defer></script>
+  <script src="https://cdn.jsdelivr.net/npm/dompurify@3.2.6/dist/purify.min.js" defer></script>
+  <script defer>
     'use strict';
-    // Public GitHub repository. The Pages website is deployed from its main branch.
+    /* A single recursive Git tree request indexes files at *every* depth,
+       including ClassNotes/10/4/... (where a slash means nested folders). */
     const OWNER = 'JonahKarafotis';
     const REPO = 'EGRE-245-VCU';
     const BRANCH = 'main';
     const SITE_ROOT = `https://${OWNER.toLowerCase()}.github.io/${REPO}/`;
-    const API_URL = `https://api.github.com/repos/${OWNER}/${REPO}/git/trees/${BRANCH}?recursive=1`;
-    const iconDocument = '<svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M13 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V10z"/><path d="M13 3v7h7M8 15l2 2-2 2m8-4-2 2 2 2"/></svg>';
-    const iconFolder = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v10H3Z"/></svg>';
-    const arrow = '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7M8 7h9v9"/></svg>';
+    const REPO_ROOT = `https://github.com/${OWNER}/${REPO}`;
+    const API_ROOT = `https://api.github.com/repos/${OWNER}/${REPO}`;
+    const API_TREE = `${API_ROOT}/git/trees/${BRANCH}?recursive=1`;
     const $ = (selector) => document.querySelector(selector);
     const results = $('#results');
     const filters = $('#filters');
@@ -353,155 +454,388 @@
     const refresh = $('#refresh');
     const status = $('#status');
     const statusText = $('#status-text');
+    const dateSelect = $('#date-filter');
+    const typeSelect = $('#type-filter');
+    const sortSelect = $('#sort-order');
+    const quickDates = $('#quick-dates');
+    const reader = $('#reader');
+    const readerContent = $('#reader-content');
     let files = [];
     let activeFolder = 'all';
     let loading = false;
+    let activeFile = null;
+    let openRequest = 0;
+    let lastFocus = null;
     const priority = ['ClassNotes', 'Labs', 'Projects', 'Canvas'];
     const folderLabels = { ClassNotes: 'Class Notes', Labs: 'Labs', Projects: 'Projects', Canvas: 'Canvas', Other: 'Other files' };
-    const friendlyFolder = (folder) => folderLabels[folder] || folder.replace(/([a-z])([A-Z])/g, '$1 $2');
-    const folderOf = (path) => path.includes('/') ? path.split('/')[0] : 'Other';
-    const orderedFolders = (items) => [...new Set(items.map((item) => folderOf(item.path)))].sort((a, b) => {
+    const types = { html: ['html', 'htm'], markdown: ['md', 'markdown'], code: ['c', 'h', 'cpp', 'hpp'], text: ['txt'] };
+    const fileExtensions = Object.values(types).flat();
+    const iconDocument = '<svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M13 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V10z"/><path d="M13 3v7h7M8 15l2 2-2 2m8-4-2 2 2 2"/></svg>';
+    const iconFolder = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v10H3Z"/></svg>';
+    const iconCalendar = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M7 3v4M17 3v4M3 10h18"/></svg>';
+    const arrow = '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7M8 7h9v9"/></svg>';
+    const friendlyFolder = folder => folderLabels[folder] || folder.replace(/([a-z])([A-Z])/g, '$1 $2');
+    const folderOf = path => path.includes('/') ? path.split('/')[0] : 'Other';
+    const extOf = path => (path.split('/').pop().split('.').pop() || '').toLowerCase();
+    const kindOf = path => Object.keys(types).find(kind => types[kind].includes(extOf(path))) || 'other';
+    const encodePath = path => path.split('/').map(encodeURIComponent).join('/');
+    const humanName = path => path.split('/').pop().replace(/\.[^.]+$/, '').replace(/[_-]+/g, ' ').trim();
+    const rawUrl = path => `https://raw.githubusercontent.com/${OWNER}/${REPO}/${BRANCH}/${encodePath(path)}`;
+    const liveUrl = path => SITE_ROOT + encodePath(path);
+    const sourceUrl = path => `${REPO_ROOT}/blob/${BRANCH}/${encodePath(path)}`;
+    const orderedFolders = items => [...new Set(items.map(item => folderOf(item.path)))].sort((a, b) => {
       const ia = priority.indexOf(a), ib = priority.indexOf(b);
       return (ia < 0 ? 999 : ia) - (ib < 0 ? 999 : ib) || a.localeCompare(b);
     });
-    const encodePath = (path) => path.split('/').map(encodeURIComponent).join('/');
-    const humanName = (path) => path.split('/').pop().replace(/\.html?$/i, '').replace(/[_-]+/g, ' ').trim();
-
-    function setStatus(state, message) {
-      status.dataset.state = state;
-      statusText.textContent = message;
-    }
-    function element(tag, className, text) {
+    const el = (tag, className = '', text) => {
       const node = document.createElement(tag);
       if (className) node.className = className;
       if (text !== undefined) node.textContent = text;
       return node;
+    };
+    const formatNumber = number => String(number).padStart(2, '0');
+
+    function parseDate(parts) {
+      // Supports ClassNotes/10/4/... AND ClassNotes/10-4/... AND
+      // ClassNotes/2026-10-04/... and nested variants.
+      for (let i = 0; i < parts.length - 1; i++) {
+        let year = null, month, day, length = 0;
+        const s = parts[i];
+        let m = s.match(/^(20\d\d)[-_.](\d{1,2})[-_.](\d{1,2})$/);
+        if (m) { [, year, month, day] = m.map((x, j) => j ? Number(x) : x); length = 1; }
+        if (!length) {
+          m = s.match(/^(\d{1,2})[-_.](\d{1,2})(?:[-_.](20\d\d))?$/);
+          if (m) { month = Number(m[1]); day = Number(m[2]); year = m[3] ? Number(m[3]) : null; length = 1; }
+        }
+        if (!length && /^20\d\d$/.test(s) && /^\d{1,2}$/.test(parts[i + 1] || '') && /^\d{1,2}$/.test(parts[i + 2] || '')) {
+          year = Number(s); month = Number(parts[i + 1]); day = Number(parts[i + 2]); length = 3;
+        }
+        if (!length && /^\d{1,2}$/.test(s) && /^\d{1,2}$/.test(parts[i + 1] || '')) {
+          month = Number(s); day = Number(parts[i + 1]); length = 2;
+          if (/^20\d\d$/.test(parts[i + 2] || '')) { year = Number(parts[i + 2]); length = 3; }
+        }
+        if (!length) continue;
+        const test = new Date(year || 2024, month - 1, day);
+        if (test.getMonth() !== month - 1 || test.getDate() !== day) continue;
+        const key = `${year || 'any'}-${formatNumber(month)}-${formatNumber(day)}`;
+        const label = new Intl.DateTimeFormat('en-US', {month: 'long', day: 'numeric'}).format(test) + (year ? `, ${year}` : '');
+        return {key, label, month, day, year, sort: (year || new Date().getFullYear()) * 10000 + month * 100 + day, sectionParts: parts.slice(i + length, -1)};
+      }
+      return {key: 'undated', label: 'Undated notes', month: 0, day: 0, year: null, sort: -1, sectionParts: parts.slice(0, -1)};
     }
-    function externalLink(text, url) {
-      const link = element('a', '', text);
-      link.href = url;
-      link.target = '_blank';
-      link.rel = 'noopener noreferrer';
-      link.insertAdjacentHTML('beforeend', arrow);
-      return link;
+
+    function enrich(item) {
+      const file = {path: item.path, size: item.size || 0};
+      file.kind = kindOf(file.path);
+      file.folder = folderOf(file.path);
+      file.date = file.folder === 'ClassNotes' ? parseDate(file.path.split('/').slice(1)) : null;
+      return file;
+    }
+    function datesIn(items) {
+      const map = new Map();
+      for (const file of items) {
+        if (file.date && !map.has(file.date.key)) map.set(file.date.key, file.date);
+      }
+      return [...map.values()].sort((a, b) => b.sort - a.sort || a.label.localeCompare(b.label));
+    }
+    function setStatus(state, message) { status.dataset.state = state; statusText.textContent = message; }
+    function createExternal(text, url) {
+      const a = el('a', '', text);
+      a.href = url; a.target = '_blank'; a.rel = 'noopener noreferrer'; a.insertAdjacentHTML('beforeend', arrow);
+      return a;
+    }
+    function chooseFolder(folder) {
+      activeFolder = folder;
+      if (folder !== 'ClassNotes' && dateSelect.value !== 'all') dateSelect.value = 'all';
+      buildFilters(); render();
     }
     function buildFilters() {
       filters.replaceChildren();
-      const folders = ['all', ...orderedFolders(files)];
-      for (const folder of folders) {
-        const count = folder === 'all' ? files.length : files.filter(file => folderOf(file.path) === folder).length;
-        const button = element('button', 'filter');
-        button.type = 'button';
-        button.dataset.folder = folder;
+      for (const folder of ['all', ...orderedFolders(files)]) {
+        const count = folder === 'all' ? files.length : files.filter(file => file.folder === folder).length;
+        const button = el('button', 'filter');
+        button.type = 'button'; button.dataset.folder = folder;
         button.setAttribute('aria-pressed', String(folder === activeFolder));
-        button.append(document.createTextNode(folder === 'all' ? 'All files' : friendlyFolder(folder)));
-        button.append(element('span', 'num', String(count)));
-        button.addEventListener('click', () => {
-          activeFolder = folder;
-          for (const pill of filters.querySelectorAll('button')) pill.setAttribute('aria-pressed', String(pill.dataset.folder === folder));
-          render();
-        });
+        button.append(document.createTextNode(folder === 'all' ? 'All files' : friendlyFolder(folder)), el('span', 'num', String(count)));
+        button.addEventListener('click', () => chooseFolder(folder));
         filters.append(button);
       }
     }
+    function buildDates() {
+      const all = datesIn(files.filter(file => file.folder === 'ClassNotes'));
+      const oldSelection = dateSelect.value;
+      dateSelect.replaceChildren(new Option('All dates', 'all'));
+      for (const date of all) dateSelect.add(new Option(date.label, date.key));
+      dateSelect.value = all.some(date => date.key === oldSelection) ? oldSelection : 'all';
+      quickDates.replaceChildren();
+      if (!all.length) { quickDates.hidden = true; return; }
+      quickDates.hidden = false;
+      quickDates.append(el('strong', '', 'JUMP TO A DATE'));
+      for (const date of all.slice(0, 6)) {
+        const button = el('button', 'date-chip', date.label);
+        button.type = 'button';
+        button.setAttribute('aria-pressed', String(date.key === dateSelect.value && activeFolder === 'ClassNotes'));
+        button.addEventListener('click', () => {
+          dateSelect.value = date.key;
+          activeFolder = 'ClassNotes';
+          buildFilters(); buildDates(); render();
+        });
+        quickDates.append(button);
+      }
+    }
     function makeCard(file, index) {
-      const card = element('article', 'file-card');
-      card.style.animationDelay = `${Math.min(index, 12) * 35}ms`;
-      const top = element('div', 'card-top');
-      const icon = element('div', 'file-icon');
-      icon.innerHTML = iconDocument;
-      top.append(icon, element('span', 'file-type', file.path.toLowerCase().endsWith('.htm') ? 'HTM' : 'HTML'));
-      const title = element('div', 'file-name', humanName(file.path));
-      const path = element('p', 'file-path', file.path);
-      const actions = element('div', 'card-actions');
-      actions.append(
-        externalLink('Open webpage', SITE_ROOT + encodePath(file.path)),
-        externalLink('View source', `https://github.com/${OWNER}/${REPO}/blob/${BRANCH}/${encodePath(file.path)}`)
-      );
-      card.append(top, title, path, actions);
+      const card = el('article', 'file-card');
+      card.style.animationDelay = `${Math.min(index, 10) * 25}ms`;
+      const top = el('div', 'card-top');
+      const icon = el('div', 'file-icon'); icon.innerHTML = iconDocument;
+      const suffix = el('span', 'file-type', extOf(file.path).toUpperCase());
+      top.append(icon, suffix);
+      card.append(top, el('div', 'file-name', humanName(file.path)), el('p', 'file-path', file.path));
+      const actions = el('div', 'card-actions');
+      const preview = el('button', '', file.kind === 'html' ? 'Read HTML page ↗' : file.kind === 'markdown' ? 'Read notes ↗' : 'View file ↗');
+      preview.type = 'button'; preview.addEventListener('click', () => openReader(file));
+      actions.append(preview, createExternal('GitHub', sourceUrl(file.path)));
+      card.append(actions);
       return card;
     }
-    function showBlank(title, message, actionName, action) {
-      const box = element('div', 'blank-state');
-      box.innerHTML = '<svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v10H3Z"/><path d="M9 12h6m-3-3v6"/></svg>';
-      box.append(element('h3', '', title), element('p', '', message));
-      const control = element(action.href ? 'a' : 'button', '', actionName);
-      if (action.href) { control.href = action.href; control.target = '_blank'; control.rel = 'noopener noreferrer'; }
-      else { control.type = 'button'; control.addEventListener('click', action.callback); }
-      box.append(control);
+    function emptyState(title, message, actionText, action) {
+      const box = el('div', 'blank-state');
+      box.innerHTML = iconFolder;
+      box.append(el('h3', '', title), el('p', '', message));
+      if (actionText) {
+        const button = action.url ? el('a', '', actionText) : el('button', '', actionText);
+        if (action.url) { button.href = action.url; button.target = '_blank'; button.rel = 'noopener noreferrer'; }
+        else { button.type = 'button'; button.addEventListener('click', action.click); }
+        box.append(button);
+      }
       results.replaceChildren(box);
+    }
+    function orderFiles(items) {
+      return items.sort((a, b) => a.path.localeCompare(b.path, undefined, {numeric: true, sensitivity: 'base'}));
+    }
+    function makeDateGroup(groupFiles, date, index) {
+      const detail = el('details', 'date-group');
+      detail.open = dateSelect.value !== 'all' || index < 2;
+      const summary = el('summary');
+      const icon = el('span', 'date-symbol'); icon.innerHTML = iconCalendar;
+      const labels = el('span', 'date-label-text');
+      labels.append(el('strong', '', date.label), el('small', '', `${groupFiles.length} ${groupFiles.length === 1 ? 'file' : 'files'} · click to expand or collapse`));
+      summary.append(icon, labels, el('span', 'chevron', '‹'));
+      detail.append(summary);
+      const bySection = new Map();
+      for (const file of groupFiles) {
+        const name = file.date.sectionParts.length ? file.date.sectionParts.join(' / ') : 'Notes from this day';
+        if (!bySection.has(name)) bySection.set(name, []);
+        bySection.get(name).push(file);
+      }
+      for (const [name, items] of [...bySection].sort((a, b) => a[0].localeCompare(b[0], undefined, {numeric: true}))) {
+        const section = el('section', 'day-section');
+        section.append(el('h4', 'day-section-label', name));
+        const cards = el('div', 'cards');
+        orderFiles(items).forEach((file, i) => cards.append(makeCard(file, i)));
+        section.append(cards);
+        detail.append(section);
+      }
+      return detail;
+    }
+    function makeCategory(folder, groupFiles) {
+      const section = el('section', 'category' + (folder === 'ClassNotes' ? ' note-category' : ''));
+      section.setAttribute('aria-label', `${friendlyFolder(folder)} files`);
+      const head = el('div', 'category-head');
+      const icon = el('span', 'category-mark'); icon.innerHTML = iconFolder;
+      const labels = el('div');
+      labels.append(el('h3', '', friendlyFolder(folder)), el('small', '', `${groupFiles.length} ${groupFiles.length === 1 ? 'file' : 'files'}`));
+      head.append(icon, labels, el('div', 'category-rule'));
+      section.append(head);
+      if (folder === 'ClassNotes') {
+        const holder = el('div', 'date-groups');
+        let dates = datesIn(groupFiles);
+        if (sortSelect.value === 'oldest') dates.reverse();
+        dates.forEach((date, index) => holder.append(makeDateGroup(groupFiles.filter(file => file.date.key === date.key), date, index)));
+        section.append(holder);
+      } else {
+        const cards = el('div', 'cards');
+        orderFiles(groupFiles).forEach((file, index) => cards.append(makeCard(file, index)));
+        section.append(cards);
+      }
+      return section;
     }
     function render() {
       const query = search.value.trim().toLowerCase();
-      const matches = files.filter(file => {
-        const inFolder = activeFolder === 'all' || folderOf(file.path) === activeFolder;
-        const inSearch = !query || file.path.toLowerCase().includes(query) || humanName(file.path).toLowerCase().includes(query);
-        return inFolder && inSearch;
-      });
-      $('#result-count').replaceChildren(document.createTextNode(`${matches.length} ${matches.length === 1 ? 'page' : 'pages'} found`));
+      const kind = typeSelect.value;
+      const matches = files.filter(file =>
+        (activeFolder === 'all' || file.folder === activeFolder) &&
+        (dateSelect.value === 'all' || (file.date && file.date.key === dateSelect.value)) &&
+        (kind === 'all' || file.kind === kind) &&
+        (!query || file.path.toLowerCase().includes(query) || humanName(file.path).toLowerCase().includes(query))
+      );
+      $('#result-count').textContent = `${matches.length} ${matches.length === 1 ? 'file' : 'files'} found`;
       if (!matches.length) {
-        if (!files.length) showBlank('No HTML pages yet', 'Add .html files to your repository and push them to main. They will appear here after you refresh.', 'View the repository', {href: `https://github.com/${OWNER}/${REPO}`});
-        else showBlank('No matching files', 'Try a different keyword or select another collection.', 'Clear filters', {callback: () => { activeFolder = 'all'; search.value = ''; buildFilters(); render(); }});
+        if (!files.length) emptyState('No readable files found', 'Add HTML, Markdown, C, or text files to the repository and push to main. Then refresh.', 'View repository', {url: REPO_ROOT});
+        else emptyState('No matching documents', 'Try changing the date, file type, or search term.', 'Clear all filters', {click: () => {
+          activeFolder = 'all'; dateSelect.value = 'all'; typeSelect.value = 'all'; search.value = '';
+          buildFilters(); buildDates(); render();
+        }});
         return;
       }
-      results.replaceChildren();
-      const wrapper = element('div', 'categories');
-      const folders = orderedFolders(matches);
-      let totalIndex = 0;
-      for (const folder of folders) {
-        const groupFiles = matches.filter(file => folderOf(file.path) === folder).sort((a, b) => a.path.localeCompare(b.path, undefined, {numeric:true, sensitivity:'base'}));
-        const section = element('section', 'category');
-        section.setAttribute('aria-label', `${friendlyFolder(folder)} files`);
-        const head = element('div', 'category-head');
-        const icon = element('span', 'category-mark'); icon.innerHTML = iconFolder;
-        const titleWrap = element('div');
-        titleWrap.append(element('h3', '', friendlyFolder(folder)), element('small', '', `${groupFiles.length} ${groupFiles.length === 1 ? 'page' : 'pages'}`));
-        head.append(icon, titleWrap, element('div', 'category-rule'));
-        const cards = element('div', 'cards');
-        for (const file of groupFiles) cards.append(makeCard(file, totalIndex++));
-        section.append(head, cards);
-        wrapper.append(section);
+      const wrapper = el('div', 'categories');
+      for (const folder of orderedFolders(matches)) wrapper.append(makeCategory(folder, matches.filter(file => file.folder === folder)));
+      results.replaceChildren(wrapper);
+    }
+
+    function showReaderError(message) {
+      readerContent.replaceChildren(); readerContent.dataset.mode = 'markdown';
+      const error = el('div', 'reader-error');
+      error.append(el('h3', '', 'Unable to preview this file'), el('p', '', message), el('p', '', 'Use the GitHub source link above to view the original file.'));
+      readerContent.append(error);
+    }
+    function resolveMarkdownAssets(container, file) {
+      const base = liveUrl(file.path);
+      for (const item of container.querySelectorAll('a[href], img[src]')) {
+        const attr = item.tagName === 'IMG' ? 'src' : 'href';
+        const value = item.getAttribute(attr);
+        if (!value || value.startsWith('#') || /^(?:[a-z]+:|\/\/)/i.test(value)) continue;
+        try { item.setAttribute(attr, new URL(value, base).href); } catch { /* retain original */ }
       }
-      results.append(wrapper);
+      for (const a of container.querySelectorAll('a[href]')) {
+        a.target = '_blank'; a.rel = 'noopener noreferrer';
+      }
+    }
+    async function showTextFile(file, requestId) {
+      const response = await fetch(rawUrl(file.path), {cache: 'no-store'});
+      if (!response.ok) throw new Error(`GitHub returned HTTP ${response.status} for this file.`);
+      const text = await response.text();
+      if (requestId !== openRequest) return;
+      readerContent.replaceChildren();
+      if (file.kind === 'markdown') {
+        readerContent.dataset.mode = 'markdown';
+        const article = el('article', 'markdown-view');
+        // Render trusted Markdown syntax but sanitize its HTML before insertion.
+        if (typeof marked !== 'undefined' && typeof DOMPurify !== 'undefined') {
+          const html = marked.parse(text, {gfm: true, breaks: true});
+          article.innerHTML = DOMPurify.sanitize(html);
+          resolveMarkdownAssets(article, file);
+        } else {
+          const hint = el('p', '', 'Markdown formatting library unavailable; showing original Markdown.');
+          const pre = el('pre'); pre.textContent = text;
+          article.append(hint, pre);
+        }
+        readerContent.append(article);
+      } else {
+        readerContent.dataset.mode = 'code';
+        const pre = el('pre', 'code-view');
+        const code = el('code');
+        code.textContent = text; // Text content keeps source code inert and safe.
+        pre.append(code);
+        readerContent.append(pre);
+      }
+    }
+    async function openReader(file, updateUrl = true) {
+      activeFile = file;
+      lastFocus = document.activeElement;
+      const requestId = ++openRequest;
+      $('#reader-title').textContent = humanName(file.path);
+      $('#reader-path').textContent = file.path + (file.date ? ` · ${file.date.label}` : '');
+      $('#reader-original').href = file.kind === 'html' ? liveUrl(file.path) : rawUrl(file.path);
+      $('#reader-source').href = sourceUrl(file.path);
+      readerContent.replaceChildren(el('p', 'reader-loading', 'Loading preview…'));
+      readerContent.dataset.mode = file.kind;
+      if (!reader.open) reader.showModal();
+      if (updateUrl) {
+        const url = new URL(location.href);
+        url.searchParams.set('file', file.path);
+        history.replaceState(null, '', url);
+      }
+      if (file.kind === 'html') {
+        // Load the *published* HTML page, preserving its relative CSS/JS/assets.
+        // Sandboxing prevents embedded notes from taking over the parent page.
+        readerContent.replaceChildren();
+        readerContent.dataset.mode = 'html';
+        const frame = el('iframe', 'reader-frame');
+        frame.title = `${humanName(file.path)} HTML preview`;
+        frame.setAttribute('sandbox', 'allow-scripts allow-forms allow-popups allow-downloads');
+        frame.setAttribute('loading', 'eager');
+        frame.src = liveUrl(file.path);
+        readerContent.append(frame);
+      } else {
+        try { await showTextFile(file, requestId); }
+        catch (error) { if (requestId === openRequest) showReaderError(error.message); }
+      }
+    }
+    reader.addEventListener('close', () => {
+      ++openRequest; activeFile = null; readerContent.replaceChildren();
+      const url = new URL(location.href);
+      if (url.searchParams.has('file')) { url.searchParams.delete('file'); history.replaceState(null, '', url); }
+      if (lastFocus && lastFocus.isConnected && lastFocus.focus) lastFocus.focus();
+    });
+    $('#reader-close').addEventListener('click', () => reader.close());
+    reader.addEventListener('click', event => {
+      if (event.target === reader) reader.close(); // Click the dimmed backdrop.
+    });
+
+    async function getJson(url) {
+      const response = await fetch(url, {headers: {Accept: 'application/vnd.github+json'}, cache: 'no-store'});
+      if (!response.ok) throw new Error(response.status === 403 || response.status === 429 ? 'GitHub API rate limit reached; try again later.' : `GitHub returned HTTP ${response.status}.`);
+      return response.json();
+    }
+    async function indexWithContents() {
+      // Fallback for exceptionally large Git trees (normally not needed).
+      const queue = ['']; const discovered = [];
+      while (queue.length) {
+        const path = queue.shift();
+        const url = `${API_ROOT}/contents${path ? '/' + encodePath(path) : ''}?ref=${BRANCH}`;
+        const content = await getJson(url);
+        if (!Array.isArray(content)) continue;
+        for (const node of content) {
+          if (node.type === 'dir' && !/^(?:\.git|node_modules|vendor)$/.test(node.name)) queue.push(node.path);
+          else if (node.type === 'file') discovered.push({path: node.path, size: node.size});
+        }
+      }
+      return discovered;
     }
     async function loadFiles() {
       if (loading) return;
-      loading = true;
-      refresh.disabled = true;
-      refresh.classList.add('is-loading');
-      setStatus('loading', 'Checking GitHub…');
+      loading = true; refresh.disabled = true; refresh.classList.add('is-loading');
+      setStatus('loading', 'Scanning repository…');
       try {
-        const response = await fetch(API_URL, {headers: {Accept: 'application/vnd.github+json'}, cache: 'no-store'});
-        if (!response.ok) throw new Error(response.status === 403 || response.status === 429 ? 'GitHub API rate limit reached.' : `GitHub returned HTTP ${response.status}.`);
-        const data = await response.json();
-        if (!Array.isArray(data.tree) || data.truncated) throw new Error('GitHub did not return the complete file list.');
-        files = data.tree
-          .filter(item => item.type === 'blob' && typeof item.path === 'string' && /\.html?$/i.test(item.path) && item.path.toLowerCase() !== 'index.html')
-          .map(item => ({path: item.path}));
-        activeFolder = orderedFolders(files).includes(activeFolder) ? activeFolder : 'all';
+        const tree = await getJson(API_TREE);
+        const entries = Array.isArray(tree.tree) && !tree.truncated ? tree.tree.filter(item => item.type === 'blob') : await indexWithContents();
+        files = entries.filter(item =>
+          typeof item.path === 'string' &&
+          fileExtensions.includes(extOf(item.path)) &&
+          item.path.toLowerCase() !== 'index.html' &&
+          !item.path.split('/').some(part => ['node_modules', '.vscode', '.git', 'vendor'].includes(part.toLowerCase()))
+        ).map(enrich);
+        if (activeFolder !== 'all' && !orderedFolders(files).includes(activeFolder)) activeFolder = 'all';
         $('#stat-pages').textContent = String(files.length);
-        $('#stat-folders').textContent = String(orderedFolders(files).length);
-        buildFilters();
-        render();
-        setStatus('ready', 'Synced with GitHub');
-      } catch (error) {
-        setStatus('error', 'Unable to load file list');
-        $('#result-count').textContent = 'GitHub could not be reached';
-        if (!files.length) {
-          $('#stat-pages').textContent = '—';
-          $('#stat-folders').textContent = '—';
-          showBlank('Could not fetch your files', `${error.message} Try refreshing, or browse files directly on GitHub.`, 'Browse on GitHub', {href: `https://github.com/${OWNER}/${REPO}`});
-        } else {
-          render(); // Retain the last successfully loaded list on a refresh error.
+        $('#stat-folders').textContent = String(datesIn(files.filter(f => f.folder === 'ClassNotes')).filter(d => d.key !== 'undated').length);
+        buildFilters(); buildDates(); render();
+        setStatus('ready', 'Repository synced');
+        const requested = new URLSearchParams(location.search).get('file');
+        if (requested && !reader.open) {
+          const found = files.find(item => item.path === requested);
+          if (found) openReader(found, false);
         }
+      } catch (error) {
+        setStatus('error', 'Could not load repository');
+        $('#result-count').textContent = 'Unable to retrieve GitHub files';
+        if (!files.length) {
+          $('#stat-pages').textContent = '—'; $('#stat-folders').textContent = '—';
+          emptyState('Could not scan the repository', `${error.message} This site needs access to the public GitHub API.`, 'Browse files on GitHub', {url: REPO_ROOT});
+        } else render();
       } finally {
-        loading = false;
-        refresh.disabled = false;
-        refresh.classList.remove('is-loading');
+        loading = false; refresh.disabled = false; refresh.classList.remove('is-loading');
       }
     }
-    search.addEventListener('input', () => { if (!loading || files.length) render(); });
+    search.addEventListener('input', render);
+    dateSelect.addEventListener('change', () => {
+      if (dateSelect.value !== 'all') activeFolder = 'ClassNotes';
+      buildFilters(); buildDates(); render();
+    });
+    typeSelect.addEventListener('change', render);
+    sortSelect.addEventListener('change', render);
     refresh.addEventListener('click', loadFiles);
+    $('#browse-dates').addEventListener('click', () => { activeFolder = 'ClassNotes'; buildFilters(); render(); });
     document.addEventListener('keydown', event => {
       if ((event.metaKey || event.ctrlKey) && event.key.toLowerCase() === 'k') { event.preventDefault(); search.focus(); }
       if (event.key === 'Escape' && document.activeElement === search) { search.value = ''; render(); search.blur(); }
