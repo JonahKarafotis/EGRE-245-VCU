@@ -638,6 +638,31 @@
       }
       return detail;
     }
+    function makeFolderGroups(folder, groupFiles) {
+      const holder = el('div', 'date-groups');
+      const groups = new Map();
+      for (const file of groupFiles) {
+        const parts = file.path.split('/');
+        const name = parts.length > 2 ? parts[1] : '';
+        if (!groups.has(name)) groups.set(name, []);
+        groups.get(name).push(file);
+      }
+      [...groups].sort(([a], [b]) => a.localeCompare(b, undefined, {numeric: true, sensitivity: 'base'})).forEach(([name, items], index) => {
+        const title = name ? friendlyFolder(name).replace(/^Lab\s*(\d+)$/i, 'Lab $1') : `Other ${friendlyFolder(folder)} files`;
+        const detail = el('details', 'date-group');
+        detail.open = index < 2 || search.value.trim() !== '';
+        const summary = el('summary');
+        const icon = el('span', 'date-symbol'); icon.innerHTML = iconFolder;
+        const labels = el('span', 'date-label-text');
+        labels.append(el('strong', '', title), el('small', '', `${items.length} ${items.length === 1 ? 'file' : 'files'} · click to expand or collapse`));
+        summary.append(icon, labels, el('span', 'chevron', '‹'));
+        const cards = el('div', 'cards');
+        orderFiles(items).forEach((file, i) => cards.append(makeCard(file, i)));
+        detail.append(summary, cards);
+        holder.append(detail);
+      });
+      return holder;
+    }
     function makeCategory(folder, groupFiles) {
       const section = el('section', 'category' + (folder === 'ClassNotes' ? ' note-category' : ''));
       section.setAttribute('aria-label', `${friendlyFolder(folder)} files`);
@@ -653,6 +678,8 @@
         if (sortSelect.value === 'oldest') dates.reverse();
         dates.forEach((date, index) => holder.append(makeDateGroup(groupFiles.filter(file => file.date.key === date.key), date, index)));
         section.append(holder);
+      } else if (folder === 'Labs' || folder === 'Projects') {
+        section.append(makeFolderGroups(folder, groupFiles));
       } else {
         const cards = el('div', 'cards');
         orderFiles(groupFiles).forEach((file, index) => cards.append(makeCard(file, index)));
