@@ -1,0 +1,500 @@
+838
+2123
+0.196472
+blah blah
+
+167
+1580
+0.129406
+blah blah
+
+508
+5554
+0.406385
+blah blah
+
+219
+9058
+0.582234
+blah blah blah
+
+818
+430
+0.371293
+blah blah blah
+
+320
+1393
+0.679565
+blah blah blah blah blah blah blah
+
+271
+2605
+0.402237
+blah blah
+
+150
+5288
+0.352542
+blah blah blah
+
+212
+9017
+0.773472
+blah blah
+
+32
+6366
+0.928413
+blah
+
+136
+4041
+0.227088
+blah blah blah
+
+92
+2200
+0.147372
+blah blah
+
+412
+4815
+0.112480
+blah blah
+
+419
+110
+0.437688
+blah blah
+
+12
+8905
+0.621864
+blah blah blah blah
+
+820
+877
+0.314971
+blah
+
+891
+311
+0.760390
+blah blah blah blah blah
+
+637
+2114
+0.600870
+blah blah blah blah blah
+
+88
+7196
+0.748102
+blah blah
+
+451
+9645
+0.961686
+blah blah
+
+94
+5083
+0.928666
+blah blah blah
+
+306
+6469
+0.512294
+blah blah blah blah
+
+689
+2183
+0.890689
+blah
+
+537
+5092
+0.851487
+blah blah blah blah
+
+191
+2625
+0.920070
+blah blah blah blah
+
+255
+4198
+0.867634
+blah blah blah
+
+124
+5818
+0.802494
+blah blah blah
+
+512
+2993
+0.336473
+blah blah blah
+
+73
+4552
+0.555236
+blah blah blah blah
+
+572
+2992
+0.425625
+blah blah
+
+333
+6674
+0.754279
+blah blah
+
+290
+1957
+0.351961
+blah blah
+
+168
+1369
+0.424688
+blah blah blah blah blah blah blah
+
+748
+1002
+0.915826
+blah
+
+643
+4337
+0.600429
+blah blah blah blah
+
+376
+5312
+0.539576
+blah blah
+
+310
+7953
+0.010871
+blah blah
+
+749
+1825
+0.838603
+blah blah blah blah
+
+52
+3040
+0.546926
+blah blah blah blah
+
+92
+9380
+0.795294
+blah blah
+
+575
+20
+0.161998
+blah blah blah blah blah blah blah
+
+658
+6712
+0.083936
+blah blah blah blah
+
+148
+5175
+0.191599
+blah blah blah blah blah
+
+98
+1871
+0.206123
+blah blah blah
+
+254
+5513
+0.905402
+blah blah blah
+
+895
+2724
+0.167735
+blah blah blah
+
+562
+3610
+0.631242
+blah blah blah
+
+528
+4815
+0.645337
+blah blah
+
+723
+4612
+0.884336
+blah
+
+634
+426
+0.849057
+blah blah blah blah blah
+
+568
+9755
+0.527250
+blah
+
+603
+1563
+0.754385
+blah blah blah blah blah blah
+
+870
+4207
+0.325607
+blah blah blah blah
+
+549
+8221
+0.236604
+blah blah blah blah blah blah blah
+
+617
+6031
+0.951494
+blah blah blah
+
+877
+5844
+0.261336
+blah blah blah
+
+301
+9885
+0.489041
+blah blah blah blah blah
+
+599
+4886
+0.119150
+blah blah blah
+
+726
+8093
+0.869929
+blah blah blah
+
+69
+2440
+0.827992
+blah blah
+
+559
+5296
+0.743772
+blah blah blah
+
+388
+4532
+0.621506
+blah blah blah blah
+
+713
+9177
+0.159542
+blah blah
+
+427
+2849
+0.159324
+blah blah blah blah
+
+977
+6331
+0.049525
+blah blah blah blah blah
+
+963
+7131
+0.721765
+blah blah
+
+51
+5385
+0.112831
+blah blah
+
+812
+9511
+0.461630
+blah blah
+
+904
+1165
+0.172455
+blah blah
+
+76
+1524
+0.826776
+blah blah blah blah
+
+767
+2837
+0.847244
+blah blah blah blah
+
+23
+4012
+0.882752
+blah
+
+131
+1430
+0.871523
+blah blah blah blah
+
+587
+8603
+0.448332
+blah blah
+
+856
+7712
+0.529340
+blah blah
+
+197
+2606
+0.519268
+blah blah
+
+374
+5931
+0.503831
+blah blah blah
+
+289
+5221
+0.832638
+blah blah blah blah blah
+
+792
+6151
+0.633678
+blah blah blah
+
+0
+9763
+0.860275
+blah blah blah blah blah
+
+916
+6847
+0.773418
+blah blah blah
+
+322
+8893
+0.091091
+blah
+
+398
+169
+0.388043
+blah blah blah blah
+
+873
+31
+0.180834
+blah blah blah blah blah blah blah
+
+711
+5211
+0.882484
+blah blah blah
+
+409
+3928
+0.489320
+blah blah blah blah
+
+236
+65
+0.497908
+blah blah blah
+
+522
+2959
+0.003166
+blah blah blah
+
+66
+6602
+0.355303
+blah blah blah
+
+574
+7744
+0.270441
+blah blah
+
+182
+4246
+0.920167
+blah blah blah blah
+
+750
+7398
+0.359776
+blah blah blah
+
+207
+4774
+0.197614
+blah blah
+
+597
+6937
+0.396755
+blah blah blah blah blah blah
+
+137
+7232
+0.778331
+blah blah
+
+254
+5857
+0.855280
+blah blah blah
+
+644
+381
+0.024561
+blah blah blah blah blah
+
+711
+4833
+0.744535
+blah
+
+683
+6106
+0.948155
+blah
+
+198
+2449
+0.710921
+blah blah blah
+

@@ -1,0 +1,1555 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="EGRE 246 Chapter 6 study notes on Abstract Data Types (ADTs).">
+  <title>Abstract Data Types (ADTs) — EGRE 246</title>
+  <style>
+:root {
+  --bg: #f5f7fb;
+  --surface: #ffffff;
+  --surface-soft: #f8f9fc;
+  --text: #172033;
+  --muted: #5b6475;
+  --border: #dfe4ee;
+  --accent: #3346b8;
+  --accent-dark: #25348f;
+  --code-bg: #111827;
+  --code-text: #eef2ff;
+  --inline-code-bg: #edf0f8;
+  --shadow: 0 10px 30px rgba(26, 38, 75, 0.08);
+}
+
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+
+body {
+  margin: 0;
+  font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI",
+               Roboto, Helvetica, Arial, sans-serif;
+  color: var(--text);
+  background: var(--bg);
+  line-height: 1.7;
+}
+
+.hero {
+  background: linear-gradient(135deg, var(--accent-dark), var(--accent));
+  color: #fff;
+  padding: 58px 24px 48px;
+  box-shadow: var(--shadow);
+}
+
+.hero-inner {
+  max-width: 1050px;
+  margin: 0 auto;
+}
+
+.hero .eyebrow {
+  margin: 0 0 8px;
+  font-size: .88rem;
+  font-weight: 700;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  opacity: .82;
+}
+
+.hero h1 {
+  margin: 0;
+  font-size: clamp(2.2rem, 6vw, 4rem);
+  line-height: 1.05;
+}
+
+.hero p {
+  margin: 14px 0 0;
+  max-width: 760px;
+  font-size: 1.08rem;
+  opacity: .92;
+}
+
+.layout {
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: 32px 24px 60px;
+  display: grid;
+  grid-template-columns: 280px minmax(0, 1fr);
+  gap: 28px;
+  align-items: start;
+}
+
+.toc {
+  position: sticky;
+  top: 20px;
+  max-height: calc(100vh - 40px);
+  overflow: auto;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  box-shadow: var(--shadow);
+  padding: 18px 18px 20px;
+}
+
+.toc h2 {
+  margin: 0 0 10px;
+  font-size: 1rem;
+}
+
+.toc ol {
+  margin: 0;
+  padding-left: 1.3rem;
+}
+
+.toc li {
+  margin: 5px 0;
+  color: var(--muted);
+}
+
+.toc a {
+  color: inherit;
+  text-decoration: none;
+  font-size: .91rem;
+}
+
+.toc a:hover {
+  color: var(--accent);
+}
+
+main {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  box-shadow: var(--shadow);
+  padding: 34px clamp(22px, 5vw, 56px);
+  min-width: 0;
+}
+
+main > p:first-child {
+  font-size: 1.06rem;
+  color: var(--muted);
+}
+
+h1, h2, h3 {
+  line-height: 1.25;
+  color: #111827;
+}
+
+main h1 {
+  margin: 2.4rem 0 1rem;
+  padding-top: .35rem;
+  font-size: 1.72rem;
+  border-top: 1px solid var(--border);
+  scroll-margin-top: 18px;
+}
+
+main h1:first-of-type {
+  border-top: none;
+  margin-top: 1rem;
+}
+
+main h2 {
+  margin: 1.8rem 0 .75rem;
+  font-size: 1.28rem;
+  color: var(--accent-dark);
+  scroll-margin-top: 18px;
+}
+
+main h3 {
+  margin: 1.4rem 0 .6rem;
+  font-size: 1.08rem;
+  scroll-margin-top: 18px;
+}
+
+p { margin: .8rem 0; }
+
+ul, ol { padding-left: 1.55rem; }
+li { margin: .3rem 0; }
+
+blockquote {
+  margin: 1.2rem 0;
+  padding: .9rem 1rem;
+  border-left: 4px solid var(--accent);
+  background: #f3f5ff;
+  color: #27304a;
+  border-radius: 0 10px 10px 0;
+}
+
+code {
+  font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
+  font-size: .92em;
+}
+
+:not(pre) > code {
+  background: var(--inline-code-bg);
+  color: #222a55;
+  border: 1px solid #dfe3ef;
+  padding: .12rem .34rem;
+  border-radius: 5px;
+}
+
+pre {
+  margin: 1rem 0 1.25rem;
+  padding: 16px 18px;
+  overflow-x: auto;
+  background: var(--code-bg);
+  color: var(--code-text);
+  border-radius: 12px;
+  box-shadow: inset 0 0 0 1px rgba(255,255,255,.06);
+}
+
+pre code {
+  background: transparent;
+  color: inherit;
+  border: 0;
+  padding: 0;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1rem 0 1.4rem;
+  font-size: .96rem;
+}
+
+th, td {
+  border: 1px solid var(--border);
+  padding: 10px 12px;
+  text-align: left;
+  vertical-align: top;
+}
+
+th {
+  background: #eef1fb;
+  color: #1f2c74;
+}
+
+tr:nth-child(even) td {
+  background: var(--surface-soft);
+}
+
+hr {
+  border: 0;
+  border-top: 1px solid var(--border);
+  margin: 2rem 0;
+}
+
+.footer {
+  max-width: 1050px;
+  margin: 0 auto;
+  padding: 0 24px 44px;
+  color: var(--muted);
+  text-align: center;
+  font-size: .9rem;
+}
+
+@media (max-width: 900px) {
+  .layout { grid-template-columns: 1fr; }
+  .toc { position: static; max-height: none; }
+}
+
+@media print {
+  body { background: #fff; }
+  .hero {
+    background: #fff;
+    color: #000;
+    box-shadow: none;
+    padding: 20px 0;
+  }
+  .layout {
+    display: block;
+    max-width: none;
+    padding: 0;
+  }
+  .toc { display: none; }
+  main {
+    border: 0;
+    box-shadow: none;
+    padding: 0;
+  }
+  .footer { display: none; }
+  pre {
+    white-space: pre-wrap;
+    color: #000;
+    background: #f4f4f4;
+    border: 1px solid #ddd;
+  }
+}
+</style>
+</head>
+<body>
+  <header class="hero">
+    <div class="hero-inner">
+      <p class="eyebrow">EGRE 246 • Chapter 6</p>
+      <h1>Abstract Data Types (ADTs)</h1>
+      <p>Data Structures and ADTs — complete study notes centered on the List ADT in C.</p>
+    </div>
+  </header>
+
+  <div class="layout">
+    <nav class="toc" aria-label="Table of contents">
+      <h2>Contents</h2>
+      <ol>
+        <li><a href="#1-data-types">1. Data Types</a></li>
+<li><a href="#2-what-is-an-abstract-data-type">2. What Is an Abstract Data Type?</a></li>
+<li><a href="#3-data-types-vs-data-structures">3. Data Types vs. Data Structures</a></li>
+<li><a href="#4-example-data-structure-a-list">4. Example Data Structure: A List</a></li>
+<li><a href="#5-defining-the-list-item-type">5. Defining the List Item Type</a></li>
+<li><a href="#6-defining-a-special-non-item">6. Defining a Special &quot;Non-Item&quot;</a></li>
+<li><a href="#7-defining-the-list-structure">7. Defining the List Structure</a></li>
+<li><a href="#8-categories-of-container-operations">8. Categories of Container Operations</a></li>
+<li><a href="#9-constructor">9. Constructor</a></li>
+<li><a href="#10-destructor">10. Destructor</a></li>
+<li><a href="#11-getter">11. Getter</a></li>
+<li><a href="#12-setters-mutators">12. Setters / Mutators</a></li>
+<li><a href="#13-predicates">13. Predicates</a></li>
+<li><a href="#14-reporters">14. Reporters</a></li>
+<li><a href="#15-using-a-list-without-knowing-its-implementation">15. Using a List Without Knowing Its Implementation</a></li>
+<li><a href="#16-fixed-array-list-implementation">16. Fixed-Array List Implementation</a></li>
+<li><a href="#17-creating-the-list">17. Creating the List</a></li>
+<li><a href="#18-destroying-the-list">18. Destroying the List</a></li>
+<li><a href="#19-clearing-the-list">19. Clearing the List</a></li>
+<li><a href="#20-size-operations">20. Size Operations</a></li>
+<li><a href="#21-adding-an-item">21. Adding an Item</a></li>
+<li><a href="#22-inserting-an-item">22. Inserting an Item</a></li>
+<li><a href="#23-removing-an-item">23. Removing an Item</a></li>
+<li><a href="#24-getting-an-item">24. Getting an Item</a></li>
+<li><a href="#25-setting-an-item">25. Setting an Item</a></li>
+<li><a href="#26-turning-the-list-data-structure-into-a-list-adt">26. Turning the List Data Structure Into a List ADT</a></li>
+<li><a href="#27-step-1-create-an-item-type-abstraction">27. Step 1 — Create an Item-Type Abstraction</a></li>
+<li><a href="#28-step-2-create-the-public-adt-specification">28. Step 2 — Create the Public ADT Specification</a></li>
+<li><a href="#29-the-public-interface-is-the-adt-s-what">29. The Public Interface Is the ADT&#x27;s &quot;What&quot;</a></li>
+<li><a href="#30-step-3-create-the-implementation-file">30. Step 3 — Create the Implementation File</a></li>
+<li><a href="#31-why-keeping-the-structure-in-list-c-matters">31. Why Keeping the Structure in list.c Matters</a></li>
+<li><a href="#32-step-4-compile-and-use-the-adt">32. Step 4 — Compile and Use the ADT</a></li>
+<li><a href="#33-example-program-using-the-list-adt">33. Example Program Using the List ADT</a></li>
+<li><a href="#34-fixed-size-array-limitation">34. Fixed-Size Array Limitation</a></li>
+<li><a href="#35-dynamic-arrays">35. Dynamic Arrays</a></li>
+<li><a href="#36-dynamic-list-initialization">36. Dynamic List Initialization</a></li>
+<li><a href="#37-expanding-the-dynamic-array">37. Expanding the Dynamic Array</a></li>
+<li><a href="#38-adding-an-item-with-dynamic-expansion">38. Adding an Item With Dynamic Expansion</a></li>
+<li><a href="#39-inserting-into-the-dynamic-array">39. Inserting Into the Dynamic Array</a></li>
+<li><a href="#40-destroying-a-dynamic-list">40. Destroying a Dynamic List</a></li>
+<li><a href="#41-why-the-dynamic-array-example-matters-for-adts">41. Why the Dynamic-Array Example Matters for ADTs</a></li>
+<li><a href="#42-interface-vs-implementation">42. Interface vs. Implementation</a></li>
+<li><a href="#43-file-organization-for-the-list-adt">43. File Organization for the List ADT</a></li>
+<li><a href="#44-why-typedef-struct-listtype-list-helps">44. Why typedef struct listType *list; Helps</a></li>
+<li><a href="#45-public-operations-vs-internal-operations">45. Public Operations vs. Internal Operations</a></li>
+<li><a href="#46-a-major-adt-design-principle">46. A Major ADT Design Principle</a></li>
+<li><a href="#47-what-the-programmer-using-the-adt-needs-to-know">47. What the Programmer Using the ADT Needs to Know</a></li>
+<li><a href="#48-why-adts-are-useful">48. Why ADTs Are Useful</a></li>
+<li><a href="#49-adt-vs-data-structure-important-distinction">49. ADT vs. Data Structure — Important Distinction</a></li>
+<li><a href="#50-the-most-important-idea-from-the-chapter">50. The Most Important Idea From the Chapter</a></li>
+<li><a href="#51-quick-review">51. Quick Review</a></li>
+<li><a href="#52-final-study-summary">52. Final Study Summary</a></li>
+      </ol>
+    </nav>
+
+    <main>
+      
+<p>These notes follow the organization and terminology used in the EGRE 246 lecture material. The chapter explains ADTs mainly by building a <strong>List ADT in C</strong>.</p>
+<hr />
+<h1 id="1-data-types">1. Data Types</h1>
+<p>A <strong>data type</strong> consists of two things:</p>
+<ol>
+<li>A collection of possible values</li>
+<li>A set of basic operations that can be performed on those values</li>
+</ol>
+<p>For example, the C <code>int</code> data type has:</p>
+<ul>
+<li>a legal range of integer values, from <code>INT_MIN</code> to <code>INT_MAX</code></li>
+<li>operations such as:<ul>
+<li><code>+</code></li>
+<li><code>-</code></li>
+<li><code>&gt;=</code></li>
+<li><code>=</code></li>
+</ul>
+</li>
+</ul>
+<p>Traditionally, basic data types are treated as <strong>atomic entities</strong>, meaning the programmer normally thinks of them as single values rather than as objects that are divided into smaller component parts.</p>
+<hr />
+<h1 id="2-what-is-an-abstract-data-type">2. What Is an Abstract Data Type?</h1>
+<p>An <strong>Abstract Data Type (ADT)</strong> is a data type whose implementation details are hidden from the programmer using it.</p>
+<p>The important idea is:</p>
+<blockquote>
+<p>The programmer should know <strong>what the type does</strong> and <strong>which operations are available</strong>, without needing to know <strong>how those operations are implemented internally</strong>.</p>
+</blockquote>
+<p>The lecture defines an ADT as a data type that does not give the programmer access to the details of how its values and operations are implemented.</p>
+<h2 id="main-idea">Main idea</h2>
+<p>An ADT separates:</p>
+<ul>
+<li><strong>what the data type does</strong></li>
+<li>from</li>
+<li><strong>how the data type does it</strong></li>
+</ul>
+<p>This separation is one of the most important ideas in the chapter.</p>
+<hr />
+<h1 id="3-data-types-vs-data-structures">3. Data Types vs. Data Structures</h1>
+<p>The lecture also distinguishes a <strong>data type</strong> from a <strong>data structure</strong>.</p>
+<h2 id="data-type">Data Type</h2>
+<p>A data type has:</p>
+<ul>
+<li>a collection of values</li>
+<li>operations that work on those values</li>
+</ul>
+<p>Example:</p>
+<pre><code class="language-c">int
+</code></pre>
+<p>The <code>int</code> type has integer values and operations such as addition, subtraction, and comparison.</p>
+<h2 id="data-structure">Data Structure</h2>
+<p>A <strong>data structure</strong> is an abstract description of a way to organize data so that operations can be performed on it efficiently.</p>
+<p>Like a data type, a data structure also has:</p>
+<ul>
+<li>values</li>
+<li>operations on those values</li>
+</ul>
+<p>However, data structures are normally built from component parts and can be decomposed into those parts.</p>
+<p>Examples include:</p>
+<ul>
+<li>arrays</li>
+<li>lists of strings</li>
+</ul>
+<p>A data structure also contains <strong>relationships or associations between its elements</strong>.</p>
+<p>For example, an array contains:</p>
+<ul>
+<li>multiple values</li>
+<li>a relationship between those values based on their positions</li>
+<li>operations that work on the array</li>
+</ul>
+<hr />
+<h1 id="4-example-data-structure-a-list">4. Example Data Structure: A List</h1>
+<p>The chapter uses a <strong>list</strong> as the main example for explaining ADTs.</p>
+<p>A list represents a countable number of <strong>ordered values</strong>.</p>
+<p>Important properties of a list:</p>
+<ul>
+<li>the list may be empty</li>
+<li>a non-empty list has a first item</li>
+<li>it has a sequence of ordered items</li>
+<li>it has a last item</li>
+<li>the same value may appear more than once</li>
+<li>items can be fetched</li>
+<li>the list can be updated</li>
+</ul>
+<p>For example:</p>
+<pre><code class="language-text">[10, 20, 30, 20]
+</code></pre>
+<p>The value <code>20</code> appears more than once, which is allowed.</p>
+<p>The concept of a list and the operations performed on the list are independent of the exact type of value stored inside it.</p>
+<p>The lecture describes this kind of structure as a <strong>container</strong>.</p>
+<h2 id="container">Container</h2>
+<p>A container is a type-independent data structure used to:</p>
+<ul>
+<li>store data</li>
+<li>organize data</li>
+<li>access data</li>
+</ul>
+<p>To define a list data structure, the chapter says that we need:</p>
+<ol>
+<li>type definitions for the values stored in the list</li>
+<li>function definitions for the operations performed on the list</li>
+</ol>
+<hr />
+<h1 id="5-defining-the-list-item-type">5. Defining the List Item Type</h1>
+<p>The chapter first creates an abstraction for the type of value stored in the list.</p>
+<pre><code class="language-c">typedef int listItem;
+</code></pre>
+<p>Now the rest of the program can use:</p>
+<pre><code class="language-c">listItem
+</code></pre>
+<p>instead of directly using:</p>
+<pre><code class="language-c">int
+</code></pre>
+<p>This makes the list easier to change.</p>
+<p>For example, if the list were later changed to store another type, the program would have one central definition to modify and could then be recompiled.</p>
+<hr />
+<h1 id="6-defining-a-special-non-item">6. Defining a Special &quot;Non-Item&quot;</h1>
+<p>The lecture also introduces a special value that represents an invalid list item:</p>
+<pre><code class="language-c">#define NULL_ITEM INT_MIN
+</code></pre>
+<p>This can be useful when a function must return a <code>listItem</code>, but an error occurs or the requested item does not exist.</p>
+<p>For example:</p>
+<pre><code class="language-c">listItem getItem(list l, int pos);
+</code></pre>
+<p>could return:</p>
+<pre><code class="language-c">NULL_ITEM
+</code></pre>
+<p>if <code>pos</code> is invalid.</p>
+<h2 id="important-limitation">Important limitation</h2>
+<p>The lecture asks what drawback comes from choosing <code>INT_MIN</code> as the special non-item value.</p>
+<p>The consequence is that if <code>INT_MIN</code> is being reserved to mean &quot;not a valid item,&quot; then it cannot safely be used as an ordinary list value without creating ambiguity.</p>
+<hr />
+<h1 id="7-defining-the-list-structure">7. Defining the List Structure</h1>
+<p>The lecture initially demonstrates the list using a fixed-size array.</p>
+<pre><code class="language-c">typedef struct listType *list;
+</code></pre>
+<p>This means <code>list</code> is a typedef for a pointer to a <code>struct listType</code>.</p>
+<p>A structure can then be defined similar to:</p>
+<pre><code class="language-c">#define LIST_SIZE 100
+
+struct listType {
+    listItem data[LIST_SIZE];
+    int count;
+    int maxSize;
+};
+</code></pre>
+<p>The important pieces are:</p>
+<ul>
+<li><code>data</code> — stores the list items</li>
+<li><code>count</code> — tracks how many items are currently in the list</li>
+<li><code>maxSize</code> — tracks the maximum capacity</li>
+</ul>
+<p>Now list variables can be declared with:</p>
+<pre><code class="language-c">list l1, l2, l3;
+</code></pre>
+<p>However, these are pointer variables. They do not automatically point to a valid list object.</p>
+<p>Therefore, the program needs an operation that <strong>creates</strong> a valid list before it is used.</p>
+<p>That operation becomes the list's constructor:</p>
+<pre><code class="language-c">list createList(void);
+</code></pre>
+<hr />
+<h1 id="8-categories-of-container-operations">8. Categories of Container Operations</h1>
+<p>The chapter groups container operations into several categories.</p>
+<table>
+<thead>
+<tr>
+  <th>Category</th>
+  <th>Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td><strong>Constructor</strong></td>
+  <td>Creates a data container and normally allocates its memory</td>
+</tr>
+<tr>
+  <td><strong>Destructor</strong></td>
+  <td>Destroys a container and deallocates its memory</td>
+</tr>
+<tr>
+  <td><strong>Getter</strong></td>
+  <td>Fetches data from a container</td>
+</tr>
+<tr>
+  <td><strong>Setter / Mutator</strong></td>
+  <td>Changes the state or contents of a container</td>
+</tr>
+<tr>
+  <td><strong>Predicate</strong></td>
+  <td>Returns a Boolean value describing some property of the container</td>
+</tr>
+<tr>
+  <td><strong>Reporter</strong></td>
+  <td>Reports useful information about the container</td>
+</tr>
+</tbody>
+</table>
+<p>Understanding these categories is useful because many ADTs use the same general pattern.</p>
+<hr />
+<h1 id="9-constructor">9. Constructor</h1>
+<p>The list constructor creates a valid list.</p>
+<p>Prototype:</p>
+<pre><code class="language-c">list createList(void);
+</code></pre>
+<p>Usage:</p>
+<pre><code class="language-c">list l = createList();
+</code></pre>
+<p>After this call, <code>l</code> should refer to a valid empty list.</p>
+<hr />
+<h1 id="10-destructor">10. Destructor</h1>
+<p>The destructor destroys the list and releases its allocated memory.</p>
+<p>Prototype:</p>
+<pre><code class="language-c">void destroyList(list);
+</code></pre>
+<p>Usage:</p>
+<pre><code class="language-c">destroyList(l);
+</code></pre>
+<p>After the list has been destroyed, it should no longer be used.</p>
+<hr />
+<h1 id="11-getter">11. Getter</h1>
+<p>A getter retrieves an item from the list.</p>
+<p>Prototype:</p>
+<pre><code class="language-c">listItem getItem(list, int);
+</code></pre>
+<p>Example:</p>
+<pre><code class="language-c">listItem item = getItem(l, 0);
+</code></pre>
+<p>Index <code>0</code> represents the first item in the list.</p>
+<p>If the requested position does not exist, the chapter's implementation returns:</p>
+<pre><code class="language-c">NULL_ITEM
+</code></pre>
+<hr />
+<h1 id="12-setters-mutators">12. Setters / Mutators</h1>
+<p>Mutators change the contents or state of the list.</p>
+<p>The lecture gives several examples.</p>
+<h2 id="additem"><code>addItem</code></h2>
+<p>Adds an item to the end of the list.</p>
+<p>Prototype:</p>
+<pre><code class="language-c">int addItem(list, listItem);
+</code></pre>
+<p>Example:</p>
+<pre><code class="language-c">// l = [1, 2, 3]
+
+int i = addItem(l, 99);
+
+// l = [1, 2, 3, 99]
+// i = 3
+</code></pre>
+<p>The returned integer represents the index of the newly added item.</p>
+<hr />
+<h2 id="insertitem"><code>insertItem</code></h2>
+<p>Inserts an item at a specified position.</p>
+<p>Prototype:</p>
+<pre><code class="language-c">int insertItem(list, int, listItem);
+</code></pre>
+<p>Example:</p>
+<pre><code class="language-c">// l = [1, 2, 3]
+
+int i = insertItem(l, 1, 99);
+
+// l = [1, 99, 2, 3]
+// i = 1
+</code></pre>
+<p>Because the new item is inserted at index <code>1</code>, existing elements at and after that position must move one position to the right.</p>
+<hr />
+<h2 id="removeitem"><code>removeItem</code></h2>
+<p>Removes the item stored at a specified position.</p>
+<p>Prototype:</p>
+<pre><code class="language-c">bool removeItem(list, int);
+</code></pre>
+<p>Example:</p>
+<pre><code class="language-c">// l = [1, 2, 3]
+
+bool success = removeItem(l, 0);
+
+// l = [2, 3]
+// success = true
+</code></pre>
+<p>When an item is removed from an array-based list, the items after it must shift left to fill the empty location.</p>
+<hr />
+<h2 id="clearlist"><code>clearList</code></h2>
+<p>Removes all items from the list.</p>
+<p>Prototype:</p>
+<pre><code class="language-c">void clearList(list);
+</code></pre>
+<p>Example:</p>
+<pre><code class="language-c">// l = [1, 2, 3]
+
+clearList(l);
+
+// l = []
+</code></pre>
+<p>The list still exists, but it is now empty.</p>
+<hr />
+<h2 id="setitem"><code>setItem</code></h2>
+<p>Replaces an existing list item.</p>
+<p>Prototype:</p>
+<pre><code class="language-c">bool setItem(list, int, listItem);
+</code></pre>
+<p>Example:</p>
+<pre><code class="language-c">// l = [1, 2, 3]
+
+bool success = setItem(l, 2, 99);
+
+// l = [1, 2, 99]
+// success = true
+</code></pre>
+<hr />
+<h1 id="13-predicates">13. Predicates</h1>
+<p>A predicate answers a true/false question about the container.</p>
+<h2 id="listempty"><code>listEmpty</code></h2>
+<p>Prototype:</p>
+<pre><code class="language-c">bool listEmpty(list);
+</code></pre>
+<p>Example:</p>
+<pre><code class="language-c">// l = [1, 2, 3]
+
+bool isEmpty = listEmpty(l);
+
+// isEmpty = false
+</code></pre>
+<hr />
+<h2 id="listfull"><code>listFull</code></h2>
+<p>Prototype:</p>
+<pre><code class="language-c">bool listFull(list);
+</code></pre>
+<p>Example:</p>
+<pre><code class="language-c">// l = [1, 2, 3]
+
+bool isFull = listFull(l);
+
+// isFull = false
+</code></pre>
+<p>For the fixed-size array version of the list, this operation tells the programmer whether the list has reached its maximum capacity.</p>
+<hr />
+<h1 id="14-reporters">14. Reporters</h1>
+<p>Reporters return useful information about the list.</p>
+<h2 id="listsize"><code>listSize</code></h2>
+<p>Returns the current number of items.</p>
+<p>Prototype:</p>
+<pre><code class="language-c">int listSize(list);
+</code></pre>
+<p>Example:</p>
+<pre><code class="language-c">// l = [1, 2, 3]
+
+int n = listSize(l);
+
+// n = 3
+</code></pre>
+<hr />
+<h2 id="maxsize"><code>maxSize</code></h2>
+<p>Returns the maximum number of items the list can currently contain.</p>
+<p>Prototype:</p>
+<pre><code class="language-c">int maxSize(list);
+</code></pre>
+<p>Example:</p>
+<pre><code class="language-c">// l = [1, 2, 3]
+
+int n = maxSize(l);
+</code></pre>
+<p>In the fixed-size example from the lecture, the value depends on the size chosen for the list.</p>
+<hr />
+<h1 id="15-using-a-list-without-knowing-its-implementation">15. Using a List Without Knowing Its Implementation</h1>
+<p>This is where the list begins to demonstrate the central ADT idea.</p>
+<p>A programmer may use operations such as:</p>
+<pre><code class="language-c">list l = createList();
+
+addItem(l, 1);
+addItem(l, 2);
+addItem(l, 3);
+
+printf(&quot;%d\n&quot;, getItem(l, 0));
+
+destroyList(l);
+</code></pre>
+<p>The programmer does not need to know exactly how:</p>
+<ul>
+<li>the items are stored</li>
+<li>the count is maintained</li>
+<li>insertion works internally</li>
+<li>memory is organized</li>
+</ul>
+<p>The programmer only needs to understand the public operations.</p>
+<p>The lecture emphasizes that an abstraction can be used without knowing how it is implemented when <strong>what it does</strong> is cleanly separated from <strong>how it does it</strong>.</p>
+<hr />
+<h1 id="16-fixed-array-list-implementation">16. Fixed-Array List Implementation</h1>
+<p>The lecture next demonstrates one possible implementation.</p>
+<p>A fixed-size list can use a structure like:</p>
+<pre><code class="language-c">#define LIST_SIZE 10
+
+struct listType {
+    listItem data[LIST_SIZE];
+    int count;
+    int max;
+};
+</code></pre>
+<p>The user of the ADT does not need to interact with these fields directly.</p>
+<hr />
+<h1 id="17-creating-the-list">17. Creating the List</h1>
+<p>One implementation shown in the lecture is:</p>
+<pre><code class="language-c">list createList(void) {
+    list l = malloc(sizeof(struct listType));
+
+    l-&gt;count = 0;
+    l-&gt;max = LIST_SIZE;
+
+    return l;
+}
+</code></pre>
+<p>This performs several tasks:</p>
+<ol>
+<li>allocates enough memory for a <code>struct listType</code></li>
+<li>initializes the list as empty</li>
+<li>records its maximum capacity</li>
+<li>returns a pointer to the new list</li>
+</ol>
+<p>This is why the function acts as a <strong>constructor</strong>.</p>
+<hr />
+<h1 id="18-destroying-the-list">18. Destroying the List</h1>
+<p>For the fixed-array version:</p>
+<pre><code class="language-c">void destroyList(list l) {
+    free(l);
+}
+</code></pre>
+<p>The structure itself was dynamically allocated, so it must eventually be released with <code>free()</code>.</p>
+<p>This is the <strong>destructor</strong>.</p>
+<hr />
+<h1 id="19-clearing-the-list">19. Clearing the List</h1>
+<p>The lecture's simple fixed-array implementation clears the list by resetting the count:</p>
+<pre><code class="language-c">void clearList(list l) {
+    l-&gt;count = 0;
+}
+</code></pre>
+<p>The list object remains allocated.</p>
+<p>Logically, it now contains zero items.</p>
+<hr />
+<h1 id="20-size-operations">20. Size Operations</h1>
+<p>The current number of items can be reported with:</p>
+<pre><code class="language-c">int listSize(list l) {
+    return l-&gt;count;
+}
+</code></pre>
+<p>The maximum capacity can be reported with:</p>
+<pre><code class="language-c">int maxSize(list l) {
+    return l-&gt;max;
+}
+</code></pre>
+<p>The list can be tested for emptiness with:</p>
+<pre><code class="language-c">bool listEmpty(list l) {
+    return (l-&gt;count == 0);
+}
+</code></pre>
+<hr />
+<h1 id="21-adding-an-item">21. Adding an Item</h1>
+<p>A fixed-array implementation can add an item only if space remains.</p>
+<p>The lecture's logic is:</p>
+<pre><code class="language-c">int addItem(list l, listItem item) {
+    if (l-&gt;count &lt; maxSize(l)) {
+        l-&gt;data[l-&gt;count++] = item;
+        return l-&gt;count - 1;
+    } else {
+        return -1;
+    }
+}
+</code></pre>
+<p>The expression:</p>
+<pre><code class="language-c">l-&gt;data[l-&gt;count++] = item;
+</code></pre>
+<p>stores the item at the current end of the list and then increases <code>count</code>.</p>
+<p>If the list is full, the operation returns:</p>
+<pre><code class="language-c">-1
+</code></pre>
+<p>to indicate failure.</p>
+<hr />
+<h1 id="22-inserting-an-item">22. Inserting an Item</h1>
+<p>Insertion requires:</p>
+<ol>
+<li>checking that the list still has space</li>
+<li>checking that the requested position is valid</li>
+<li>shifting later elements one position to the right</li>
+<li>placing the new item</li>
+<li>increasing the count</li>
+</ol>
+<p>The lecture's algorithm is equivalent to:</p>
+<pre><code class="language-c">int insertItem(list l, int pos, listItem item) {
+    if (l-&gt;count &lt; maxSize(l) &amp;&amp;
+        pos &gt;= 0 &amp;&amp;
+        pos &lt;= listSize(l)) {
+
+        for (int i = l-&gt;count - 1; i &gt;= pos; i--) {
+            l-&gt;data[i + 1] = l-&gt;data[i];
+        }
+
+        l-&gt;data[pos] = item;
+        l-&gt;count++;
+
+        return pos;
+    }
+
+    return -1;
+}
+</code></pre>
+<p>The key concept is the shift to the right.</p>
+<p>Example:</p>
+<pre><code class="language-text">Before:
+[10, 20, 30]
+
+Insert 99 at index 1
+
+Shift:
+30 -&gt; index 3
+20 -&gt; index 2
+
+After:
+[10, 99, 20, 30]
+</code></pre>
+<hr />
+<h1 id="23-removing-an-item">23. Removing an Item</h1>
+<p>Removing an item requires the opposite shift.</p>
+<p>The lecture's algorithm is equivalent to:</p>
+<pre><code class="language-c">bool removeItem(list l, int pos) {
+    if (pos &gt;= 0 &amp;&amp; pos &lt; l-&gt;count) {
+
+        for (int i = pos + 1; i &lt; l-&gt;count; i++) {
+            l-&gt;data[i - 1] = l-&gt;data[i];
+        }
+
+        l-&gt;count--;
+        return true;
+    }
+
+    return false;
+}
+</code></pre>
+<p>Example:</p>
+<pre><code class="language-text">Before:
+[10, 20, 30, 40]
+
+Remove index 1
+
+Shift:
+30 -&gt; index 1
+40 -&gt; index 2
+
+After:
+[10, 30, 40]
+</code></pre>
+<hr />
+<h1 id="24-getting-an-item">24. Getting an Item</h1>
+<p>The getter checks whether the requested index is valid.</p>
+<pre><code class="language-c">listItem getItem(list l, int pos) {
+    if (pos &gt;= 0 &amp;&amp; pos &lt; l-&gt;count) {
+        return l-&gt;data[pos];
+    } else {
+        return NULL_ITEM;
+    }
+}
+</code></pre>
+<p>Valid positions range from:</p>
+<pre><code class="language-text">0
+</code></pre>
+<p>through:</p>
+<pre><code class="language-text">count - 1
+</code></pre>
+<p>If the position is invalid, the operation returns <code>NULL_ITEM</code>.</p>
+<hr />
+<h1 id="25-setting-an-item">25. Setting an Item</h1>
+<p>The lecture uses a Boolean result to indicate whether replacement succeeds.</p>
+<pre><code class="language-c">bool setItem(list l, int pos, listItem item) {
+    if (listSize(l) &gt; 0 &amp;&amp;
+        pos &gt;= 0 &amp;&amp;
+        pos &lt; listSize(l)) {
+
+        l-&gt;data[pos] = item;
+        return true;
+    }
+
+    return false;
+}
+</code></pre>
+<p>A setter changes an existing item but does not change the number of items in the list.</p>
+<hr />
+<h1 id="26-turning-the-list-data-structure-into-a-list-adt">26. Turning the List Data Structure Into a List ADT</h1>
+<p>The lecture then explicitly asks how to turn the list data structure into a proper ADT.</p>
+<p>The key goal is to <strong>hide the implementation</strong>.</p>
+<p>The lecture notes that C cannot hide implementation details as completely as some other languages, but common practices can still provide strong separation between the public interface and private implementation.</p>
+<p>The chapter uses several files to accomplish this.</p>
+<hr />
+<h1 id="27-step-1-create-an-item-type-abstraction">27. Step 1 — Create an Item-Type Abstraction</h1>
+<p>Create a separate header file:</p>
+<pre><code class="language-text">itemType.h
+</code></pre>
+<p>Example:</p>
+<pre><code class="language-c">#ifndef ITEMTYPE_H
+#define ITEMTYPE_H
+
+#include &lt;limits.h&gt;
+
+typedef int listItem;
+#define NULL_ITEM INT_MIN
+
+#endif
+</code></pre>
+<p>This file defines the type of item the container stores.</p>
+<p>The important advantage is that the list operations can consistently use:</p>
+<pre><code class="language-c">listItem
+</code></pre>
+<p>instead of hard-coding <code>int</code> throughout the implementation.</p>
+<hr />
+<h1 id="28-step-2-create-the-public-adt-specification">28. Step 2 — Create the Public ADT Specification</h1>
+<p>The public header file is:</p>
+<pre><code class="language-text">list.h
+</code></pre>
+<p>This file contains the information programmers need in order to <strong>use</strong> the list.</p>
+<p>It contains the public type and function declarations.</p>
+<p>A version matching the lecture's interface is:</p>
+<pre><code class="language-c">#ifndef LIST_H
+#define LIST_H
+
+#include &lt;stdbool.h&gt;
+#include &quot;itemType.h&quot;
+
+typedef struct listType *list;
+
+list createList(void);
+void destroyList(list);
+void clearList(list);
+
+listItem getItem(list, int);
+
+int addItem(list, listItem);
+int insertItem(list, int, listItem);
+
+bool removeItem(list, int);
+bool setItem(list, int, listItem);
+
+int maxSize(list);
+int listSize(list);
+
+bool listEmpty(list);
+bool listFull(list);
+
+#endif
+</code></pre>
+<h2 id="why-is-this-important">Why is this important?</h2>
+<p>Notice what is <strong>not</strong> defined in the public header:</p>
+<pre><code class="language-c">struct listType {
+    ...
+};
+</code></pre>
+<p>The public code knows that <code>list</code> is a pointer to a <code>struct listType</code>, but it does not need access to the structure's internal fields.</p>
+<p>That helps hide the representation of the list.</p>
+<hr />
+<h1 id="29-the-public-interface-is-the-adt-s-what">29. The Public Interface Is the ADT's &quot;What&quot;</h1>
+<p>The public header tells the programmer things such as:</p>
+<ul>
+<li>how to create a list</li>
+<li>how to destroy it</li>
+<li>how to add an item</li>
+<li>how to remove an item</li>
+<li>how to fetch an item</li>
+<li>how to replace an item</li>
+<li>how to ask for its size</li>
+<li>how to determine whether it is empty or full</li>
+</ul>
+<p>It does <strong>not</strong> need to tell the programmer:</p>
+<ul>
+<li>whether the list uses an array</li>
+<li>whether it uses dynamically allocated memory</li>
+<li>how many structure fields exist</li>
+<li>how insertion shifts data</li>
+<li>how memory expansion works</li>
+</ul>
+<p>This is the separation between the interface and implementation.</p>
+<hr />
+<h1 id="30-step-3-create-the-implementation-file">30. Step 3 — Create the Implementation File</h1>
+<p>The implementation is placed in:</p>
+<pre><code class="language-text">list.c
+</code></pre>
+<p>The lecture's fixed-size version contains the actual structure definition there:</p>
+<pre><code class="language-c">#include &lt;stdio.h&gt;
+#include &lt;stdlib.h&gt;
+#include &lt;stdbool.h&gt;
+#include &lt;limits.h&gt;
+
+#include &quot;itemType.h&quot;
+#include &quot;list.h&quot;
+
+#define LIST_SIZE 10
+
+struct listType {
+    listItem data[LIST_SIZE];
+    int count;
+    int max;
+};
+</code></pre>
+<p>The implementations of the list functions are also placed in <code>list.c</code>.</p>
+<p>This means the internal list representation is kept out of the public header.</p>
+<hr />
+<h1 id="31-why-keeping-the-structure-in-list-c-matters">31. Why Keeping the Structure in <code>list.c</code> Matters</h1>
+<p>Code that includes:</p>
+<pre><code class="language-c">#include &quot;list.h&quot;
+</code></pre>
+<p>can use:</p>
+<pre><code class="language-c">list
+</code></pre>
+<p>but does not need the complete definition of:</p>
+<pre><code class="language-c">struct listType
+</code></pre>
+<p>The lecture points out that the implementation file can be compiled separately and distributed as object code.</p>
+<p>This makes the internal list structure hidden from the programmer using the ADT.</p>
+<hr />
+<h1 id="32-step-4-compile-and-use-the-adt">32. Step 4 — Compile and Use the ADT</h1>
+<p>The lecture shows two approaches.</p>
+<h2 id="compile-the-main-program-and-adt-implementation-together">Compile the main program and ADT implementation together</h2>
+<pre><code class="language-bash">gcc main.c list.c
+</code></pre>
+<h2 id="compile-the-adt-separately">Compile the ADT separately</h2>
+<p>First:</p>
+<pre><code class="language-bash">gcc -c list.c
+</code></pre>
+<p>This creates an object file such as:</p>
+<pre><code class="language-text">list.o
+</code></pre>
+<p>Then compile the user's program with the compiled implementation:</p>
+<pre><code class="language-bash">gcc main.c list.o
+</code></pre>
+<p>The second method demonstrates the ADT idea especially well because the programmer can use the compiled implementation without needing to see the implementation source.</p>
+<hr />
+<h1 id="33-example-program-using-the-list-adt">33. Example Program Using the List ADT</h1>
+<p>A program using the ADT can look like:</p>
+<pre><code class="language-c">#include &lt;stdio.h&gt;
+#include &quot;list.h&quot;
+
+int main(void) {
+    int i;
+    int n;
+
+    list l = createList();
+
+    for (i = 1; i &lt;= 10; i++) {
+        addItem(l, i);
+    }
+
+    for (i = 0; i &lt; 10; i++) {
+        printf(&quot;%d &quot;, getItem(l, i));
+    }
+
+    printf(&quot;\n&quot;);
+
+    if (removeItem(l, 3)) {
+        printf(&quot;successfully removed item #3\n&quot;);
+    }
+
+    insertItem(l, 2, -99);
+
+    i = 0;
+
+    while ((n = getItem(l, i++)) != NULL_ITEM) {
+        printf(&quot;%d &quot;, n);
+    }
+
+    printf(&quot;\n&quot;);
+
+    destroyList(l);
+
+    return 0;
+}
+</code></pre>
+<p>The important point is not the exact program output.</p>
+<p>The important point is that the program uses only the <strong>public ADT operations</strong>.</p>
+<p>It does not directly access fields such as:</p>
+<pre><code class="language-c">l-&gt;data
+l-&gt;count
+l-&gt;max
+</code></pre>
+<p>Those are implementation details.</p>
+<hr />
+<h1 id="34-fixed-size-array-limitation">34. Fixed-Size Array Limitation</h1>
+<p>The first list implementation uses:</p>
+<pre><code class="language-c">listItem data[LIST_SIZE];
+</code></pre>
+<p>This means its maximum capacity is fixed at compile time.</p>
+<p>The lecture then asks whether this could become a problem.</p>
+<p>Yes: if more items are needed than the compile-time capacity allows, the fixed array cannot grow automatically.</p>
+<p>This motivates a <strong>dynamic array</strong> implementation.</p>
+<hr />
+<h1 id="35-dynamic-arrays">35. Dynamic Arrays</h1>
+<p>The lecture describes a dynamic array as an array that can expand, and possibly contract, at runtime as needed.</p>
+<p>Instead of this:</p>
+<pre><code class="language-c">listItem data[LIST_SIZE];
+</code></pre>
+<p>the structure can use a pointer:</p>
+<pre><code class="language-c">struct listType {
+    listItem *data;
+    int count;
+    int max;
+};
+</code></pre>
+<p>Now the storage for the actual list items can be allocated separately at runtime.</p>
+<hr />
+<h1 id="36-dynamic-list-initialization">36. Dynamic List Initialization</h1>
+<p>For the dynamic version, the lecture initializes the list with no data array yet:</p>
+<pre><code class="language-c">list createList(void) {
+    list l = malloc(sizeof(struct listType));
+
+    l-&gt;data = NULL;
+    l-&gt;count = 0;
+    l-&gt;max = 0;
+
+    return l;
+}
+</code></pre>
+<p>So initially:</p>
+<pre><code class="language-text">data  -&gt; NULL
+count -&gt; 0
+max   -&gt; 0
+</code></pre>
+<p>The array is allocated only when space is actually required.</p>
+<hr />
+<h1 id="37-expanding-the-dynamic-array">37. Expanding the Dynamic Array</h1>
+<p>The lecture uses a fixed expansion amount:</p>
+<pre><code class="language-c">#define SIZE_INCREMENT 4
+</code></pre>
+<p>A helper function expands the internal array.</p>
+<p>The important algorithm is:</p>
+<ol>
+<li>allocate a new, larger array</li>
+<li>copy the current items into it</li>
+<li>free the old array</li>
+<li>make the list point to the new array</li>
+<li>increase the recorded maximum size</li>
+</ol>
+<p>A version matching the lecture's logic is:</p>
+<pre><code class="language-c">static void expandArray(list l) {
+    listItem *tptr =
+        malloc(sizeof(listItem) *
+               (l-&gt;max + SIZE_INCREMENT));
+
+    for (int i = 0; i &lt; l-&gt;count; i++) {
+        tptr[i] = l-&gt;data[i];
+    }
+
+    free(l-&gt;data);
+
+    l-&gt;data = tptr;
+    l-&gt;max += SIZE_INCREMENT;
+}
+</code></pre>
+<p>The function is declared:</p>
+<pre><code class="language-c">static
+</code></pre>
+<p>The lecture notes that a static function can only be used inside the file where it is defined.</p>
+<p>That makes <code>expandArray()</code> an implementation helper rather than a public ADT operation.</p>
+<hr />
+<h1 id="38-adding-an-item-with-dynamic-expansion">38. Adding an Item With Dynamic Expansion</h1>
+<p>For the dynamic version, <code>addItem()</code> can check whether the current array is full.</p>
+<p>If there is no room, it expands the array first.</p>
+<pre><code class="language-c">int addItem(list l, listItem item) {
+    if (l-&gt;count &gt;= maxSize(l)) {
+        expandArray(l);
+    }
+
+    l-&gt;data[l-&gt;count++] = item;
+
+    return l-&gt;count - 1;
+}
+</code></pre>
+<p>The programmer using the ADT still calls:</p>
+<pre><code class="language-c">addItem(l, value);
+</code></pre>
+<p>exactly as before.</p>
+<p>The internal implementation has changed, but the public interface has not.</p>
+<p>This is one of the strongest demonstrations of the ADT concept in the chapter.</p>
+<hr />
+<h1 id="39-inserting-into-the-dynamic-array">39. Inserting Into the Dynamic Array</h1>
+<p>The same idea applies to insertion.</p>
+<p>Before shifting and inserting, the implementation can expand the array if necessary.</p>
+<pre><code class="language-c">int insertItem(list l, int pos, listItem item) {
+    if (pos &gt;= 0 &amp;&amp; pos &lt;= listSize(l)) {
+
+        if (l-&gt;count &gt;= maxSize(l)) {
+            expandArray(l);
+        }
+
+        for (int i = l-&gt;count - 1; i &gt;= pos; i--) {
+            l-&gt;data[i + 1] = l-&gt;data[i];
+        }
+
+        l-&gt;data[pos] = item;
+        l-&gt;count++;
+
+        return pos;
+    }
+
+    return -1;
+}
+</code></pre>
+<p>Again, the public operation remains:</p>
+<pre><code class="language-c">insertItem(...)
+</code></pre>
+<p>even though the internal memory-management strategy is different.</p>
+<hr />
+<h1 id="40-destroying-a-dynamic-list">40. Destroying a Dynamic List</h1>
+<p>The dynamic version has two separate allocations:</p>
+<ol>
+<li>the <code>struct listType</code></li>
+<li>the dynamic array referenced by <code>data</code></li>
+</ol>
+<p>Therefore both must be freed.</p>
+<pre><code class="language-c">void destroyList(list l) {
+    free(l-&gt;data);
+    free(l);
+}
+</code></pre>
+<p>This is different from the earlier fixed-array version, where freeing the structure was enough because the array was stored directly inside the structure.</p>
+<hr />
+<h1 id="41-why-the-dynamic-array-example-matters-for-adts">41. Why the Dynamic-Array Example Matters for ADTs</h1>
+<p>This example shows why abstraction is useful.</p>
+<p>The implementation can change from:</p>
+<pre><code class="language-c">listItem data[LIST_SIZE];
+</code></pre>
+<p>to:</p>
+<pre><code class="language-c">listItem *data;
+</code></pre>
+<p>without forcing programs using the ADT to change the way they call:</p>
+<pre><code class="language-c">createList()
+addItem()
+insertItem()
+getItem()
+removeItem()
+destroyList()
+</code></pre>
+<p>The <strong>implementation changed</strong>, but the <strong>interface stayed the same</strong>.</p>
+<p>That is exactly the separation the lecture is trying to demonstrate.</p>
+<hr />
+<h1 id="42-interface-vs-implementation">42. Interface vs. Implementation</h1>
+<p>A useful way to organize the lecture's design is:</p>
+<pre><code class="language-text">PROGRAM USING THE LIST
+        |
+        v
+     list.h
+  Public interface
+        |
+        v
+     list.c
+  Implementation
+        |
+        v
+Internal representation
+(array, dynamic array, etc.)
+</code></pre>
+<p>The program should depend on the public interface.</p>
+<p>It should not depend on the internal representation.</p>
+<hr />
+<h1 id="43-file-organization-for-the-list-adt">43. File Organization for the List ADT</h1>
+<p>The lecture's design can be summarized as:</p>
+<pre><code class="language-text">itemType.h
+    |
+    |-- defines listItem
+    |-- defines NULL_ITEM
+    |
+    v
+list.h
+    |
+    |-- defines public list type
+    |-- declares public operations
+    |
+    v
+main.c
+    |
+    |-- uses the list through list.h
+</code></pre>
+<p>The implementation is separate:</p>
+<pre><code class="language-text">list.c
+    |
+    |-- defines struct listType
+    |-- implements the list operations
+    |-- contains private helper functions
+</code></pre>
+<p>This organization helps separate the ADT's specification from its implementation.</p>
+<hr />
+<h1 id="44-why-typedef-struct-listtype-list-helps">44. Why <code>typedef struct listType *list;</code> Helps</h1>
+<p>The public header contains:</p>
+<pre><code class="language-c">typedef struct listType *list;
+</code></pre>
+<p>but the complete structure definition is kept in <code>list.c</code>.</p>
+<p>This lets user code declare:</p>
+<pre><code class="language-c">list l;
+</code></pre>
+<p>and pass that list to public functions without needing to know the structure's fields.</p>
+<p>For example:</p>
+<pre><code class="language-c">list l = createList();
+addItem(l, 42);
+destroyList(l);
+</code></pre>
+<p>The user knows that <code>l</code> represents a list.</p>
+<p>The user does not need to know whether it internally contains:</p>
+<pre><code class="language-c">data
+count
+max
+</code></pre>
+<p>or whether a future implementation uses an entirely different representation.</p>
+<hr />
+<h1 id="45-public-operations-vs-internal-operations">45. Public Operations vs. Internal Operations</h1>
+<p>Public operations are declared in the header and are intended for the programmer using the ADT.</p>
+<p>Examples:</p>
+<pre><code class="language-c">createList()
+destroyList()
+addItem()
+insertItem()
+removeItem()
+getItem()
+setItem()
+listSize()
+maxSize()
+listEmpty()
+listFull()
+</code></pre>
+<p>An internal helper such as:</p>
+<pre><code class="language-c">static void expandArray(list l);
+</code></pre>
+<p>is not part of the public interface.</p>
+<p>It exists only to help implement the ADT.</p>
+<p>That means a user of the ADT should not call it directly.</p>
+<hr />
+<h1 id="46-a-major-adt-design-principle">46. A Major ADT Design Principle</h1>
+<p>A program using an ADT should avoid code like:</p>
+<pre><code class="language-c">l-&gt;count = 4;
+l-&gt;data[0] = 99;
+</code></pre>
+<p>because this depends directly on the internal structure.</p>
+<p>Instead, the program should use the public interface:</p>
+<pre><code class="language-c">addItem(l, 99);
+setItem(l, 0, 99);
+listSize(l);
+</code></pre>
+<p>This lets the implementation change later without requiring the user program to be rewritten around private details.</p>
+<hr />
+<h1 id="47-what-the-programmer-using-the-adt-needs-to-know">47. What the Programmer Using the ADT Needs to Know</h1>
+<p>The programmer needs to know:</p>
+<ul>
+<li>the ADT's public type</li>
+<li>which operations exist</li>
+<li>what each operation expects</li>
+<li>what each operation returns</li>
+<li>what the operations do</li>
+</ul>
+<p>The programmer does <strong>not</strong> need to know:</p>
+<ul>
+<li>the exact structure fields</li>
+<li>whether storage is fixed or dynamic</li>
+<li>how shifting is implemented</li>
+<li>how expansion is performed</li>
+<li>how internal bookkeeping works</li>
+</ul>
+<hr />
+<h1 id="48-why-adts-are-useful">48. Why ADTs Are Useful</h1>
+<p>Based on the chapter's examples, ADTs provide several practical advantages.</p>
+<h2 id="1-implementation-hiding">1. Implementation hiding</h2>
+<p>The user works with the public interface instead of manipulating internal fields.</p>
+<h2 id="2-easier-implementation-changes">2. Easier implementation changes</h2>
+<p>The fixed-array implementation can be replaced by a dynamic-array implementation while keeping the same public operations.</p>
+<h2 id="3-cleaner-program-structure">3. Cleaner program structure</h2>
+<p>The ADT can be separated into:</p>
+<ul>
+<li>public definitions</li>
+<li>implementation code</li>
+<li>user code</li>
+</ul>
+<h2 id="4-reuse">4. Reuse</h2>
+<p>Once the list has been implemented, multiple programs can use the same interface.</p>
+<h2 id="5-reduced-dependence-on-internal-details">5. Reduced dependence on internal details</h2>
+<p>Programs become less tightly tied to one particular storage method.</p>
+<hr />
+<h1 id="49-adt-vs-data-structure-important-distinction">49. ADT vs. Data Structure — Important Distinction</h1>
+<p>A <strong>data structure</strong> describes how data is organized and related.</p>
+<p>An <strong>ADT</strong> emphasizes hiding the details of that organization from the programmer using it.</p>
+<p>For the lecture's list example:</p>
+<pre><code class="language-text">Concept:
+List
+
+Possible implementation:
+Fixed-size array
+
+Another possible implementation:
+Dynamic array
+</code></pre>
+<p>A program using the ADT should be able to work through the same public operations even if the implementation changes.</p>
+<hr />
+<h1 id="50-the-most-important-idea-from-the-chapter">50. The Most Important Idea From the Chapter</h1>
+<p>The central idea can be summarized as:</p>
+<pre><code class="language-text">ADT = public behavior and operations
+      without requiring the user to know
+      the internal implementation
+</code></pre>
+<p>Or, in the language emphasized throughout the lecture:</p>
+<pre><code class="language-text">WHAT it does
+     vs.
+HOW it does it
+</code></pre>
+<p>The list example demonstrates this by separating:</p>
+<pre><code class="language-text">itemType.h  -&gt; item abstraction
+list.h      -&gt; public specification/interface
+list.c      -&gt; private implementation
+main.c      -&gt; program using the ADT
+</code></pre>
+<p>The programmer works through the public operations, while the representation can remain hidden and can even change later.</p>
+<hr />
+<h1 id="51-quick-review">51. Quick Review</h1>
+<h2 id="data-type-2">Data type</h2>
+<p>A collection of values together with operations on those values.</p>
+<h2 id="data-structure-2">Data structure</h2>
+<p>A way of organizing related data so operations can be performed on it.</p>
+<h2 id="adt">ADT</h2>
+<p>A data type or data structure whose implementation details are hidden from the programmer using it.</p>
+<h2 id="container-2">Container</h2>
+<p>A type-independent structure for storing, organizing, and accessing data.</p>
+<h2 id="constructor">Constructor</h2>
+<p>Creates the container.</p>
+<pre><code class="language-c">createList()
+</code></pre>
+<h2 id="destructor">Destructor</h2>
+<p>Destroys the container and releases memory.</p>
+<pre><code class="language-c">destroyList()
+</code></pre>
+<h2 id="getter">Getter</h2>
+<p>Retrieves data.</p>
+<pre><code class="language-c">getItem()
+</code></pre>
+<h2 id="setter-mutator">Setter / Mutator</h2>
+<p>Changes the container.</p>
+<pre><code class="language-c">addItem()
+insertItem()
+removeItem()
+clearList()
+setItem()
+</code></pre>
+<h2 id="predicate">Predicate</h2>
+<p>Returns true or false about the container.</p>
+<pre><code class="language-c">listEmpty()
+listFull()
+</code></pre>
+<h2 id="reporter">Reporter</h2>
+<p>Returns information about the container.</p>
+<pre><code class="language-c">listSize()
+maxSize()
+</code></pre>
+<hr />
+<h1 id="52-final-study-summary">52. Final Study Summary</h1>
+<p>For EGRE 246, remember these points:</p>
+<ol>
+<li>A <strong>data type</strong> consists of values and operations.</li>
+<li>A <strong>data structure</strong> organizes multiple related values and provides operations on them.</li>
+<li>An <strong>ADT hides implementation details</strong> from the programmer using it.</li>
+<li>The lecture demonstrates ADTs with a <strong>list</strong>.</li>
+<li>A list is an ordered container that may contain duplicate values.</li>
+<li><code>listItem</code> abstracts the type of item stored in the list.</li>
+<li><code>typedef struct listType *list;</code> lets the public interface refer to a list without exposing the full structure definition.</li>
+<li>Container operations are grouped into constructors, destructors, getters, setters/mutators, predicates, and reporters.</li>
+<li><code>list.h</code> contains the public specification.</li>
+<li><code>list.c</code> contains the implementation.</li>
+<li>The implementation may be separately compiled.</li>
+<li>A fixed-size array implementation can later be changed to a dynamic-array implementation.</li>
+<li>The program using the ADT should not need to change simply because the implementation changes.</li>
+<li>The core ADT principle is to separate <strong>what the object does</strong> from <strong>how it does it</strong>.</li>
+</ol>
+<hr />
+<h2 id="core-mental-model">Core Mental Model</h2>
+<pre><code class="language-text">            USER PROGRAM
+                 |
+                 | calls public operations
+                 v
+        +-------------------+
+        |     LIST ADT      |
+        |-------------------|
+        | createList()      |
+        | addItem()         |
+        | insertItem()      |
+        | removeItem()      |
+        | getItem()         |
+        | setItem()         |
+        | listSize()        |
+        | destroyList()     |
+        +-------------------+
+                 |
+                 | implementation hidden
+                 v
+        +-------------------+
+        | Internal Storage  |
+        |-------------------|
+        | fixed array       |
+        |       OR          |
+        | dynamic array     |
+        |       OR          |
+        | another method    |
+        +-------------------+
+</code></pre>
+<p>The user should interact with the <strong>top box</strong>.</p>
+<p>The ADT implementation controls the <strong>bottom box</strong>.</p>
+
+    </main>
+  </div>
+
+  <footer class="footer">
+    EGRE 246 — Abstract Data Types study notes
+  </footer>
+</body>
+</html>

@@ -1,0 +1,940 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Abstraction, Modularity, and C Modules - Study Notes</title>
+  <style>
+    :root {
+      --bg: #f5f7fb;
+      --card: #ffffff;
+      --text: #1f2937;
+      --muted: #5f6b7a;
+      --accent: #2563eb;
+      --accent-soft: #eaf1ff;
+      --border: #dbe3ef;
+      --code-bg: #111827;
+      --code-text: #f8fafc;
+      --good-bg: #ecfdf5;
+      --good-border: #10b981;
+      --warn-bg: #fff7ed;
+      --warn-border: #f97316;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
+                   "Segoe UI", sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.65;
+    }
+
+    .layout {
+      display: grid;
+      grid-template-columns: 280px minmax(0, 1fr);
+      min-height: 100vh;
+    }
+
+    nav {
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      overflow-y: auto;
+      padding: 28px 22px;
+      background: #111827;
+      color: #fff;
+    }
+
+    nav h1 {
+      font-size: 1.15rem;
+      margin: 0 0 6px;
+    }
+
+    nav p {
+      color: #cbd5e1;
+      font-size: 0.9rem;
+      margin: 0 0 22px;
+    }
+
+    nav a {
+      display: block;
+      color: #dbeafe;
+      text-decoration: none;
+      padding: 6px 0;
+      font-size: 0.92rem;
+    }
+
+    nav a:hover { color: #fff; }
+
+    main {
+      width: min(100%, 1050px);
+      margin: 0 auto;
+      padding: 48px 42px 80px;
+    }
+
+    .hero {
+      background: linear-gradient(135deg, #1e3a8a, #2563eb);
+      color: white;
+      border-radius: 18px;
+      padding: 34px;
+      margin-bottom: 28px;
+      box-shadow: 0 14px 34px rgba(37, 99, 235, 0.18);
+    }
+
+    .hero h1 {
+      margin: 0 0 10px;
+      font-size: clamp(2rem, 4vw, 3rem);
+      line-height: 1.1;
+    }
+
+    .hero p {
+      margin: 0;
+      max-width: 760px;
+      color: #e0e7ff;
+    }
+
+    section {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 28px;
+      margin: 22px 0;
+      box-shadow: 0 6px 18px rgba(15, 23, 42, 0.05);
+    }
+
+    h2 {
+      margin-top: 0;
+      color: #173b7a;
+      border-bottom: 2px solid var(--accent-soft);
+      padding-bottom: 8px;
+    }
+
+    h3 { color: #214f9b; margin-top: 28px; }
+    h4 { margin-bottom: 8px; }
+
+    code {
+      font-family: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+      background: #eef2f7;
+      padding: 0.12rem 0.35rem;
+      border-radius: 5px;
+      font-size: 0.94em;
+    }
+
+    pre {
+      overflow-x: auto;
+      background: var(--code-bg);
+      color: var(--code-text);
+      padding: 18px;
+      border-radius: 12px;
+      line-height: 1.5;
+    }
+
+    pre code {
+      background: transparent;
+      padding: 0;
+      color: inherit;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 16px 0;
+    }
+
+    th, td {
+      border: 1px solid var(--border);
+      padding: 11px 12px;
+      text-align: left;
+      vertical-align: top;
+    }
+
+    th {
+      background: #eff6ff;
+      color: #1e3a8a;
+    }
+
+    .key {
+      border-left: 5px solid var(--accent);
+      background: var(--accent-soft);
+      padding: 14px 16px;
+      border-radius: 8px;
+      margin: 18px 0;
+    }
+
+    .good {
+      border-left: 5px solid var(--good-border);
+      background: var(--good-bg);
+      padding: 14px 16px;
+      border-radius: 8px;
+      margin: 18px 0;
+    }
+
+    .warning {
+      border-left: 5px solid var(--warn-border);
+      background: var(--warn-bg);
+      padding: 14px 16px;
+      border-radius: 8px;
+      margin: 18px 0;
+    }
+
+    .diagram {
+      font-family: "SFMono-Regular", Consolas, monospace;
+      white-space: pre-wrap;
+      background: #f8fafc;
+      border: 1px dashed #94a3b8;
+      border-radius: 10px;
+      padding: 16px;
+      overflow-x: auto;
+    }
+
+    .two-col {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 18px;
+    }
+
+    ul, ol { padding-left: 1.4rem; }
+
+    .mini-card {
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 16px;
+      background: #fbfdff;
+    }
+
+    .footer {
+      color: var(--muted);
+      text-align: center;
+      padding-top: 22px;
+      font-size: 0.9rem;
+    }
+
+    @media (max-width: 820px) {
+      .layout { display: block; }
+      nav {
+        position: static;
+        height: auto;
+      }
+      main { padding: 26px 18px 50px; }
+      .two-col { grid-template-columns: 1fr; }
+    }
+
+    @media print {
+      nav { display: none; }
+      .layout { display: block; }
+      body { background: white; }
+      main { width: 100%; padding: 0; }
+      section, .hero {
+        box-shadow: none;
+        break-inside: avoid;
+      }
+    }
+  </style>
+</head>
+<body>
+<div class="layout">
+
+  <nav>
+    <h1>C Module Study Notes</h1>
+    <p>Abstraction, modularity, headers, compilation, linking, and information hiding.</p>
+    <a href="#abstraction">1. Abstraction</a>
+    <a href="#modularity">2. Modularity</a>
+    <a href="#custom-modules">3. Custom Modules</a>
+    <a href="#spec-impl">4. Header vs. Source</a>
+    <a href="#guards">5. Include Guards</a>
+    <a href="#compile-link">6. Compile & Link</a>
+    <a href="#hiding">7. Information Hiding</a>
+    <a href="#static">8. The static Keyword</a>
+    <a href="#translation">9. Translation Units</a>
+    <a href="#header-rules">10. Header File Rules</a>
+    <a href="#errors">11. Common Errors</a>
+    <a href="#summary">12. Exam Summary</a>
+  </nav>
+
+  <main>
+    <div class="hero">
+      <h1>Abstraction &amp; Modularity in C</h1>
+      <p>
+        A study guide for understanding how larger C programs are divided into reusable modules,
+        how header and source files work together, and how abstraction and information hiding make
+        programs easier to understand and maintain.
+      </p>
+    </div>
+
+    <section id="abstraction">
+      <h2>1. Abstraction</h2>
+      <p>
+        <strong>Abstraction</strong> means representing only the details that are important to the
+        user of something while hiding details that are not currently necessary.
+      </p>
+
+      <div class="key">
+        <strong>Main idea:</strong> abstraction separates <strong>what</strong> something does from
+        <strong>how</strong> it does it.
+      </div>
+
+      <h3>Data Abstraction</h3>
+      <p>
+        Data abstraction lets a programmer work with a meaningful data type without constantly
+        thinking about how every individual piece of data is stored.
+      </p>
+
+      <pre><code>typedef struct {
+    int day;
+    int month;
+    int year;
+} Date;</code></pre>
+
+      <p>
+        A programmer can think of this as a <code>Date</code> instead of thinking separately about
+        three integers every time it is used.
+      </p>
+
+      <h3>Operation Abstraction</h3>
+      <p>
+        Operation abstraction lets a programmer call a function based on what the function promises
+        to do without needing to know the statements inside the function.
+      </p>
+
+      <pre><code>int x = getx();
+setx(10);</code></pre>
+
+      <p>
+        The caller only needs to know that <code>getx()</code> retrieves a value and
+        <code>setx()</code> changes it.
+      </p>
+
+      <h3>Why Abstraction Matters</h3>
+      <p>
+        Real programs can contain thousands or millions of lines of code. No programmer can keep
+        every implementation detail in mind at once. Abstraction allows the programmer to focus only
+        on the part of the system that matters for the current task.
+      </p>
+    </section>
+
+    <section id="modularity">
+      <h2>2. Modularity</h2>
+
+      <p>
+        <strong>Modularity</strong> is the practice of dividing a large program into smaller,
+        logically related pieces called <strong>modules</strong>.
+      </p>
+
+      <p>A module usually has two conceptual parts:</p>
+      <ul>
+        <li><strong>Interface:</strong> what the module makes available to other code.</li>
+        <li><strong>Implementation:</strong> how the module actually performs its work.</li>
+      </ul>
+
+      <p>
+        The C standard library is built from modules. For example, functions from the mathematics
+        library are declared through <code>&lt;math.h&gt;</code>.
+      </p>
+
+      <h3>Advantages of Modularity</h3>
+      <ul>
+        <li>Separates the <strong>what</strong> from the <strong>how</strong>.</li>
+        <li>Makes code easier to understand.</li>
+        <li>Allows useful code to be reused in other programs.</li>
+        <li>Makes testing easier because modules can be tested separately.</li>
+        <li>Makes maintenance easier because changes can often be limited to one module.</li>
+        <li>Allows multiple programmers to work on different modules at the same time.</li>
+      </ul>
+
+      <div class="key">
+        <strong>Memory shortcut:</strong><br>
+        <strong>Abstraction</strong> hides unnecessary details.<br>
+        <strong>Modularity</strong> organizes related functionality into separate pieces.
+      </div>
+    </section>
+
+    <section id="custom-modules">
+      <h2>3. Using a Custom C Module</h2>
+
+      <p>A simple C module is commonly split into:</p>
+
+      <table>
+        <thead>
+          <tr>
+            <th>File</th>
+            <th>Typical extension</th>
+            <th>Purpose</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Specification / header file</td>
+            <td><code>.h</code></td>
+            <td>Declares the public interface.</td>
+          </tr>
+          <tr>
+            <td>Implementation / source file</td>
+            <td><code>.c</code></td>
+            <td>Contains the actual function definitions and private data.</td>
+          </tr>
+          <tr>
+            <td>Application source file</td>
+            <td><code>.c</code></td>
+            <td>Uses the module through its header.</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h3>Step 1: Create the Interface — <code>fake_module.h</code></h3>
+
+      <pre><code>#ifndef FAKE_MODULE_H
+#define FAKE_MODULE_H
+
+int getx(void);
+void setx(int value);
+
+#endif</code></pre>
+
+      <p>
+        The header tells other source files which operations the module provides. It does not expose
+        the private variable used to store the value.
+      </p>
+
+      <h3>Step 2: Create the Implementation — <code>fake_module.c</code></h3>
+
+      <pre><code>#include "fake_module.h"
+
+static int x = 0;
+
+int getx(void) {
+    return x;
+}
+
+void setx(int value) {
+    x = value;
+}</code></pre>
+
+      <div class="good">
+        <strong>Important correction:</strong> if the header says
+        <code>void setx(int value);</code>, then the implementation must also use
+        <code>void setx(int value)</code>. A definition such as
+        <code>void setx(int *value)</code> would be a different function type and would conflict
+        with the declaration.
+      </div>
+
+      <h3>Step 3: Use the Module — <code>main.c</code></h3>
+
+      <pre><code>#include &lt;stdio.h&gt;
+#include "fake_module.h"
+
+int main(void) {
+    setx(42);
+    printf("x = %d\n", getx());
+    return 0;
+}</code></pre>
+
+      <h3>Step 4: Compile It</h3>
+
+      <pre><code>gcc main.c fake_module.c -o main
+./main</code></pre>
+
+      <p>Output:</p>
+
+      <pre><code>x = 42</code></pre>
+
+      <div class="diagram">main.c
+  |
+  | #include "fake_module.h"
+  v
+fake_module.h  ---- tells main what functions exist
+  ^
+  |
+  | also included by
+  |
+fake_module.c  ---- contains the actual function definitions
+
+main.c + fake_module.c  ---> compiler/linker ---> executable</div>
+    </section>
+
+    <section id="spec-impl">
+      <h2>4. Specification Files vs. Implementation Files</h2>
+
+      <h3>Specification File / Header File</h3>
+      <p>The header acts as the module's public interface.</p>
+
+      <p>It commonly contains:</p>
+      <ul>
+        <li>Function prototypes.</li>
+        <li><code>typedef</code> declarations that users of the module need.</li>
+        <li>Constants or macros that are intentionally public.</li>
+        <li>Structure declarations when the structure must be visible to users.</li>
+        <li>Include guards.</li>
+      </ul>
+
+      <pre><code>int getx(void);
+void setx(int value);</code></pre>
+
+      <h3>Implementation File</h3>
+      <p>The implementation file contains the code that performs the module's work.</p>
+
+      <p>It commonly contains:</p>
+      <ul>
+        <li>The corresponding header file.</li>
+        <li>Function definitions.</li>
+        <li>Private helper functions.</li>
+        <li>Private variables.</li>
+      </ul>
+
+      <pre><code>#include "fake_module.h"
+
+static int x = 0;</code></pre>
+
+      <div class="key">
+        Header file = <strong>what is available</strong>.<br>
+        Source file = <strong>how it works</strong>.
+      </div>
+    </section>
+
+    <section id="guards">
+      <h2>5. <code>#ifndef</code>, <code>#define</code>, and <code>#endif</code></h2>
+
+      <p>
+        These preprocessor directives are commonly used to make an
+        <strong>include guard</strong>. The guard prevents the body of a header from being processed
+        more than once in the same translation unit.
+      </p>
+
+      <pre><code>#ifndef FAKE_MODULE_H
+#define FAKE_MODULE_H
+
+int getx(void);
+void setx(int value);
+
+#endif</code></pre>
+
+      <h3>What Each Line Means</h3>
+
+      <table>
+        <thead>
+          <tr>
+            <th>Directive</th>
+            <th>Meaning</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><code>#ifndef FAKE_MODULE_H</code></td>
+            <td>If the symbol <code>FAKE_MODULE_H</code> is not already defined, process the following code.</td>
+          </tr>
+          <tr>
+            <td><code>#define FAKE_MODULE_H</code></td>
+            <td>Defines the symbol so a later inclusion can be recognized.</td>
+          </tr>
+          <tr>
+            <td><code>#endif</code></td>
+            <td>Ends the conditional preprocessor block.</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h3>First Inclusion</h3>
+      <ol>
+        <li><code>FAKE_MODULE_H</code> is not defined.</li>
+        <li><code>#ifndef</code> is therefore true.</li>
+        <li>The header contents are processed.</li>
+        <li><code>#define FAKE_MODULE_H</code> marks the header as already included.</li>
+      </ol>
+
+      <h3>Later Inclusion</h3>
+      <ol>
+        <li><code>FAKE_MODULE_H</code> is already defined.</li>
+        <li><code>#ifndef</code> is false.</li>
+        <li>The preprocessor skips the contents until <code>#endif</code>.</li>
+      </ol>
+
+      <div class="warning">
+        <strong>Why the <code>#define</code> matters:</strong> <code>#ifndef</code> only checks whether
+        a symbol exists. It does not create the symbol. Without the <code>#define</code>, the test
+        would remain true every time.
+      </div>
+    </section>
+
+    <section id="compile-link">
+      <h2>6. Compiling and Linking Multiple Files</h2>
+
+      <p>
+        Building a C program usually involves several stages. Two especially important stages are
+        <strong>compilation</strong> and <strong>linking</strong>.
+      </p>
+
+      <div class="two-col">
+        <div class="mini-card">
+          <h3>Compilation</h3>
+          <p>
+            Each <code>.c</code> file is translated into machine-code-like object code. The result is
+            usually an <code>.o</code> file on macOS/Linux or an <code>.obj</code> file on Windows.
+          </p>
+        </div>
+
+        <div class="mini-card">
+          <h3>Linking</h3>
+          <p>
+            The linker combines object files and libraries, then connects function calls to their
+            actual definitions.
+          </p>
+        </div>
+      </div>
+
+      <h3>Compile Without Linking</h3>
+
+      <pre><code>gcc -c fake_module.c -o fake_module.o
+gcc -c main.c -o main.o</code></pre>
+
+      <p>This creates:</p>
+      <ul>
+        <li><code>fake_module.o</code> — compiled code for the module.</li>
+        <li><code>main.o</code> — compiled code for the application.</li>
+      </ul>
+
+      <h3>Link the Object Files</h3>
+
+      <pre><code>gcc main.o fake_module.o -o main</code></pre>
+
+      <h3>Compile and Link in One Command</h3>
+
+      <pre><code>gcc main.c fake_module.c -o main</code></pre>
+
+      <div class="diagram">Source files (.c)
+      |
+      | compilation
+      v
+Object files (.o)
+      |
+      | linking
+      v
+Executable</div>
+
+      <h3>A Useful Missing Detail: Preprocessing Happens First</h3>
+      <p>
+        Before normal compilation, the C preprocessor handles directives such as
+        <code>#include</code>, <code>#define</code>, and conditional compilation directives.
+      </p>
+
+      <div class="diagram">Preprocessing  --->  Compilation  --->  Assembly/Object Code  --->  Linking</div>
+
+      <p>
+        A header file is normally not compiled by itself. Its text is effectively inserted where
+        the corresponding <code>#include</code> directive appears.
+      </p>
+    </section>
+
+    <section id="hiding">
+      <h2>7. Information Hiding</h2>
+
+      <p>
+        <strong>Information hiding</strong> means keeping implementation details private and exposing
+        only what other parts of the program actually need.
+      </p>
+
+      <ul>
+        <li><strong>Abstraction:</strong> focuses on what a module does.</li>
+        <li><strong>Information hiding:</strong> prevents outside code from depending on how it is implemented.</li>
+      </ul>
+
+      <h3>Example</h3>
+
+      <p>The header exposes the public operations:</p>
+
+      <pre><code>int getx(void);
+void setx(int value);</code></pre>
+
+      <p>The source file contains a private variable:</p>
+
+      <pre><code>static int x = 0;</code></pre>
+
+      <p>
+        Because <code>x</code> is not part of the public header, code using the module should interact
+        with it through <code>getx()</code> and <code>setx()</code>.
+      </p>
+
+      <pre><code>#include "fake_module.h"
+
+int main(void) {
+    setx(42);
+    return getx();
+}</code></pre>
+
+      <h3>Invalid Direct Access</h3>
+
+      <pre><code>#include "fake_module.h"
+
+int main(void) {
+    x = 42;    // Error: x is not visible here.
+    return x;  // Error
+}</code></pre>
+
+      <h3>Benefits of Information Hiding</h3>
+      <ul>
+        <li>Protects internal state from accidental changes.</li>
+        <li>Reduces how many details the programmer needs to understand at once.</li>
+        <li>Makes modules easier to test.</li>
+        <li>Makes future implementation changes safer.</li>
+        <li>Reduces unintended dependencies between files.</li>
+      </ul>
+    </section>
+
+    <section id="static">
+      <h2>8. Important Gap: What <code>static</code> Means Here</h2>
+
+      <p>
+        In the example below, <code>static</code> is being used at
+        <strong>file scope</strong>:
+      </p>
+
+      <pre><code>static int x = 0;</code></pre>
+
+      <p>
+        At file scope, <code>static</code> gives the variable
+        <strong>internal linkage</strong>. In practical beginner terms, the name <code>x</code> is
+        usable only inside that source file.
+      </p>
+
+      <p>The same idea can be used for private helper functions:</p>
+
+      <pre><code>static int clampValue(int value) {
+    if (value &lt; 0) return 0;
+    if (value &gt; 100) return 100;
+    return value;
+}</code></pre>
+
+      <p>
+        Other source files cannot directly call <code>clampValue()</code> by name. This is useful
+        when the function is only an internal implementation detail.
+      </p>
+
+      <div class="warning">
+        <strong>Do not confuse this with a local static variable.</strong> A
+        <code>static</code> variable declared <em>inside</em> a function has a different purpose:
+        it keeps its value between function calls.
+      </div>
+    </section>
+
+    <section id="translation">
+      <h2>9. Important Gap: Translation Units</h2>
+
+      <p>
+        A <strong>translation unit</strong> is, roughly, one source file after the preprocessor has
+        inserted its included headers and handled preprocessor directives.
+      </p>
+
+      <p>For example:</p>
+
+      <pre><code>// main.c
+#include &lt;stdio.h&gt;
+#include "fake_module.h"</code></pre>
+
+      <p>
+        During preprocessing, the declarations from the included headers become part of the
+        translation unit that is compiled for <code>main.c</code>.
+      </p>
+
+      <p>
+        This explains why an include guard only needs to prevent duplicate processing
+        <strong>inside one translation unit</strong>. The same header can and normally should be
+        included separately by many different <code>.c</code> files.
+      </p>
+    </section>
+
+    <section id="header-rules">
+      <h2>10. Important Gap: Good Header File Rules</h2>
+
+      <h3>Rule 1: Put Declarations in Headers</h3>
+
+      <pre><code>// good
+int getx(void);
+void setx(int value);</code></pre>
+
+      <h3>Rule 2: Put Ordinary Function Definitions in Source Files</h3>
+
+      <pre><code>// fake_module.c
+int getx(void) {
+    return x;
+}</code></pre>
+
+      <p>
+        If a normal non-<code>static</code> function definition is placed in a header and that header
+        is included by several source files, the linker may report multiple definitions.
+      </p>
+
+      <h3>Rule 3: Include Your Own Header in the Implementation</h3>
+
+      <pre><code>#include "fake_module.h"</code></pre>
+
+      <p>
+        This lets the compiler check that your function definitions agree with the declarations in
+        the header. It would help catch a mistake such as declaring
+        <code>setx(int)</code> but defining <code>setx(int *)</code>.
+      </p>
+
+      <h3>Rule 4: Include Only What the Header Needs</h3>
+      <p>
+        A header should be as self-contained as practical. If a public declaration needs a type from
+        another header, include that dependency or use an appropriate forward declaration.
+      </p>
+
+      <h3>Rule 5: Avoid Public Global Variables When Possible</h3>
+      <p>
+        Public global variables increase coupling between modules. Getter/setter functions or other
+        operations often provide better control over how data is accessed.
+      </p>
+    </section>
+
+    <section id="errors">
+      <h2>11. Common Errors and What They Mean</h2>
+
+      <table>
+        <thead>
+          <tr>
+            <th>Problem</th>
+            <th>Typical meaning</th>
+            <th>Possible fix</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><code>implicit declaration of function</code></td>
+            <td>The compiler saw a function call before seeing its declaration.</td>
+            <td>Include the correct header or add the proper prototype.</td>
+          </tr>
+          <tr>
+            <td><code>conflicting types for ...</code></td>
+            <td>A declaration and definition disagree.</td>
+            <td>Make the return type and parameter types match exactly.</td>
+          </tr>
+          <tr>
+            <td><code>undefined reference</code> / <code>undefined symbol</code></td>
+            <td>The compiler accepted the declaration, but the linker cannot find the function definition.</td>
+            <td>Compile and link the source file containing the definition.</td>
+          </tr>
+          <tr>
+            <td><code>multiple definition of ...</code></td>
+            <td>The linker found the same externally visible definition more than once.</td>
+            <td>Move ordinary definitions out of headers or check for duplicate global definitions.</td>
+          </tr>
+          <tr>
+            <td><code>undeclared identifier</code></td>
+            <td>The current source file cannot see that name.</td>
+            <td>Check scope, headers, spelling, and whether the item was intentionally made private.</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h3>Declaration vs. Definition</h3>
+
+      <p>This is a declaration:</p>
+      <pre><code>int getx(void);</code></pre>
+
+      <p>This is a definition:</p>
+      <pre><code>int getx(void) {
+    return x;
+}</code></pre>
+
+      <div class="key">
+        A <strong>declaration</strong> tells the compiler that something exists and describes its
+        type. A <strong>definition</strong> actually creates the function or object.
+      </div>
+    </section>
+
+    <section id="summary">
+      <h2>12. Quick Exam / Quiz Summary</h2>
+
+      <table>
+        <thead>
+          <tr>
+            <th>Term</th>
+            <th>Simple definition</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Abstraction</td>
+            <td>Focus on what something does while hiding unnecessary details.</td>
+          </tr>
+          <tr>
+            <td>Modularity</td>
+            <td>Divide a program into smaller reusable components.</td>
+          </tr>
+          <tr>
+            <td>Interface</td>
+            <td>The public operations/types a module makes available.</td>
+          </tr>
+          <tr>
+            <td>Implementation</td>
+            <td>The private code that performs the work.</td>
+          </tr>
+          <tr>
+            <td>Header / specification file</td>
+            <td>Usually contains declarations and public information.</td>
+          </tr>
+          <tr>
+            <td>Source / implementation file</td>
+            <td>Usually contains function definitions and private implementation details.</td>
+          </tr>
+          <tr>
+            <td>Include guard</td>
+            <td>Prevents a header's contents from being processed repeatedly in one translation unit.</td>
+          </tr>
+          <tr>
+            <td>Object file</td>
+            <td>Compiled code from a source file that has not yet been fully linked into the final executable.</td>
+          </tr>
+          <tr>
+            <td>Linker</td>
+            <td>Combines object files/libraries and connects references to definitions.</td>
+          </tr>
+          <tr>
+            <td>Information hiding</td>
+            <td>Keeps internal implementation details inaccessible to outside code.</td>
+          </tr>
+          <tr>
+            <td><code>static</code> at file scope</td>
+            <td>Makes a name private to that source file.</td>
+          </tr>
+          <tr>
+            <td>Translation unit</td>
+            <td>A source file after preprocessing, including the text pulled in by its headers.</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h3>One Complete Mental Model</h3>
+
+      <div class="diagram">HEADER (.h)
+"What can I use?"
+    |
+    | function prototypes / public types
+    v
+SOURCE (.c)
+"How does it work?"
+    |
+    | function definitions / private data
+    v
+OBJECT FILE (.o)
+"Compiled piece"
+    |
+    | linker combines pieces
+    v
+EXECUTABLE
+"Complete program"</div>
+
+      <div class="good">
+        <strong>Most important idea:</strong> a good module lets another programmer use its public
+        interface without needing to understand or depend on its internal implementation.
+      </div>
+    </section>
+
+    <div class="footer">
+      Study notes: Abstraction, modularity, C modules, compilation, linking, and information hiding.
+    </div>
+  </main>
+</div>
+</body>
+</html>
