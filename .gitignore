@@ -1,1 +1,9 @@
 /Canvas/Unity
+
+# macOS system files
+.DS_Store
+**/.DS_Store
+
+# Visual Studio Code settings
+.vscode/
+**/.vscode/
