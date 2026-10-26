@@ -134,8 +134,10 @@ int main(void) {
     printList(l); printf("\n");
 
     // Start fresh so the six Lab 8 cases are easy to follow.
+    printf("\nRecursively removing all elements from our list\n");
     while (l != NULL) {
         l = removeAtFront(l);
+        printList(l); printf("\n");
     }
 
     printf("\n(a) Adding 4 to an empty list at position 0\n");
