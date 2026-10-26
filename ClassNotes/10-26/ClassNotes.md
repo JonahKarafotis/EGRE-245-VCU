@@ -407,6 +407,155 @@ cc -std=c11 -Wall -Wextra queueLL.c main.c -o queue_demo
 
 Compile one implementation at a time: both provide the same public function names. The client-server simulation can use either implementation through the same `queue.h` interface.
 
+#### Linked-list queue: function-by-function implementation
+
+This checked implementation expands the PDF examples. Use the same public `queue.h` interface as the circular array, but compile `queueLL.c` instead of `queue.c`. All operations require a valid queue returned by `createQueue`; `front` and `dequeue` also require a nonempty queue or they report underflow. The recursive original from the PDF remains above.
+
+**1. Define nodes and the queue structure**
+
+The queue structure stores pointers, not an item array. Each node is allocated separately when a request arrives. The front is the oldest item; the back is the newest.
+
+```c
+#include "queue.h"
+#include <stdio.h>
+#include <stdlib.h>
+
+struct node {
+    itemType data;
+    struct node *next;
+};
+
+struct queueType {
+    struct node *front;
+    struct node *back;
+    int count;
+};
+```
+
+**2. createQueue: allocate the queue, not an array**
+
+Allocate only the queue structure initially. Both endpoints start at NULL because no nodes exist yet. There is no CHUNKSIZE, capacity, or circular index in this implementation.
+
+```c
+queue createQueue(void) {
+    queue q = malloc(sizeof *q);
+    if (q == NULL) {
+        fprintf(stderr, "Queue allocation failed\n");
+        exit(EXIT_FAILURE);
+    }
+    q->front = NULL;
+    q->back = NULL;
+    q->count = 0;
+    return q;
+}
+```
+
+**3. isEmpty, isFull, and size: inspect the queue**
+
+isEmpty checks the front pointer. isFull has no fixed node limit to check; it cannot predict malloc failure. (void)q marks its unused parameter intentionally. size returns the maintained count.
+
+```c
+bool isEmpty(queue q) { return q->front == NULL; }
+bool isFull(queue q) {
+    (void)q;
+    return false;
+}
+int size(queue q) { return q->count; }
+```
+
+**4. enqueue: allocate a node and append it**
+
+Check the new allocation before dereferencing it. On the first insertion, both endpoints refer to the same node. Otherwise link the old rear to the new node before moving back. No traversal is needed: O(1).
+
+```c
+void enqueue(queue q, itemType item) {
+    struct node *new_node = malloc(sizeof *new_node);
+    if (new_node == NULL) {
+        fprintf(stderr, "Node allocation failed\n");
+        exit(EXIT_FAILURE);
+    }
+    new_node->data = item;
+    new_node->next = NULL;
+    if (isEmpty(q)) {
+        q->front = new_node;
+        q->back = new_node;
+    } else {
+        q->back->next = new_node;
+        q->back = new_node;
+    }
+    q->count++;
+}
+```
+
+**5. front: read the oldest value without changing links**
+
+Guard against underflow, then return the front node’s data. The node stays in the queue. Call this before dequeue if the caller needs the removed value.
+
+```c
+itemType front(queue q) {
+    if (isEmpty(q)) {
+        fprintf(stderr, "Queue underflow\n");
+        exit(EXIT_FAILURE);
+    }
+    return q->front->data;
+}
+```
+
+**6. dequeue: advance front, then free the old node**
+
+Save the node, advance the front, clear back if the last node was removed, then free the saved node and update count. Never dereference old_front after free. O(1).
+
+```c
+void dequeue(queue q) {
+    if (isEmpty(q)) {
+        fprintf(stderr, "Queue underflow\n");
+        exit(EXIT_FAILURE);
+    }
+    struct node *old_front = q->front;
+    q->front = old_front->next;
+    if (q->front == NULL) {
+        q->back = NULL;
+    }
+    free(old_front);
+    q->count--;
+}
+```
+
+**7. freeQueue: release every node, then the structure**
+
+This iterative version uses the same ownership rules as the PDF’s recursive freeNodes helper. It takes O(n) time and O(1) extra space. The caller must not use q after it is freed.
+
+```c
+void freeQueue(queue q) {
+    while (!isEmpty(q)) {
+        dequeue(q);
+    }
+    free(q);
+}
+```
+
+**Example client (`main.c`)**
+
+```c
+#include "queue.h"
+#include <stdio.h>
+
+int main(void) {
+    queue q = createQueue();
+    enqueue(q, 10);
+    enqueue(q, 20);
+    enqueue(q, 30);
+    printf("First: %d\n", front(q));  // 10; does not remove it
+    dequeue(q);                       // Frees node containing 10
+    printf("Next: %d\n", front(q));   // 20
+    printf("Count: %d\n", size(q));   // 2
+    freeQueue(q);                     // Frees nodes 20, 30, then q
+    return 0;
+}
+```
+
+Expected output: `First: 10`, `Next: 20`, `Count: 2`. Compile with `cc -std=c11 -Wall -Wextra queueLL.c main.c -o queue_demo`.
+
 ### C examples: enqueue, dequeue, front, and isEmpty
 
 These examples use the linked-list structures above and the course's function names. For an integer queue, define `itemType` as `int` before the structures (`typedef int itemType;`). Include `<stdbool.h>`, `<stdio.h>`, and `<stdlib.h>`, and define `typedef struct queueType *queue;` after the structures. Each function assumes `q` points to an initialized queue.

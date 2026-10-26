@@ -125,7 +125,101 @@ int main(void) {
 <p class="listline">- With service every two ticks, the maximum average service rate is 0.5 requests per tick. A sustained average arrival rate above this tends to build a backlog.</p>
 <p class="listline">- Service is checked before arrivals: a request arriving on a service tick cannot be served until a later service tick. If the queue was empty, that service opportunity is unused.</p>
 <p class="listline">- This is a simplified simulation: one arrival at most per tick and one removal per service opportunity. It represents service by removing a request; it does not model a separate request currently being processed.</p>
-<p class="listline">- Keeping the seed fixed makes repeated runs reproducible with the same C library. Exact random sequences may differ across platforms. The <code>prob = 1.0</code> trace above does not depend on the random sequence.</p></article><h3>Step through the six-tick example</h3><div class="controls"><button id="serverNext" class="primary">Advance one tick</button><button id="serverReset">Reset simulation</button></div><div id="serverDiagram" class="diagram" aria-live="polite"></div><p id="serverStatus" class="status" aria-live="polite"></p><div id="serverLog" class="table-scroll"></div><details class="topic-practice"><summary>Practice this section · 2 questions</summary><div id="questions-server"></div></details></section><section id="linked"><span class="tag">Lecture notes</span><h2>4. Implementing a queue as a linked list</h2><article class="ref"><h4>Implementing a queue with a singly linked list</h4>
+<p class="listline">- Keeping the seed fixed makes repeated runs reproducible with the same C library. Exact random sequences may differ across platforms. The <code>prob = 1.0</code> trace above does not depend on the random sequence.</p></article><h3>Step through the six-tick example</h3><div class="controls"><button id="serverNext" class="primary">Advance one tick</button><button id="serverReset">Reset simulation</button></div><div id="serverDiagram" class="diagram" aria-live="polite"></div><p id="serverStatus" class="status" aria-live="polite"></p><div id="serverLog" class="table-scroll"></div><details class="topic-practice"><summary>Practice this section · 2 questions</summary><div id="questions-server"></div></details></section><section id="linked"><span class="tag">Lecture notes</span><h2>4. Implementing a queue as a linked list</h2><article class="ref"><p><strong>Use a singly linked list with a front pointer, back pointer, and count.</strong> Enqueue at the back and dequeue at the front so both take O(1). Each operation below is shown explicitly.</p><div class="callout">Unlike the array implementation: no data array, no capacity field, no increment helper. Create the empty queue structure first; allocate one node for each enqueue.</div><h3>Public interface: queue.h</h3><p>The same interface lets the client use either implementation.</p><pre><code>#ifndef QUEUE_H
+#define QUEUE_H
+#include &lt;stdbool.h&gt;
+typedef int itemType;
+typedef struct queueType *queue;
+queue createQueue(void);
+void freeQueue(queue q);
+void enqueue(queue q, itemType item);
+void dequeue(queue q);
+itemType front(queue q);
+bool isEmpty(queue q);
+bool isFull(queue q);
+int size(queue q);
+#endif</code></pre><h3>Implementation: queueLL.c</h3><p>Combine the following blocks in order into one source file. These versions check allocation failures and use iterative cleanup. They expand the PDF examples rather than adding a second implementation to the same file.</p><h4>1. Define nodes and the queue structure</h4><p>The queue structure stores pointers, not an item array. Each node is allocated separately when a request arrives. The front is the oldest item; the back is the newest.</p><pre><code>#include &quot;queue.h&quot;
+#include &lt;stdio.h&gt;
+#include &lt;stdlib.h&gt;
+
+struct node {
+    itemType data;
+    struct node *next;
+};
+
+struct queueType {
+    struct node *front;
+    struct node *back;
+    int count;
+};</code></pre><h4>2. createQueue: allocate the queue, not an array</h4><p>Allocate only the queue structure initially. Both endpoints start at NULL because no nodes exist yet. There is no CHUNKSIZE, capacity, or circular index in this implementation.</p><pre><code>queue createQueue(void) {
+    queue q = malloc(sizeof *q);
+    if (q == NULL) {
+        fprintf(stderr, &quot;Queue allocation failed\n&quot;);
+        exit(EXIT_FAILURE);
+    }
+    q-&gt;front = NULL;
+    q-&gt;back = NULL;
+    q-&gt;count = 0;
+    return q;
+}</code></pre><h4>3. isEmpty, isFull, and size: inspect the queue</h4><p>isEmpty checks the front pointer. isFull has no fixed node limit to check; it cannot predict malloc failure. (void)q marks its unused parameter intentionally. size returns the maintained count.</p><pre><code>bool isEmpty(queue q) { return q-&gt;front == NULL; }
+bool isFull(queue q) {
+    (void)q;
+    return false;
+}
+int size(queue q) { return q-&gt;count; }</code></pre><h4>4. enqueue: allocate a node and append it</h4><p>Check the new allocation before dereferencing it. On the first insertion, both endpoints refer to the same node. Otherwise link the old rear to the new node before moving back. No traversal is needed: O(1).</p><pre><code>void enqueue(queue q, itemType item) {
+    struct node *new_node = malloc(sizeof *new_node);
+    if (new_node == NULL) {
+        fprintf(stderr, &quot;Node allocation failed\n&quot;);
+        exit(EXIT_FAILURE);
+    }
+    new_node-&gt;data = item;
+    new_node-&gt;next = NULL;
+    if (isEmpty(q)) {
+        q-&gt;front = new_node;
+        q-&gt;back = new_node;
+    } else {
+        q-&gt;back-&gt;next = new_node;
+        q-&gt;back = new_node;
+    }
+    q-&gt;count++;
+}</code></pre><h4>5. front: read the oldest value without changing links</h4><p>Guard against underflow, then return the front node’s data. The node stays in the queue. Call this before dequeue if the caller needs the removed value.</p><pre><code>itemType front(queue q) {
+    if (isEmpty(q)) {
+        fprintf(stderr, &quot;Queue underflow\n&quot;);
+        exit(EXIT_FAILURE);
+    }
+    return q-&gt;front-&gt;data;
+}</code></pre><h4>6. dequeue: advance front, then free the old node</h4><p>Save the node, advance the front, clear back if the last node was removed, then free the saved node and update count. Never dereference old_front after free. O(1).</p><pre><code>void dequeue(queue q) {
+    if (isEmpty(q)) {
+        fprintf(stderr, &quot;Queue underflow\n&quot;);
+        exit(EXIT_FAILURE);
+    }
+    struct node *old_front = q-&gt;front;
+    q-&gt;front = old_front-&gt;next;
+    if (q-&gt;front == NULL) {
+        q-&gt;back = NULL;
+    }
+    free(old_front);
+    q-&gt;count--;
+}</code></pre><h4>7. freeQueue: release every node, then the structure</h4><p>This iterative version uses the same ownership rules as the PDF’s recursive freeNodes helper. It takes O(n) time and O(1) extra space. The caller must not use q after it is freed.</p><pre><code>void freeQueue(queue q) {
+    while (!isEmpty(q)) {
+        dequeue(q);
+    }
+    free(q);
+}</code></pre><h3>Use the linked queue from main.c</h3><pre><code>#include &quot;queue.h&quot;
+#include &lt;stdio.h&gt;
+
+int main(void) {
+    queue q = createQueue();
+    enqueue(q, 10);
+    enqueue(q, 20);
+    enqueue(q, 30);
+    printf(&quot;First: %d\n&quot;, front(q));  // 10; does not remove it
+    dequeue(q);                       // Frees node containing 10
+    printf(&quot;Next: %d\n&quot;, front(q));   // 20
+    printf(&quot;Count: %d\n&quot;, size(q));   // 2
+    freeQueue(q);                     // Frees nodes 20, 30, then q
+    return 0;
+}</code></pre><p>Output: <code>First: 10</code>, <code>Next: 20</code>, <code>Count: 2</code>.</p><pre><code>cc -std=c11 -Wall -Wextra queueLL.c main.c -o queue_demo</code></pre><p>Compile one implementation at a time. The client-server simulation uses this same interface without changing its queue calls.</p></article><details><summary>PDF slide examples and additional linked-list notes</summary><article class="ref"><h4>Implementing a queue with a singly linked list</h4>
 <p>Source: <a href="../../Canvas/begre246.pdf#page=684">Slides 145-149</a> (PDF pages 684-688).</p>
 <p><strong>For the least work, enqueue at the rear and dequeue at the front. Keep both a front pointer and a back pointer.</strong> Each operation then takes O(1) time without traversing the list.</p>
 <p class="listline">- A back pointer lets insertion reach the last node directly.</p>
@@ -338,7 +432,7 @@ while (!isEmpty(q)) {
     dequeue(q);
 }
 printf(&quot;Empty: %d\n&quot;, isEmpty(q));  // 1 (true)</code></pre></details>
-<p>All four operations take O(1) time. Remember: <strong>enqueue adds, dequeue removes, front reads, and isEmpty checks</strong>.</p></article><h3>Manipulate the nodes</h3><div class="controls"><label for="linkedMode">Structure</label><select id="linkedMode"><option value="queue">Queue: enqueue rear, dequeue front</option><option value="stack">Stack: push front, pop front</option></select><label for="linkedValue">Value</label><input id="linkedValue" type="number" value="40"><button id="linkedAdd" class="primary">Enqueue</button><button id="linkedRemove">Dequeue</button><button id="linkedPeek">Read front</button><button id="linkedReset">Reset</button></div><div id="linkedDiagram" class="diagram" aria-live="polite"></div><p id="linkedStatus" class="status" aria-live="polite"></p><details class="topic-practice"><summary>Practice this section · 5 questions</summary><div id="questions-linked"></div></details></section><section id="arrays"><span class="tag">Lecture notes</span><h2>5. Three ways to build an array queue</h2><article class="ref"><h4>Implementing a queue with an array</h4>
+<p>All four operations take O(1) time. Remember: <strong>enqueue adds, dequeue removes, front reads, and isEmpty checks</strong>.</p></article></details><h3>Manipulate the nodes</h3><div class="controls"><label for="linkedMode">Structure</label><select id="linkedMode"><option value="queue">Queue: enqueue rear, dequeue front</option><option value="stack">Stack: push front, pop front</option></select><label for="linkedValue">Value</label><input id="linkedValue" type="number" value="40"><button id="linkedAdd" class="primary">Enqueue</button><button id="linkedRemove">Dequeue</button><button id="linkedPeek">Read front</button><button id="linkedReset">Reset</button></div><div id="linkedDiagram" class="diagram" aria-live="polite"></div><p id="linkedStatus" class="status" aria-live="polite"></p><details class="topic-practice"><summary>Practice this section · 5 questions</summary><div id="questions-linked"></div></details></section><section id="arrays"><span class="tag">Lecture notes</span><h2>5. Three ways to build an array queue</h2><article class="ref"><h4>Implementing a queue with an array</h4>
 <p>Source: <a href="../../Canvas/begre246.pdf#page=659">Slides 137-144</a> (PDF pages 659-683).</p>
 <p><strong>Main problem with a basic array queue: removing from the front either requires shifting the remaining items or leaves unused slots that a non-wrapping implementation cannot reuse.</strong> A fixed-size array also needs a policy for when its capacity is reached.</p>
 <h5>Array example 1: fixed front, shift every remaining value after dequeue</h5>
