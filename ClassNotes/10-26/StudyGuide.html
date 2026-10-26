@@ -1,0 +1,621 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>October 26 • Stacks & Queues Study Guide</title><style>
+:root{color-scheme:light;--ink:#182b35;--muted:#536974;--line:#d5e1e6;--paper:#f4f7f8;--teal:#006c70;--soft:#e3f4f1;--red:#ac3039;--gold:#f5c95c}*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:var(--paper);color:var(--ink);font:16px/1.65 system-ui,sans-serif}header{background:#132f3c;color:#f9fbfc;padding:48px max(24px,calc((100vw - 1100px)/2))}header p{max-width:760px;color:#c9e0e7}.eyebrow{letter-spacing:.14em;font-size:12px;text-transform:uppercase;color:#f5c95c}h1{font-size:clamp(30px,5vw,54px);line-height:1.12;margin:14px 0}h2{font-size:29px;line-height:1.25;margin:0 0 18px}h3{font-size:21px}nav{display:flex;gap:8px;flex-wrap:wrap;padding:14px 0}nav a{color:#d6f1f0;border:1px solid #51707c;padding:5px 12px;border-radius:30px;text-decoration:none;font-size:14px}main{max-width:1148px;margin:auto;padding:28px 24px 70px}section{background:white;border:1px solid var(--line);border-radius:18px;padding:28px;margin:0 0 24px;scroll-margin-top:18px}.grid>*{min-width:0}.grid{display:grid;grid-template-columns:1fr 1fr;gap:20px}.muted{color:var(--muted)}.tag{display:inline-block;background:var(--soft);color:var(--teal);font-size:12px;padding:3px 9px;border-radius:20px;margin-bottom:10px}.callout{border-left:4px solid var(--teal);padding:12px 18px;background:var(--soft);margin:16px 0}.bad{border-left-color:var(--red);background:#fff0f0}button,select,input{font:inherit}button{border:1px solid #b4c8ce;background:#fff;padding:8px 14px;border-radius:8px;cursor:pointer;color:var(--ink)}button:hover{background:#edf5f5}button:focus-visible,a:focus-visible,select:focus-visible{outline:3px solid #bf8100;outline-offset:3px}button.primary{background:var(--teal);color:white;border-color:var(--teal)}button:disabled{opacity:.5;cursor:default}.controls{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin:14px 0}input[type=number]{width:86px;padding:7px;border:1px solid #b4c8ce;border-radius:6px}select{max-width:100%;padding:8px;border-radius:6px;border:1px solid #b4c8ce}.diagram{padding:22px 16px;background:#f5f9fa;border:1px solid var(--line);border-radius:10px;overflow:auto;min-height:120px}.chain{display:flex;align-items:center;gap:8px;min-height:80px;white-space:nowrap}.node{display:inline-flex;flex-direction:column;align-items:center;border:2px solid #96afb8;border-radius:9px;min-width:68px;background:white}.node strong{padding:8px 18px;font-size:20px}.node small{padding:2px 8px;border-top:1px solid var(--line);font-size:11px;color:var(--muted)}.node.head{border-color:var(--teal);background:#e6f6f2}.arrow{font-size:26px;color:var(--teal)}.pointer{font:bold 12px system-ui;color:var(--teal);display:block;min-height:20px}.status{min-height:54px;padding:10px 0;color:#294d5c}.slots{display:flex;gap:10px;padding-top:24px;min-width:390px}.slot{width:66px;text-align:center;position:relative;flex-shrink:0}.slot .value{border:2px solid #b5c9cf;border-radius:7px;background:#fff;height:52px;display:grid;place-items:center;font-weight:bold;font-size:20px}.slot.live .value{border-color:var(--teal);background:var(--soft)}.slot .idx{font-size:12px;color:var(--muted)}.markers{font-size:11px;min-height:19px;color:var(--teal);font-weight:bold}pre{background:#142f3d;color:#e3f1f5;padding:18px;border-radius:9px;overflow:auto;font:13px/1.7 ui-monospace,SFMono-Regular,Consolas,monospace;white-space:pre;tab-size:4}code{font-family:ui-monospace,SFMono-Regular,Consolas,monospace;font-size:.88em}p code,li code,td code{background:#edf2f4;padding:2px 4px;border-radius:4px}table{border-collapse:collapse;width:100%;font-size:14px}th,td{text-align:left;border-bottom:1px solid var(--line);padding:10px;vertical-align:top}th{background:#edf4f5}.table-scroll{overflow:auto}details{border-top:1px solid var(--line);padding:15px 0}summary{cursor:pointer;font-weight:650}details[open]>summary{margin-bottom:16px}.question{border:1px solid var(--line);padding:18px;border-radius:10px;margin:12px 0}.question p{margin-top:0}.answers{display:grid;gap:8px}.answers button{text-align:left}.answers button.correct{background:#d9f2e5;border-color:#208953}.answers button.wrong{background:#ffe4e5;border-color:var(--red)}.feedback{margin:10px 0 0;color:var(--muted)}.ref h2{font-size:25px;margin-top:30px}.ref h3{margin-top:28px}.ref h4{font-size:19px}.ref pre{max-height:540px}.listline{margin:5px 0}.score{font-weight:bold;color:var(--teal)}footer{color:var(--muted);padding:15px}a{color:var(--teal)}@media(max-width:700px){.grid{grid-template-columns:1fr}section{padding:20px}main{padding:18px 12px}header{padding:32px 22px}.slots{gap:5px;min-width:340px}.slot{width:58px}}@media print{body{background:white}header{background:white;color:var(--ink);padding:10px}header p{color:var(--ink)}nav,.controls,button{display:none}section{break-inside:avoid;border-radius:0}details{display:block}pre{white-space:pre-wrap;color:#111;background:#f2f2f2}.question{break-inside:avoid}}
+.topic-practice{margin-top:24px;border-top:2px solid var(--line)}.topic-practice>summary{color:var(--teal)}.code-reference{background:#f6f9fa;padding:12px;border-radius:8px;margin:12px 0}.ref>h3:first-child{margin-top:12px}</style></head><body><header><div class="eyebrow">EGRE 246 · October 26, 2026</div><h1>Follow the pointers.<br>Understand the queue.</h1><p>Lecture + Quiz 4 review, organized like your Markdown notes. Read each topic, explore its examples, and open the optional practice when ready.</p><nav aria-label="Study sections"><a href="#stacks">Stacks</a><a href="#queues">Queue basics</a><a href="#server">Simulation</a><a href="#linked">Linked queues</a><a href="#arrays">Array queues</a><a href="#memory">Header & module</a><a href="#comparison">Choosing</a><a href="#reverse">Quiz review</a></nav></header><main><section id="stacks"><span class="tag">Lecture notes</span><h2>1. Implementing a stack as a linked list</h2><article class="ref"><h3>Implementing a Stack as a Linked List</h3>
+<p>Source: <a href="../../Canvas/begre246.pdf#page=643">Course PDF, slide 130/191</a>, Chapter 8: Stacks and Queues (PDF page 643).</p>
+<h4>Main idea from slide 130</h4>
+<p class="listline">- Treat the front (or rear) of the linked list as the <strong>top of the stack</strong>.</p>
+<p class="listline">- Insert and remove only at the top. This makes the algorithms simpler because there is only one position to handle.</p>
+<p><strong>Best choice for a singly linked list: use the front (head) as the stack&#x27;s top, and perform both push and pop there.</strong> This requires the least work because both operations change only a few pointers without walking through the list.</p>
+<p class="listline">- <strong>Push at the front:</strong> point the new node to the current head, then make the new node the head.</p>
+<p class="listline">- <strong>Pop at the front:</strong> move the head to the next node, then free the old head.</p>
+<p class="listline">- Both operations take <strong>O(1)</strong> time regardless of the number of nodes. At the rear, insertion can be O(1) with a tail pointer, but removal is O(n) because a singly linked list cannot follow a link backward to find the previous node.</p>
+<h4>How this works</h4>
+<p>The following explanations and implementation steps expand on the slide&#x27;s idea.</p>
+<p class="listline">- A stack follows <strong>LIFO: Last In, First Out</strong>. The most recently pushed item is the first one popped.</p>
+<p class="listline">- For a singly linked list, using the <strong>front as the top</strong> makes both insertion and removal O(1); no traversal is needed.</p>
+<p class="listline">- Using the rear of a singly linked list would require finding the previous node to remove the last node, which takes O(n), even if a tail pointer is available.</p>
+<p class="listline">- The top pointer holds the address of the first node. An empty stack has a top pointer of <code>NULL</code>.</p>
+<pre><code>Push 10:   top -&gt; [10] -&gt; NULL
+Push 20:   top -&gt; [20] -&gt; [10] -&gt; NULL
+Push 30:   top -&gt; [30] -&gt; [20] -&gt; [10] -&gt; NULL
+Pop:       top -&gt; [20] -&gt; [10] -&gt; NULL  (remove 30)</code></pre>
+<h4>Stack operations</h4>
+<div class="table-scroll"><table><tr><th>Operation</th><th>What it does</th><th>Linked-list steps</th></tr><tr><td><code>push</code></td><td>Adds an item at the top</td><td>Allocate a node, link it to the old top, update the top</td></tr><tr><td><code>pop</code></td><td>Removes the top item</td><td>Save the old top, advance the top, free the removed node</td></tr><tr><td><code>top</code> / peek</td><td>Reads the top item without removing it</td><td>Return the first node&#x27;s data</td></tr><tr><td><code>isEmpty</code></td><td>Checks whether the stack has no items</td><td>Test whether the top pointer is <code>NULL</code></td></tr></table></div>
+<p>In the course&#x27;s stack interface, <code>pop</code> returns <code>void</code>: read the item using <code>top(s)</code> before calling <code>pop(s)</code> if you need its value.</p>
+<h4>Pointer update order</h4>
+<p>These C fragments assume <code>top_ptr</code> is a <code>struct Node *</code> initialized to <code>NULL</code>, using the node structure from <a href="QuizReview.md">the quiz review</a>. They illustrate the operations inside the code that owns the top pointer.</p>
+<p><strong>Push an integer <code>value</code>:</strong></p>
+<pre><code>struct Node *new_node = malloc(sizeof *new_node);
+if (new_node == NULL) {
+    fprintf(stderr, &quot;Error: stack allocation failed\n&quot;);
+    exit(EXIT_FAILURE);
+}
+new_node-&gt;data = value;
+new_node-&gt;next = top_ptr;  // Link to the current stack first
+top_ptr = new_node;        // Then make the new node the top</code></pre>
+<p>This is the same front-insertion idea as <code>addFront</code> in the quiz review. Updating the top before saving the old link can lose the existing list or accidentally create a self-link.</p>
+<p><strong>Pop the top node:</strong></p>
+<pre><code>if (top_ptr == NULL) {
+    fprintf(stderr, &quot;Error: stack underflow\n&quot;);
+    exit(EXIT_FAILURE);
+}
+struct Node *old_top = top_ptr;
+top_ptr = top_ptr-&gt;next;  // Keep access to the remaining stack
+free(old_top);            // Release the removed node</code></pre>
+<p>Use <code>&lt;stdio.h&gt;</code> and <code>&lt;stdlib.h&gt;</code> for these fragments. Never access <code>old_top-&gt;next</code> after freeing <code>old_top</code>. If the removed node was the only node, its <code>next</code> was <code>NULL</code>, so the stack becomes empty automatically.</p>
+<h4>Connection to pointers and memory</h4>
+<p class="listline">- A function that directly changes the caller&#x27;s top pointer can accept <code>struct Node **</code>, just like <code>addFront(&amp;head, value)</code> and <code>reverse(&amp;head)</code>.</p>
+<p class="listline">- Another design stores the top pointer inside a stack structure and passes a pointer to that structure. The function then updates its top member through <code>-&gt;</code>.</p>
+<p class="listline">- Popping or peeking at an empty stack is <strong>stack underflow</strong>; check before dereferencing the top pointer.</p>
+<p class="listline">- A linked stack has no fixed array capacity, but each push can still fail if memory allocation fails.</p>
+<p class="listline">- Each push allocates one node; each pop frees one node. Free all remaining nodes when destroying the stack.</p>
+<p class="listline">- Push, pop, peek, and the empty check each take O(1) time with the top at the front. Storing n items takes O(n) memory, including one next pointer per node.</p></article><details class="topic-practice"><summary>Practice this section · 2 questions</summary><div id="questions-stacks"></div></details></section><section id="queues"><span class="tag">Lecture notes</span><h2>2. Queues: FIFO, operations, and applications</h2><article class="ref"><h3>Queues: First In, First Out</h3>
+<p>Source: <a href="../../Canvas/begre246.pdf#page=644">Course PDF, slides 131-149</a>, Chapter 8: Stacks and Queues (PDF pages 644-688). The explanations below summarize and expand on these slides.</p>
+<h4>What is a queue?</h4>
+<p class="listline">- A queue stores an ordered sequence of items of the same type. Here, ordered means order of arrival, not sorted by value.</p>
+<p class="listline">- A queue follows <strong>FIFO: First In, First Out</strong>. The oldest item is removed first, like people waiting in line.</p>
+<p class="listline">- Insert new items at the <strong>rear/back</strong> and remove items from the <strong>front</strong>.</p>
+<p class="listline">- <strong>Queue underflow:</strong> trying to remove or inspect the front of an empty queue.</p>
+<p class="listline">- <strong>Queue overflow:</strong> trying to insert into a queue at its capacity. A dynamically allocated implementation can grow, but allocation can still fail.</p>
+<p class="listline">- The overview slide has a typo saying a stack is FIFO; <strong>a queue is FIFO and a stack is LIFO</strong>.</p>
+<pre><code>Start:             front -&gt; [10] -&gt; [20] &lt;- back
+Enqueue 30:        front -&gt; [10] -&gt; [20] -&gt; [30] &lt;- back
+Dequeue:           front -&gt; [20] -&gt; [30] &lt;- back  (remove 10)</code></pre>
+<h4>Queue operations and interface</h4>
+<div class="table-scroll"><table><tr><th>Operation</th><th>Purpose</th></tr><tr><td><code>createQueue()</code></td><td>Create and initialize an empty queue</td></tr><tr><td><code>enqueue(q, item)</code></td><td>Add an item at the back</td></tr><tr><td><code>dequeue(q)</code></td><td>Remove the item at the front</td></tr><tr><td><code>front(q)</code></td><td>Read the front item without removing it</td></tr><tr><td><code>isEmpty(q)</code></td><td>Check whether there are no items</td></tr><tr><td><code>isFull(q)</code></td><td>Check whether the current storage capacity is reached</td></tr><tr><td><code>size(q)</code></td><td>Return the number of items currently stored</td></tr><tr><td><code>freeQueue(q)</code></td><td>Release the queue and its allocated storage</td></tr></table></div>
+<p>In the course interface, <code>dequeue</code> returns <code>void</code>. To use the removed value, call <code>front(q)</code> before <code>dequeue(q)</code>. Both require a nonempty queue.</p>
+<h4>Where queues are used</h4>
+<p class="listline">- Print jobs waiting for a printer.</p>
+<p class="listline">- CPU jobs waiting to be processed.</p>
+<p class="listline">- Keyboard input waiting to be read.</p>
+<p class="listline">- Client requests waiting for a server.</p>
+<p>The slides&#x27; client-server simulation models arrivals and service over clock ticks. A client may arrive with a chosen probability each tick, and the server removes a waiting client at a specified processing interval. If arrivals outpace service, the queue grows. The queue&#x27;s final size is the number of clients still waiting.</p></article><details class="topic-practice"><summary>Practice this section · 3 questions</summary><div id="questions-queues"></div></details></section><section id="server"><span class="tag">Lecture notes</span><h2>3. Client-server request simulation</h2><article class="ref"><h4>Worked example: client-server request simulation</h4>
+<p>Source: <a href="../../Canvas/begre246.pdf#page=656">Slides 134-136: Client-Server Simulation</a> (PDF pages 656-658).</p>
+<p>Imagine requests arriving at a server faster than it can handle them. The queue stores pending requests in arrival order. New requests join the back with <code>enqueue</code>; at a service opportunity, the server reads the oldest request with <code>front</code> and removes it with <code>dequeue</code>.</p>
+<p>The PDF uses clock ticks, a probability of arrival per tick, and a service interval. Its <code>CLIENT</code> value is always 0 because it only counts clients. <strong>This adapted example uses integer request IDs so we can see FIFO order</strong>, prints each event, uses fixed parameters instead of keyboard input, and frees the queue afterward. It uses the course&#x27;s <code>queue.h</code> interface with <code>itemType</code> defined as <code>int</code>.</p>
+<details class="code-reference"><summary>Read the complete code example</summary><pre><code>#include &lt;stdio.h&gt;
+#include &lt;stdlib.h&gt;
+#include &quot;queue.h&quot;
+
+int main(void) {
+    queue q = createQueue();
+    const int totalTicks = 6;
+    const int processTime = 2;  // Serve at ticks 2, 4, 6, ...
+    const double prob = 1.0;    // One arrival every tick for this trace
+    int totalClients = 0;
+    int served = 0;
+
+    srand(9999);               // Fixed seed, as in the slides
+
+    for (int tick = 1; tick &lt;= totalTicks; tick++) {
+        // Service happens BEFORE this tick&#x27;s new arrival, as in the PDF.
+        if (tick % processTime == 0 &amp;&amp; !isEmpty(q)) {
+            int requestID = front(q);  // Read before removing
+            printf(&quot;Tick %d: serve request %d\n&quot;, tick, requestID);
+            dequeue(q);
+            served++;
+        }
+
+        // Random value in [0, 1); prob = 1 guarantees an arrival.
+        double randomValue = rand() / (RAND_MAX + 1.0);
+        if (randomValue &lt; prob) {
+            int requestID = ++totalClients;
+            enqueue(q, requestID);
+            printf(&quot;Tick %d: request %d joins the queue\n&quot;,
+                   tick, requestID);
+        }
+        printf(&quot;  Waiting: %d\n&quot;, size(q));
+    }
+
+    printf(&quot;Total requests: %d\n&quot;, totalClients);
+    printf(&quot;Requests served: %d\n&quot;, served);
+    printf(&quot;Requests still waiting: %d\n&quot;, size(q));
+    freeQueue(q);  // Free pending nodes and the queue structure
+    return 0;
+}</code></pre></details>
+<p><code>createQueue</code> should check allocation failure in its implementation. The parameters must satisfy <code>totalTicks &gt;= 0</code>, <code>processTime &gt; 0</code>, and <code>0 &lt;= prob &lt;= 1</code>; these fixed values do. The random-number comparison above uses <code>&lt;</code> and a value below 1 so probabilities 0 and 1 behave exactly as expected.</p>
+<p><strong>Trace for the example:</strong> the queue column lists front to back. Each tick checks for service first, then adds the new arrival.</p>
+<div class="table-scroll"><table><tr><th>Tick</th><th>Request served</th><th>New request</th><th>Queue after the tick</th></tr><tr><td>1</td><td>None</td><td>1</td><td><code>1</code></td></tr><tr><td>2</td><td>1</td><td>2</td><td><code>2</code></td></tr><tr><td>3</td><td>None</td><td>3</td><td><code>2 -&gt; 3</code></td></tr><tr><td>4</td><td>2</td><td>4</td><td><code>3 -&gt; 4</code></td></tr><tr><td>5</td><td>None</td><td>5</td><td><code>3 -&gt; 4 -&gt; 5</code></td></tr><tr><td>6</td><td>3</td><td>6</td><td><code>4 -&gt; 5 -&gt; 6</code></td></tr></table></div>
+<p>Final totals: <strong>6 requests arrived, 3 were served, and 3 remain waiting</strong>. Requests 1, 2, and 3 were served in arrival order. Freeing the pending requests at shutdown releases memory; it does not count them as served.</p>
+<h4>Understanding the simulation&#x27;s behavior</h4>
+<p class="listline">- <code>tick % processTime == 0</code> selects service ticks. With <code>processTime = 2</code>, the server can remove at most one request every two ticks.</p>
+<p class="listline">- <code>isEmpty</code> prevents underflow if no request is waiting at a service tick.</p>
+<p class="listline">- Changing <code>prob</code> to <code>0.6</code> gives each tick a 60% chance of one arrival. This is an average of 0.6 arrivals per tick, not a guarantee of exactly 60 arrivals in 100 ticks.</p>
+<p class="listline">- With service every two ticks, the maximum average service rate is 0.5 requests per tick. A sustained average arrival rate above this tends to build a backlog.</p>
+<p class="listline">- Service is checked before arrivals: a request arriving on a service tick cannot be served until a later service tick. If the queue was empty, that service opportunity is unused.</p>
+<p class="listline">- This is a simplified simulation: one arrival at most per tick and one removal per service opportunity. It represents service by removing a request; it does not model a separate request currently being processed.</p>
+<p class="listline">- Keeping the seed fixed makes repeated runs reproducible with the same C library. Exact random sequences may differ across platforms. The <code>prob = 1.0</code> trace above does not depend on the random sequence.</p></article><h3>Step through the six-tick example</h3><div class="controls"><button id="serverNext" class="primary">Advance one tick</button><button id="serverReset">Reset simulation</button></div><div id="serverDiagram" class="diagram" aria-live="polite"></div><p id="serverStatus" class="status" aria-live="polite"></p><div id="serverLog" class="table-scroll"></div><details class="topic-practice"><summary>Practice this section · 2 questions</summary><div id="questions-server"></div></details></section><section id="linked"><span class="tag">Lecture notes</span><h2>4. Implementing a queue as a linked list</h2><article class="ref"><h4>Implementing a queue with a singly linked list</h4>
+<p>Source: <a href="../../Canvas/begre246.pdf#page=684">Slides 145-149</a> (PDF pages 684-688).</p>
+<p><strong>For the least work, enqueue at the rear and dequeue at the front. Keep both a front pointer and a back pointer.</strong> Each operation then takes O(1) time without traversing the list.</p>
+<p class="listline">- A back pointer lets insertion reach the last node directly.</p>
+<p class="listline">- Removing the front only requires following its <code>next</code> pointer.</p>
+<p class="listline">- Reversing these roles would require removing the rear. In a singly linked list, finding the previous node requires O(n) traversal, even with a back pointer.</p>
+<p>The slide implementation stores:</p>
+<pre><code>struct node {
+    itemType data;
+    struct node *next;
+};
+
+struct queueType {
+    struct node *front, *back;
+    int count;
+};</code></pre>
+<p><code>itemType</code> is the element type defined by the course&#x27;s <code>itemType.h</code>. The public queue type is <code>typedef struct queueType *queue;</code>, so functions can update the structure&#x27;s members through <code>q-&gt;front</code>, <code>q-&gt;back</code>, and <code>q-&gt;count</code>.</p>
+<p><strong>Initialization:</strong> set both pointers to <code>NULL</code> and <code>count</code> to 0.</p>
+<p><strong>Enqueue steps:</strong></p>
+<p class="listline">1. Allocate a new node, check allocation success, store the item, and set its <code>next</code> to <code>NULL</code>.</p>
+<p class="listline">2. If empty, set both <code>front</code> and <code>back</code> to the new node.</p>
+<p class="listline">3. Otherwise, link the old back&#x27;s <code>next</code> to the new node, then update <code>back</code> to that node.</p>
+<p class="listline">4. Increment <code>count</code>.</p>
+<p><strong>Dequeue steps:</strong></p>
+<p class="listline">1. Check for underflow before accessing <code>front</code>.</p>
+<p class="listline">2. Save the old front pointer.</p>
+<p class="listline">3. Move <code>front</code> to the next node.</p>
+<p class="listline">4. If the queue is now empty, also set <code>back = NULL</code> so it does not point to freed memory.</p>
+<p class="listline">5. Free the old front node and decrement <code>count</code>.</p>
+<p>The one-node case matters: before removal, <code>front</code> and <code>back</code> point to the same node; after removal, both must be <code>NULL</code>.</p>
+<p class="listline">- <code>front(q)</code> returns <code>q-&gt;front-&gt;data</code> after checking for underflow.</p>
+<p class="listline">- <code>isEmpty(q)</code> checks <code>q-&gt;front == NULL</code>.</p>
+<p class="listline">- <code>size(q)</code> returns the maintained <code>count</code>, so it takes O(1).</p>
+<p class="listline">- The slide&#x27;s linked-list <code>isFull(q)</code> always returns <code>false</code> because there is no fixed node limit. This does <strong>not</strong> guarantee that <code>malloc</code> will succeed; the example omits allocation checks.</p>
+<p class="listline">- Destroying the queue requires freeing every node, then the queue structure. This takes O(n) time. The slides use a recursive helper; an iterative walk can avoid O(n) recursive call-stack use.</p>
+<h5>Complete PDF example: queueLL.c (slides 145-149)</h5>
+<p>This combines <strong>all linked-list implementation examples from the five slides</strong>, retaining their chained assignment, conditional expression, and recursive cleanup. Formatting and comments have been added; <code>createQueue(void)</code> explicitly declares that the function takes no arguments. The simpler function examples below are alternative explanations of the same operations, not additional definitions to paste into this file.</p>
+<p>Use the same public queue interface as the array implementation. In the course file layout, <code>itemType.h</code> defines the item type (for example, <code>typedef int itemType;</code>), and <code>queue.h</code> includes it and declares <code>typedef struct queueType *queue;</code> plus the public functions. Protect both headers with include guards. If using the self-contained <code>queue.h</code> later in these notes, keep its <code>itemType</code> definition and omit the extra <code>itemType.h</code> include instead.</p>
+<details class="code-reference"><summary>Read the complete code example</summary><pre><code>#include &lt;stdio.h&gt;
+#include &lt;stdlib.h&gt;
+#include &lt;stdbool.h&gt;
+#include &quot;queue.h&quot;
+#include &quot;itemType.h&quot;
+
+// Slide 145: node and queue structures
+struct node {
+    itemType data;
+    struct node *next;
+};
+
+struct queueType {
+    struct node *front, *back;
+    int count;
+};
+
+// Slide 146: create the queue and free its storage
+queue createQueue(void) {
+    queue q = malloc(sizeof(struct queueType));
+    q-&gt;front = q-&gt;back = NULL;
+    q-&gt;count = 0;
+    return q;
+}
+
+static void freeNodes(struct node *p) {
+    if (p == NULL)
+        return;
+    else {
+        freeNodes(p-&gt;next);
+        free(p);
+    }
+}
+
+void freeQueue(queue q) {
+    freeNodes(q-&gt;front);
+    free(q);
+}
+
+// Slide 147: insert at the rear
+void enqueue(queue q, itemType itm) {
+    if (isFull(q)) {
+        printf(&quot;Error: queue overflow\n&quot;);
+        exit(EXIT_FAILURE);
+    } else {
+        struct node *tp = malloc(sizeof(struct node));
+        tp-&gt;data = itm;
+        tp-&gt;next = NULL;
+        if (isEmpty(q)) {
+            q-&gt;front = q-&gt;back = tp;
+        } else {
+            q-&gt;back = q-&gt;back-&gt;next = tp;
+        }
+        q-&gt;count++;
+    }
+}
+
+// Slide 148: remove or inspect the front
+void dequeue(queue q) {
+    if (isEmpty(q)) {
+        printf(&quot;Error: queue underflow\n&quot;);
+        exit(EXIT_FAILURE);
+    } else {
+        struct node *tp = q-&gt;front;
+        q-&gt;front = (q-&gt;count == 1) ? (q-&gt;back = NULL)
+                                 : q-&gt;front-&gt;next;
+        free(tp);
+        q-&gt;count--;
+    }
+}
+
+itemType front(queue q) {
+    if (isEmpty(q)) {
+        printf(&quot;Error: queue underflow\n&quot;);
+        exit(EXIT_FAILURE);
+    } else {
+        return q-&gt;front-&gt;data;
+    }
+}
+
+// Slide 149: queue status and item count
+bool isEmpty(queue q) { return q-&gt;front == NULL; }
+bool isFull(queue q) { return false; }
+int size(queue q) { return q-&gt;count; }</code></pre></details>
+<h5>Reading the PDF&#x27;s pointer expressions</h5>
+<p><strong>Slide 145 — structure:</strong> each node owns a data value and a link to the next node. The queue structure owns the two endpoint pointers and a count. There is no array, capacity field, or circular index helper in this implementation.</p>
+<p><strong>Slide 146 — create and destroy:</strong> <code>q-&gt;front = q-&gt;back = NULL</code> initializes both ends to an empty list. <code>freeNodes</code> first recursively visits the next node, then frees the current one, so nodes are freed from the rear back toward the front. <code>freeQueue</code> frees the queue structure after its nodes. The helper is <code>static</code> because only this implementation needs it. Cleanup takes O(n) time and O(n) recursive call-stack space; an iterative loop can avoid that recursion for long queues.</p>
+<p><strong>Slide 147 — enqueue on an empty queue:</strong> <code>q-&gt;front = q-&gt;back = tp</code> makes both ends point to the first node. Its <code>next</code> is <code>NULL</code>.</p>
+<p><strong>Slide 147 — enqueue on a nonempty queue:</strong> assignment groups right to left. The slide&#x27;s compact statement:</p>
+<pre><code>q-&gt;back = q-&gt;back-&gt;next = tp;</code></pre>
+<p>has the effect of these two steps:</p>
+<pre><code>q-&gt;back-&gt;next = tp;  // Link the old rear to the new node
+q-&gt;back = tp;        // Then move the rear pointer</code></pre>
+<p><strong>Slide 148 — dequeue:</strong> save the old front before changing the queue. The slide&#x27;s conditional assignment handles both possible cases:</p>
+<pre><code>if (q-&gt;count == 1) {
+    q-&gt;back = NULL;
+    q-&gt;front = NULL;  // Removing the only node empties both ends
+} else {
+    q-&gt;front = q-&gt;front-&gt;next;
+}</code></pre>
+<p>Then free the saved node and decrement the count. <code>front(q)</code> only returns the oldest value; it does not remove or free anything.</p>
+<p><strong>Slide 149 — status:</strong> <code>isEmpty</code> tests the front pointer; <code>size</code> returns the maintained count. <code>isFull</code> always returns false because this implementation has no fixed capacity.</p>
+<p><strong>Memory-allocation omission in the PDF:</strong> the code above preserves the slide examples, which do not check either <code>malloc</code> result. A complete implementation must check <code>q == NULL</code> in <code>createQueue</code> and <code>tp == NULL</code> in <code>enqueue</code> before dereferencing them. The <code>isFull</code> test does not detect allocation failure. The alternative enqueue example below demonstrates the node allocation check.</p>
+<h5>Example sequence with the linked-list implementation</h5>
+<div class="table-scroll"><table><tr><th>Call</th><th>Front-to-back contents</th><th>Front data</th><th>Back data</th><th>Count</th></tr><tr><td><code>q = createQueue()</code></td><td>Empty</td><td>None</td><td>None</td><td>0</td></tr><tr><td><code>enqueue(q, 10)</code></td><td><code>10 -&gt; NULL</code></td><td>10</td><td>10</td><td>1</td></tr><tr><td><code>enqueue(q, 20)</code></td><td><code>10 -&gt; 20 -&gt; NULL</code></td><td>10</td><td>20</td><td>2</td></tr><tr><td><code>front(q)</code></td><td>Unchanged; returns 10</td><td>10</td><td>20</td><td>2</td></tr><tr><td><code>dequeue(q)</code></td><td><code>20 -&gt; NULL</code></td><td>20</td><td>20</td><td>1</td></tr><tr><td><code>dequeue(q)</code></td><td>Empty; both pointers are NULL</td><td>None</td><td>None</td><td>0</td></tr><tr><td><code>isEmpty(q)</code></td><td>Unchanged; returns true</td><td>None</td><td>None</td><td>0</td></tr><tr><td><code>freeQueue(q)</code></td><td>Queue structure released; do not use q afterward</td><td>—</td><td>—</td><td>—</td></tr></table></div>
+<p>To use the linked-list version with the client program, compile <code>queueLL.c</code> instead of the array&#x27;s <code>queue.c</code>:</p>
+<pre><code>cc -std=c11 -Wall -Wextra queueLL.c main.c -o queue_demo
+./queue_demo</code></pre>
+<p>Compile one implementation at a time: both provide the same public function names. The client-server simulation can use either implementation through the same <code>queue.h</code> interface.</p>
+<h4>C examples: enqueue, dequeue, front, and isEmpty</h4>
+<p>These examples use the linked-list structures above and the course&#x27;s function names. For an integer queue, define <code>itemType</code> as <code>int</code> before the structures (<code>typedef int itemType;</code>). Include <code>&lt;stdbool.h&gt;</code>, <code>&lt;stdio.h&gt;</code>, and <code>&lt;stdlib.h&gt;</code>, and define <code>typedef struct queueType *queue;</code> after the structures. Each function assumes <code>q</code> points to an initialized queue.</p>
+<p><strong><code>isEmpty</code>: check whether the front pointer is NULL.</strong> This does not change the queue.</p>
+<pre><code>bool isEmpty(queue q) {
+    return q-&gt;front == NULL;
+}</code></pre>
+<p><strong><code>enqueue</code>: add an item at the back.</strong> Handle the empty queue by setting both pointers to the first node.</p>
+<details class="code-reference"><summary>Read the complete code example</summary><pre><code>void enqueue(queue q, itemType item) {
+    struct node *new_node = malloc(sizeof *new_node);
+    if (new_node == NULL) {
+        fprintf(stderr, &quot;Error: queue allocation failed\n&quot;);
+        exit(EXIT_FAILURE);
+    }
+    new_node-&gt;data = item;
+    new_node-&gt;next = NULL;
+
+    if (isEmpty(q)) {
+        q-&gt;front = new_node;
+        q-&gt;back = new_node;
+    } else {
+        q-&gt;back-&gt;next = new_node;  // Link the old back to the new node
+        q-&gt;back = new_node;        // Move the back pointer
+    }
+    q-&gt;count++;
+}</code></pre></details>
+<p><strong><code>front</code>: return the oldest item without removing it.</strong> Check for underflow before accessing the node&#x27;s data.</p>
+<pre><code>itemType front(queue q) {
+    if (isEmpty(q)) {
+        fprintf(stderr, &quot;Error: queue underflow\n&quot;);
+        exit(EXIT_FAILURE);
+    }
+    return q-&gt;front-&gt;data;
+}</code></pre>
+<p><strong><code>dequeue</code>: remove and free the front node.</strong> When the last node is removed, reset the back pointer too.</p>
+<pre><code>void dequeue(queue q) {
+    if (isEmpty(q)) {
+        fprintf(stderr, &quot;Error: queue underflow\n&quot;);
+        exit(EXIT_FAILURE);
+    }
+    struct node *old_front = q-&gt;front;
+    q-&gt;front = old_front-&gt;next;
+    if (q-&gt;front == NULL) {
+        q-&gt;back = NULL;
+    }
+    free(old_front);
+    q-&gt;count--;
+}</code></pre>
+<p><strong>Example calls for an integer queue:</strong> place this code inside <code>main</code> after the definitions above. The queue structure is local here; its nodes are dynamically allocated by <code>enqueue</code> and freed by <code>dequeue</code>.</p>
+<details class="code-reference"><summary>Read the complete code example</summary><pre><code>struct queueType storage = {NULL, NULL, 0};
+queue q = &amp;storage;
+
+printf(&quot;Empty: %d\n&quot;, isEmpty(q));  // 1 (true)
+enqueue(q, 10);
+enqueue(q, 20);
+enqueue(q, 30);                     // Front-to-back: 10, 20, 30
+printf(&quot;Front: %d\n&quot;, front(q));   // 10; queue stays unchanged
+
+dequeue(q);                        // Remove 10
+printf(&quot;Front: %d\n&quot;, front(q));   // 20
+printf(&quot;Empty: %d\n&quot;, isEmpty(q));  // 0 (false)
+
+while (!isEmpty(q)) {
+    printf(&quot;Removing: %d\n&quot;, front(q));  // 20, then 30
+    dequeue(q);
+}
+printf(&quot;Empty: %d\n&quot;, isEmpty(q));  // 1 (true)</code></pre></details>
+<p>All four operations take O(1) time. Remember: <strong>enqueue adds, dequeue removes, front reads, and isEmpty checks</strong>.</p></article><h3>Manipulate the nodes</h3><div class="controls"><label for="linkedMode">Structure</label><select id="linkedMode"><option value="queue">Queue: enqueue rear, dequeue front</option><option value="stack">Stack: push front, pop front</option></select><label for="linkedValue">Value</label><input id="linkedValue" type="number" value="40"><button id="linkedAdd" class="primary">Enqueue</button><button id="linkedRemove">Dequeue</button><button id="linkedPeek">Read front</button><button id="linkedReset">Reset</button></div><div id="linkedDiagram" class="diagram" aria-live="polite"></div><p id="linkedStatus" class="status" aria-live="polite"></p><details class="topic-practice"><summary>Practice this section · 5 questions</summary><div id="questions-linked"></div></details></section><section id="arrays"><span class="tag">Lecture notes</span><h2>5. Three ways to build an array queue</h2><article class="ref"><h4>Implementing a queue with an array</h4>
+<p>Source: <a href="../../Canvas/begre246.pdf#page=659">Slides 137-144</a> (PDF pages 659-683).</p>
+<p><strong>Main problem with a basic array queue: removing from the front either requires shifting the remaining items or leaves unused slots that a non-wrapping implementation cannot reuse.</strong> A fixed-size array also needs a policy for when its capacity is reached.</p>
+<h5>Array example 1: fixed front, shift every remaining value after dequeue</h5>
+<pre><code>Index:             0    1    2    3    4
+Before dequeue:   [10] [20] [30] [40] [50]
+After removing 10 and shifting left:
+                  [20] [30] [40] [50] [  ]</code></pre>
+<p><strong>Enqueue and dequeue walkthrough (capacity 5):</strong> start with <code>front = 0</code>, <code>back = -1</code>. A dash below means a slot is not part of the live queue.</p>
+<div class="table-scroll"><table><tr><th>Operation</th><th>Array at indices 0, 1, 2, 3, 4</th><th>Front</th><th>Back</th></tr><tr><td>Enqueue 10</td><td><code>[10, -, -, -, -]</code></td><td>0</td><td>0</td></tr><tr><td>Enqueue 20</td><td><code>[10, 20, -, -, -]</code></td><td>0</td><td>1</td></tr><tr><td>Enqueue 30</td><td><code>[10, 20, 30, -, -]</code></td><td>0</td><td>2</td></tr><tr><td>Dequeue 10; shift 20 and 30 left</td><td><code>[20, 30, -, -, -]</code></td><td>0</td><td>1</td></tr><tr><td>Enqueue 40</td><td><code>[20, 30, 40, -, -]</code></td><td>0</td><td>2</td></tr></table></div>
+<p>Insert at <code>++back</code>. When removing, copy <code>data[1]</code> to <code>data[0]</code>, then <code>data[2]</code> to <code>data[1]</code>, and continue through the old back; finally decrement <code>back</code>. <strong>The shifting happens after dequeue; enqueue appends at the back without shifting.</strong> The front stays at index 0.</p>
+<p>Removing one request requires moving all four remaining requests. With n items, a dequeue may move n - 1 items, making it <strong>O(n)</strong>. Draining an entire queue this way takes O(n^2) total shifting work. This is costly for a server with many waiting requests.</p>
+<h5>Array example 2: move the front after dequeue, without wrapping</h5>
+<pre><code>Index:             0    1    2    3    4
+Initially:        [10] [20] [30] [40] [50]   front = 0, back = 4
+After 2 dequeues: [  ] [  ] [30] [40] [50]   front = 2, back = 4</code></pre>
+<p><strong>Enqueue and dequeue walkthrough (capacity 5):</strong> start with <code>front = 0</code>, <code>back = -1</code>.</p>
+<div class="table-scroll"><table><tr><th>Operation</th><th>Array at indices 0, 1, 2, 3, 4</th><th>Front</th><th>Back</th></tr><tr><td>Enqueue 10, 20, 30</td><td><code>[10, 20, 30, -, -]</code></td><td>0</td><td>2</td></tr><tr><td>Dequeue 10; increment front</td><td><code>[-, 20, 30, -, -]</code></td><td>1</td><td>2</td></tr><tr><td>Enqueue 40</td><td><code>[-, 20, 30, 40, -]</code></td><td>1</td><td>3</td></tr><tr><td>Dequeue 20; increment front</td><td><code>[-, -, 30, 40, -]</code></td><td>2</td><td>3</td></tr><tr><td>Enqueue 50</td><td><code>[-, -, 30, 40, 50]</code></td><td>2</td><td>4</td></tr><tr><td>Try to enqueue 60</td><td>Cannot append: next index would be 5</td><td>2</td><td>4</td></tr></table></div>
+<p>Insert at <code>++back</code>; remove by incrementing <code>front</code>. <strong>The front moves instead of the data.</strong> Each successful enqueue or dequeue takes O(1), but this design does not wrap around to reuse earlier slots.</p>
+<p>Only three items remain, but the back index is already at the last slot. A basic implementation that only increments <code>back</code> cannot enqueue another item, even though indices 0 and 1 are available. This is <strong>an apparent full condition caused by the layout, not by the item count</strong>. Writing to index 5 would be out of bounds; shifting the items back toward index 0 would reintroduce O(n) copying. Resetting the indices only when the queue becomes empty does not solve this while items remain.</p>
+<h5>Problem 3: fixed capacity and resizing</h5>
+<p class="listline">- A fixed-size array cannot accept more items once all slots are occupied. The program must reject the insertion, report overflow, or provide a way to grow.</p>
+<p class="listline">- Allocating a much larger array in advance can reserve memory that is never used.</p>
+<p class="listline">- Resizing requires allocating storage and copying the live items, which takes O(n) time for that expansion. Allocation may fail, and a wrapped queue must be copied in FIFO order.</p>
+<h5>Array example 3: wrap the queue around in the array</h5>
+<p>For the second example, wrap the back index to 0 and insert 60:</p>
+<pre><code>Index:             0    1    2    3    4
+After enqueue 60: [60] [  ] [30] [40] [50]   front = 2, back = 0
+Logical FIFO order: 30 -&gt; 40 -&gt; 50 -&gt; 60</code></pre>
+<p><strong>Continue with both back and front wrapping (capacity 5):</strong></p>
+<div class="table-scroll"><table><tr><th>Operation</th><th>Array at indices 0, 1, 2, 3, 4</th><th>Front</th><th>Back</th><th>Count</th></tr><tr><td>Starting queue: 30, 40, 50</td><td><code>[-, -, 30, 40, 50]</code></td><td>2</td><td>4</td><td>3</td></tr><tr><td>Enqueue 60; back wraps to 0</td><td><code>[60, -, 30, 40, 50]</code></td><td>2</td><td>0</td><td>4</td></tr><tr><td>Dequeue 30</td><td><code>[60, -, -, 40, 50]</code></td><td>3</td><td>0</td><td>3</td></tr><tr><td>Enqueue 70</td><td><code>[60, 70, -, 40, 50]</code></td><td>3</td><td>1</td><td>4</td></tr><tr><td>Dequeue 40</td><td><code>[60, 70, -, -, 50]</code></td><td>4</td><td>1</td><td>3</td></tr><tr><td>Dequeue 50; front wraps to 0</td><td><code>[60, 70, -, -, -]</code></td><td>0</td><td>1</td><td>2</td></tr></table></div>
+<p>The remaining FIFO order is <code>60 -&gt; 70</code>. Both indices wrap independently; no values shift.</p>
+<p class="listline">- Enqueue, after checking space: <code>back = (back + 1) % capacity</code>, store the item at <code>data[back]</code>, then increment <code>count</code>.</p>
+<p class="listline">- Dequeue, after checking nonempty: <code>front = (front + 1) % capacity</code>, then decrement <code>count</code>.</p>
+<p class="listline">- Read the oldest item at <code>data[front]</code> before dequeue if its value is needed.</p>
+<p class="listline">- Empty: <code>count == 0</code>. Full: <code>count == capacity</code>.</p>
+<p>In all diagrams, a dash means a logically unused slot. Dequeue does not have to erase the old integer; the indices and count determine which values are live.</p>
+<p><strong>Circular indexing avoids shifting and reuses freed slots, so enqueue and dequeue take O(1) when no resizing is needed.</strong> The physical array order may wrap, but the logical queue order stays FIFO. Circular indexing does not increase capacity: when every slot holds a live item, the queue is truly full.</p>
+<p>The slides compare these three designs:</p>
+<p class="listline">1. <strong>Keep the front at index 0:</strong> after removal, shift all remaining items left. This makes dequeue O(n).</p>
+<p class="listline">2. <strong>Advance the front without wrapping:</strong> avoids shifting, but leaves unused space at the beginning as the indices move toward the end.</p>
+<p class="listline">3. <strong>Use a circular array:</strong> wrap indices back to 0 after the last slot, reusing space freed by dequeues.</p>
+<p>For capacity <code>capacity</code>, advance an index using:</p>
+<pre><code>index = (index + 1) % capacity;</code></pre>
+<p>The array queue tracks a front index, a back index, an item count, and the allocated capacity. In the slides, the structure&#x27;s <code>size</code> member is capacity, while the public <code>size(q)</code> function returns the item count.</p>
+<p class="listline">- Initialize <code>front = 0</code>, <code>back = -1</code>, and <code>count = 0</code>.</p>
+<p class="listline">- Enqueue: ensure capacity, advance <code>back</code> with wraparound, store the item, increment <code>count</code>.</p>
+<p class="listline">- Dequeue: check for underflow, advance <code>front</code> with wraparound, decrement <code>count</code>. Shifting or clearing the old slot is unnecessary for the value types in the example.</p>
+<p class="listline">- Empty means <code>count == 0</code>; full means <code>count == capacity</code>. The count distinguishes the two states.</p>
+<p class="listline">- Circular-array enqueue and dequeue take O(1) when no resizing is needed. Growing the storage requires O(n) copying.</p>
+<p><strong>Correction to the slide&#x27;s resizing example:</strong> <code>expandQ</code> copies physical array positions and changes capacity without preserving a wrapped queue&#x27;s logical order; it also loses the old allocation without freeing it. A correct expansion copies the <code>count</code> live items in FIFO order, starting at the old front (<code>old_data[(old_front + i) % old_capacity]</code>), frees the old array after a successful allocation and copy, and resets <code>front = 0</code> and <code>back = count - 1</code> before using the new capacity.</p></article><h3>Compare the designs yourself</h3><p>Start full, dequeue twice, then enqueue 60. Compare shifting, unused slots, and wraparound.</p><div class="controls"><label for="arrayMode">Design</label><select id="arrayMode"><option value="shift">1 · Fixed front, shift on dequeue</option><option value="linear">2 · Moving front, no wrapping</option><option value="circular">3 · Circular array</option></select><input id="arrayValue" type="number" value="60" aria-label="Array item value"><button id="arrayAdd" class="primary">Enqueue</button><button id="arrayRemove">Dequeue</button><button id="arrayReset">Reset array</button></div><div id="arrayDiagram" class="diagram" aria-live="polite"></div><p id="arrayStatus" class="status" aria-live="polite"></p><details class="topic-practice"><summary>Practice this section · 4 questions</summary><div id="questions-arrays"></div></details></section><section id="memory"><span class="tag">Lecture notes</span><h2>6. queue.h and the dynamic circular-array module</h2><article class="ref"><h4>Header-file example: a circular-array queue module</h4>
+<p>Based on <a href="../../Canvas/begre246.pdf#page=679">slides 140-144</a>. This example uses the lecture&#x27;s <strong>dynamically allocated circular array</strong>, with an initial capacity of <code>CHUNKSIZE = 20</code>. The expansion helper below preserves FIFO order even when the queue has wrapped.</p>
+<p>Use three files: <code>queue.h</code> declares the interface, <code>queue.c</code> implements it with a circular array, and <code>main.c</code> uses it. The header tells callers which operations are available; the private structure in <code>queue.c</code> determines how the queue is stored.</p>
+<h5>queue.h: public types and function declarations</h5>
+<details class="code-reference"><summary>Read the complete code example</summary><pre><code>#ifndef QUEUE_H
+#define QUEUE_H
+
+#include &lt;stdbool.h&gt;
+
+typedef int itemType;
+typedef struct queueType *queue;  // Implementation is hidden in queue.c
+
+queue createQueue(void);
+void freeQueue(queue q);
+void enqueue(queue q, itemType item);
+void dequeue(queue q);
+itemType front(queue q);
+bool isEmpty(queue q);
+bool isFull(queue q);
+int size(queue q);
+
+#endif</code></pre></details>
+<p class="listline">- The include guard prevents repeated declarations when the header is included more than once.</p>
+<p class="listline">- <code>itemType</code> is <code>int</code> here so the example is self-contained. In the course layout, this type comes from <code>itemType.h</code>; use that header instead of redefining it when integrating with the course files.</p>
+<p class="listline">- <code>queue</code> is a pointer to a structure whose members are hidden from the caller. Client code uses <code>enqueue(q, value)</code> rather than changing array indices directly.</p>
+<p class="listline">- The declarations match the course interface: <code>dequeue</code> removes an item and returns no value; <code>front</code> reads without removing.</p>
+<h5>queue.c: private circular-array implementation</h5>
+<details class="code-reference"><summary>Read the complete code example</summary><pre><code>#include &quot;queue.h&quot;
+#include &lt;stdio.h&gt;
+#include &lt;stdlib.h&gt;
+
+#define CHUNKSIZE 20
+
+struct queueType {
+    itemType *data;
+    int front, back;
+    int count;  // Number of live items
+    int size;   // Allocated array capacity
+};
+
+static void fail(const char *message) {
+    fprintf(stderr, &quot;%s\n&quot;, message);
+    exit(EXIT_FAILURE);
+}
+
+// Private helper: wrap using this queue&#x27;s current capacity.
+static int increment(int index, queue q) {
+    return (index + 1) % q-&gt;size;
+}
+
+queue createQueue(void) {
+    queue q = malloc(sizeof(struct queueType));
+    if (q == NULL) fail(&quot;Queue allocation failed&quot;);
+
+    q-&gt;data = malloc(sizeof(itemType) * CHUNKSIZE);
+    if (q-&gt;data == NULL) {
+        free(q);
+        fail(&quot;Queue data allocation failed&quot;);
+    }
+    q-&gt;front = 0;
+    q-&gt;back = -1;
+    q-&gt;size = CHUNKSIZE;
+    q-&gt;count = 0;
+    return q;
+}
+
+void freeQueue(queue q) {
+    free(q-&gt;data);
+    free(q);
+}
+
+bool isEmpty(queue q) { return q-&gt;count == 0; }
+bool isFull(queue q) { return q-&gt;count == q-&gt;size; }
+int size(queue q) { return q-&gt;count; }
+
+// Private helper: copy live items in logical FIFO order.
+static void expandQ(queue q) {
+    int newSize = q-&gt;size + CHUNKSIZE;
+    itemType *newData = malloc(sizeof(itemType) * newSize);
+    if (newData == NULL) fail(&quot;Queue expansion failed&quot;);
+
+    for (int i = 0; i &lt; q-&gt;count; i++) {
+        newData[i] = q-&gt;data[(q-&gt;front + i) % q-&gt;size];
+    }
+    free(q-&gt;data);
+    q-&gt;data = newData;
+    q-&gt;size = newSize;
+    q-&gt;front = 0;
+    q-&gt;back = q-&gt;count - 1;
+}
+
+void enqueue(queue q, itemType item) {
+    if (isFull(q)) expandQ(q);
+    q-&gt;back = increment(q-&gt;back, q);
+    q-&gt;data[q-&gt;back] = item;
+    q-&gt;count++;
+}
+
+itemType front(queue q) {
+    if (isEmpty(q)) fail(&quot;Queue underflow&quot;);
+    return q-&gt;data[q-&gt;front];
+}
+
+void dequeue(queue q) {
+    if (isEmpty(q)) fail(&quot;Queue underflow&quot;);
+    q-&gt;front = increment(q-&gt;front, q);
+    q-&gt;count--;
+}</code></pre></details>
+<p><strong>What <code>createQueue</code> initializes:</strong></p>
+<p class="listline">1. <code>malloc(sizeof(struct queueType))</code> allocates the structure containing the pointer, indices, count, and capacity.</p>
+<p class="listline">2. <code>malloc(sizeof(itemType) * CHUNKSIZE)</code> allocates a separate array with room for <code>CHUNKSIZE</code> items. <code>sizeof(itemType)</code> is the number of bytes per item; multiplying by the chunk size gives the total bytes needed.</p>
+<p class="listline">3. <code>front = 0</code> sets the index where the first item will be read.</p>
+<p class="listline">4. <code>back = -1</code> means no item has been inserted yet; the first call to <code>increment(-1, q)</code> produces index 0.</p>
+<p class="listline">5. <code>size = CHUNKSIZE</code> records the array&#x27;s capacity, while <code>count = 0</code> records that the queue is empty. <strong><code>q-&gt;size</code> is capacity; <code>size(q)</code> returns the number of stored items.</strong></p>
+<p class="listline">6. Return <code>q</code> so the caller can use the initialized queue.</p>
+<p><code>increment</code> is <code>static</code>, making it internal to <code>queue.c</code>; it does not belong in <code>queue.h</code>. Both enqueue and dequeue call it and assign the returned index. It uses <code>q-&gt;size</code> so wrapping still works after expansion: with capacity 20, index 19 wraps to 0.</p>
+<p>When full, <code>expandQ</code> increases capacity by <code>CHUNKSIZE</code>, copies live items in FIFO order, frees the old array, and resets the indices. This corrects the slide&#x27;s resizing issue described above. Expansion takes O(n); operations that do not expand take O(1). Underflow or allocation failure exits the example. <code>freeQueue</code> must free <strong>both allocations</strong>, data first and structure second.</p>
+<h5>main.c: use the header to work with the queue</h5>
+<details class="code-reference"><summary>Read the complete code example</summary><pre><code>#include &quot;queue.h&quot;
+#include &lt;stdio.h&gt;
+
+int main(void) {
+    queue q = createQueue();  // Capacity 20, count 0
+    enqueue(q, 10);
+    enqueue(q, 20);
+    enqueue(q, 30);
+    printf(&quot;Front: %d\n&quot;, front(q));  // 10
+    dequeue(q);                        // Remove 10
+    enqueue(q, 40);
+    printf(&quot;Size: %d\n&quot;, size(q));    // 3, not capacity 20
+
+    while (!isEmpty(q)) {
+        printf(&quot;%d &quot;, front(q));
+        dequeue(q);
+    }
+    printf(&quot;\n&quot;);
+    freeQueue(q);
+    return 0;
+}</code></pre></details>
+<p>Compile the implementation and client together:</p>
+<pre><code>cc -std=c11 -Wall -Wextra queue.c main.c -o queue_demo
+./queue_demo</code></pre>
+<p>Expected output:</p>
+<pre><code>Front: 10
+Size: 3
+20 30 40</code></pre>
+<p>The five-slot diagrams earlier still illustrate wraparound; this implementation starts with 20 slots and expands when needed.</p></article><details class="topic-practice"><summary>Practice this section · 5 questions</summary><div id="questions-memory"></div></details></section><section id="comparison"><span class="tag">Lecture notes</span><h2>7. Choosing a structure</h2><article class="ref"><h4>Stack vs. queue: which end should change?</h4>
+<div class="table-scroll"><table><tr><th>Structure</th><th>Order</th><th>Insert at</th><th>Remove from</th><th>Efficient singly linked implementation</th></tr><tr><td>Stack</td><td>LIFO</td><td>Front/top</td><td>Front/top</td><td>Head pointer; O(1) push and pop</td></tr><tr><td>Queue</td><td>FIFO</td><td>Rear/back</td><td>Front</td><td>Head and tail pointers; O(1) enqueue and dequeue</td></tr></table></div>
+<p>A linked queue grows one node at a time and uses O(n) memory, including node pointers. A circular array uses its allocated capacity and avoids per-node pointers, but must handle a full array or resize it.</p></article><div class="callout">Use a stack for most-recent-first work, and a queue for arrival-order work. Choose a circular array when contiguous storage or a bounded buffer is useful; choose a linked queue when per-node allocation and pointer overhead are acceptable. Expansion can add latency to an array enqueue.</div><details class="topic-practice"><summary>Practice this section · 1 question</summary><div id="questions-comparison"></div></details></section><section id="reverse"><span class="tag">Lecture notes</span><h2>8. Quiz review: reversing a singly linked list</h2><article class="ref"><h2>Quiz Review - October 26, 2026</h2>
+<h3>Quiz 4 Review: Reversing a Singly Linked List</h3>
+<p>Source: <a href="Quiz4_Sol-1.pdf">Quiz 4 solution</a>, pages 1-2. The PDF heading says EGRE246.</p>
+<p class="listline">- A singly linked list is made of nodes. Each node stores data and a pointer to the next node.</p>
+<p class="listline">- The last node&#x27;s <code>next</code> pointer is <code>NULL</code>.</p>
+<p class="listline">- To reverse the list, change the direction of every <code>next</code> pointer and update the head.</p>
+<p class="listline">- The nodes and their data stay in memory; only the links change.</p>
+<pre><code>struct Node {
+    int data;
+    struct Node *next;
+};</code></pre>
+<h4>Why use a pointer to a pointer?</h4>
+<pre><code>void reverse(struct Node **head_ref);
+// In main:
+reverse(&amp;head);</code></pre>
+<p class="listline">- <code>head</code> is a <code>struct Node *</code>: it holds the address of the first node.</p>
+<p class="listline">- <code>&amp;head</code> is the address of the head pointer itself.</p>
+<p class="listline">- <code>head_ref</code> receives that address, so assigning to <code>*head_ref</code> changes <code>head</code> in <code>main</code>.</p>
+<p class="listline">- Passing only <code>head</code> would give the function a copy of the pointer. Reassigning that local copy would not update the caller&#x27;s head.</p>
+<h4>Corrected reversal function</h4>
+<p><strong>The supplied solution contains errors.</strong> It sets <code>ptr = cur</code> and then <code>ptr-&gt;next = pre</code>. Because <code>ptr</code> and <code>cur</code> point to the same node, this overwrites <code>cur-&gt;next</code> before the original next node is saved. The first iteration then moves <code>cur</code> to <code>NULL</code>, losing access to the rest of the list through the head. The PDF also omits a semicolon after <code>cur = cur-&gt;next</code> and the final closing brace of the function.</p>
+<p>Use <code>ptr</code> to save the original next node before changing the link:</p>
+<pre><code>void reverse(struct Node **head_ref) {
+    struct Node *cur, *pre, *ptr;
+
+    cur = *head_ref;
+    pre = NULL;
+
+    while (cur != NULL) {
+        ptr = cur-&gt;next;  // Save the next node before overwriting the link
+        cur-&gt;next = pre;  // Reverse the current node&#x27;s link
+        pre = cur;        // Grow the reversed portion by one node
+        cur = ptr;        // Move to the next original node
+    }
+
+    *head_ref = pre;      // The original last node is now the head
+}</code></pre>
+<p>The function assumes <code>head_ref</code> points to a valid head variable, as in <code>reverse(&amp;head)</code>. The list itself may be empty (<code>head == NULL</code>).</p>
+<h4>Roles of the three pointers</h4>
+<div class="table-scroll"><table><tr><th>Pointer</th><th>Meaning</th></tr><tr><td><code>cur</code></td><td>Current node being processed; start of the unreversed portion</td></tr><tr><td><code>pre</code></td><td>Previous node; head of the already reversed portion</td></tr><tr><td><code>ptr</code></td><td>Saved next node; keeps the remaining list reachable</td></tr></table></div>
+<p><strong>Remember the order: save next, reverse link, move previous, move current.</strong> Copying a pointer does not copy the node it points to.</p>
+<h4>Trace: 1 -&gt; 2 -&gt; 3 -&gt; NULL</h4>
+<div class="table-scroll"><table><tr><th>Stage</th><th>Reversed portion (<code>pre</code>)</th><th>Remaining portion (<code>cur</code>)</th></tr><tr><td>Start</td><td><code>NULL</code></td><td><code>1 -&gt; 2 -&gt; 3 -&gt; NULL</code></td></tr><tr><td>After iteration 1</td><td><code>1 -&gt; NULL</code></td><td><code>2 -&gt; 3 -&gt; NULL</code></td></tr><tr><td>After iteration 2</td><td><code>2 -&gt; 1 -&gt; NULL</code></td><td><code>3 -&gt; NULL</code></td></tr><tr><td>After iteration 3</td><td><code>3 -&gt; 2 -&gt; 1 -&gt; NULL</code></td><td><code>NULL</code></td></tr></table></div>
+<p>At the end, <code>cur == NULL</code>. Assign <code>pre</code> to <code>*head_ref</code> so the caller can reach the reversed list. The original head becomes the tail and points to <code>NULL</code>.</p>
+<h4>Understanding the quiz&#x27;s test program</h4>
+<p class="listline">- <code>addFront(&amp;head, value)</code> inserts a node at the beginning:</p>
+<p>  1. Allocate a node and store its data.   2. Set <code>new_node-&gt;next = *head_ref</code> to link it to the old head.   3. Set <code>*head_ref = new_node</code> to make it the new head.</p>
+<p class="listline">- Adding <code>5</code>, <code>4</code>, <code>3</code>, <code>2</code>, then <code>1</code> at the front produces <code>1 -&gt; 2 -&gt; 3 -&gt; 4 -&gt; 5 -&gt; NULL</code>.</p>
+<p class="listline">- <code>printList</code> receives a copy of the head pointer and walks through the list without changing the caller&#x27;s head.</p>
+<p class="listline">- With the corrected reversal, the output is:</p>
+<pre><code>Original list:
+1 -&gt; 2 -&gt; 3 -&gt; 4 -&gt; 5 -&gt; NULL
+Reversed list:
+5 -&gt; 4 -&gt; 3 -&gt; 2 -&gt; 1 -&gt; NULL</code></pre>
+<h4>Study reminders</h4>
+<p class="listline">- Save <code>cur-&gt;next</code> before changing it; otherwise, you lose the path to unprocessed nodes.</p>
+<p class="listline">- Empty list: the loop does not run and the head remains <code>NULL</code>.</p>
+<p class="listline">- One-node list: the node remains the head and its <code>next</code> stays <code>NULL</code>.</p>
+<p class="listline">- Reversal takes O(n) time and O(1) extra space. It does not allocate or free nodes.</p>
+<p class="listline">- In a complete program, check whether <code>malloc</code> succeeds in <code>addFront</code> and free all allocated nodes when finished. These steps are omitted from the supplied example.</p></article><h3>Trace each pointer assignment</h3><div class="controls"><button id="revNext" class="primary">Next assignment</button><button id="revReset">Reset reversal</button></div><div id="revDiagram" class="diagram" aria-live="polite"></div><div id="revStatus" class="status" aria-live="polite"></div><details class="topic-practice"><summary>Practice this section · 2 questions</summary><div id="questions-reverse"></div></details></section><section id="practice"><h2>Study progress</h2><p>All 24 questions are kept with their topics. Open “Practice this section” after reading a section.</p><p id="score" class="score" aria-live="polite"></p><button id="quizReset">Clear all answers</button></section><section id="reference"><h2>Source notes</h2><p><a href="ClassNotes.md">Lecture Markdown</a> · <a href="QuizReview.md">Quiz review Markdown</a> · <a href="../../Canvas/begre246.pdf#page=643">Course PDF</a> · <a href="Quiz4_Sol-1.pdf">Quiz solution PDF</a></p><p>This guide includes both Markdown documents in topic order. Longer code examples can be expanded within their sections.</p></section><footer>October 26, 2026 · Notes first, optional practice by topic. Open code examples before printing to include them.</footer></main><script>
+'use strict';
+const $=id=>document.getElementById(id);
+const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+function chain(values,headLabel='front',tail=true){return values.length?'<div class="chain">'+values.map((v,i)=>'<div><span class="pointer">'+(i===0?headLabel:'')+(tail&&i===values.length-1?' / back':'')+'</span><span class="node '+(i===0?'head':'')+'"><strong>'+esc(v)+'</strong><small>data | next</small></span></div><span class="arrow">→</span>').join('')+'<span>NULL</span></div>':'<p><strong>Empty</strong> · '+headLabel+' = NULL'+(tail?' · back = NULL':'')+'</p>';}
+let rev;
+function resetRev(){rev={next:[1,2,null],cur:0,pre:null,ptr:null,phase:0,done:false};drawRev('Initialize cur = head (N1), pre = NULL.');}
+function drawRev(msg){$('revDiagram').innerHTML=[0,1,2].map(i=>'<div class="chain"><span class="pointer" style="min-width:150px">'+['cur','pre','ptr'].filter(k=>rev[k]===i).join(' / ')+'</span><span class="node '+(rev.cur===i?'head':'')+'"><strong>N'+(i+1)+'</strong><small>data: '+(i+1)+'</small></span><span class="arrow">→</span><strong>'+(rev.next[i]===null?'NULL':'N'+(rev.next[i]+1))+'</strong></div>').join('')+'<p class="muted">NULL pointers: '+(['cur','pre','ptr'].filter(k=>rev[k]===null).join(', ')||'none')+'</p>';$('revStatus').textContent=msg;$('revNext').disabled=rev.done;}
+$('revNext').onclick=()=>{if(rev.cur===null){rev.done=true;drawRev('*head_ref = pre → head is N3. Result: N3 → N2 → N1 → NULL.');return;}let msg;switch(rev.phase){case 0:rev.ptr=rev.next[rev.cur];msg='ptr = cur->next: preserve the original next node.';break;case 1:rev.next[rev.cur]=rev.pre;msg='cur->next = pre: reverse this node’s link.';break;case 2:rev.pre=rev.cur;msg='pre = cur: extend the reversed portion.';break;case 3:rev.cur=rev.ptr;msg='cur = ptr: advance along the saved original path.';}rev.phase=(rev.phase+1)%4;drawRev(msg);};$('revReset').onclick=resetRev;resetRev();
+let linked=[10,20,30];function drawLinked(msg='Initialized with three nodes.'){let stack=$('linkedMode').value==='stack';$('linkedDiagram').innerHTML=chain(linked,stack?'top / head':'front',!stack);$('linkedStatus').textContent=msg+' Count: '+linked.length+'.';$('linkedAdd').textContent=stack?'Push':'Enqueue';$('linkedRemove').textContent=stack?'Pop':'Dequeue';$('linkedPeek').textContent=stack?'Read top':'Read front';}
+$('linkedAdd').onclick=()=>{let v=$('linkedValue').valueAsNumber;if(!Number.isFinite(v)||!Number.isInteger(v)){drawLinked('Enter an integer.');return;}if(linked.length>=8){drawLinked('Diagram limited to 8 nodes for readability; this is not a linked-queue capacity limit.');return;}let stack=$('linkedMode').value==='stack';stack?linked.unshift(v):linked.push(v);drawLinked(stack?'Allocate node; next = old top; top = new node.':linked.length===1?'Allocate node; front = back = new node.':'Allocate node; old back->next = new node; back = new node.');};
+$('linkedRemove').onclick=()=>{if(!linked.length){drawLinked('Underflow: no node can be removed.');return;}let v=linked.shift();drawLinked('Removed '+v+'; advance head and free old head.'+(!linked.length?' Queue is empty; clear back too.':''));};$('linkedPeek').onclick=()=>drawLinked(linked.length?'Read '+linked[0]+' without removing or changing any pointer.':'Underflow: no front value to read.');$('linkedReset').onclick=()=>{linked=[10,20,30];drawLinked();};$('linkedMode').onchange=()=>{linked=[10,20,30];drawLinked();};drawLinked();
+let arr,af,ab,ac;function resetArray(){arr=[10,20,30,40,50];af=0;ab=4;ac=5;drawArray('Full initial queue. Dequeue twice, then enqueue 60.');}
+function drawArray(msg){let mode=$('arrayMode').value;let live=new Set(Array.from({length:ac},(_,i)=>mode==='circular'?(af+i)%5:af+i));$('arrayDiagram').innerHTML='<div class="slots">'+arr.map((v,i)=>'<div class="slot '+(live.has(i)?'live':'')+'"><div class="markers">'+(ac&&i===af?'FRONT ':'')+(ac&&i===ab?'BACK':'')+'</div><div class="value">'+(live.has(i)?esc(v):'—')+'</div><div class="idx">index '+i+'</div></div>').join('')+'</div><p>front = '+af+' · back = '+ab+' · count = '+ac+' / 5</p>';$('arrayStatus').textContent=msg;}
+$('arrayAdd').onclick=()=>{let v=$('arrayValue').valueAsNumber,mode=$('arrayMode').value;if(!Number.isFinite(v)||!Number.isInteger(v)){drawArray('Enter an integer.');return;}if(ac===5){drawArray('True overflow: all five slots hold live items. Grow or reject this insertion.');return;}if(mode==='linear'&&ab===4){drawArray('Cannot append: next back would be 5, out of bounds, despite free earlier slots.');return;}let old=ab;ab=mode==='circular'?(ab+1)%5:ab+1;arr[ab]=v;ac++;drawArray('Enqueued '+v+' at index '+ab+'. '+(mode==='circular'&&old===4?'Back wrapped from 4 to 0.':'No existing values shifted.'));};
+$('arrayRemove').onclick=()=>{if(!ac){drawArray('Underflow: queue is empty.');return;}let mode=$('arrayMode').value,v=arr[af],moves=ac-1;ac--;if(mode==='shift'){for(let i=0;i<ac;i++)arr[i]=arr[i+1];arr[ac]=null;ab--;drawArray('Removed '+v+'. Shifted '+moves+' remaining values left; front stays 0.');}else{arr[af]=null;af=mode==='circular'?(af+1)%5:af+1;drawArray('Removed '+v+'. Front advanced to '+af+'; no values shifted.');}};$('arrayReset').onclick=resetArray;$('arrayMode').onchange=resetArray;resetArray();
+let tick=0,waiting=[],served=0,rows=[];function drawServer(msg='Ready: no arrivals yet.'){ $('serverDiagram').innerHTML=chain(waiting);$('serverStatus').textContent='Tick '+tick+' · Arrived '+tick+' · Served '+served+' · Waiting '+waiting.length+'. '+msg;$('serverLog').innerHTML='<table><tr><th>Tick</th><th>Served first</th><th>New request</th><th>Waiting afterward</th></tr>'+rows.join('')+'</table>';$('serverNext').disabled=tick>=6;}
+$('serverNext').onclick=()=>{tick++;let done='—';if(tick%2===0&&waiting.length){done=waiting.shift();served++;}waiting.push(tick);rows.push('<tr><td>'+tick+'</td><td>'+done+'</td><td>'+tick+'</td><td>'+waiting.join(' → ')+'</td></tr>');drawServer(tick===6?'Three requests remain: 4, 5, 6.':'Service was checked before arrival.');};$('serverReset').onclick=()=>{tick=0;waiting=[];served=0;rows=[];drawServer();};drawServer();
+const questions=[["Which end should a singly linked stack use for both push and pop?", ["Front / head", "Rear / tail", "Either end with identical removal cost"], 0, "The head is directly available. Both operations update a few pointers; removing the tail requires finding its predecessor."], ["Which endpoint pairing makes a singly linked queue efficient?", ["Enqueue front, dequeue rear", "Enqueue rear, dequeue front", "Enqueue and dequeue front"], 1, "Maintain head and tail pointers. Enqueue at the tail and remove the head, both O(1), while preserving FIFO."], ["After enqueue(10), enqueue(20), dequeue(), enqueue(30), what does front() return?", ["10", "20", "30"], 1, "Dequeue removes 10. The remaining order is 20, then 30; front only reads 20."], ["Which reversal sequence is correct?", ["cur->next = pre; ptr = cur->next;", "ptr = cur->next; cur->next = pre; pre = cur; cur = ptr;", "ptr = cur; ptr->next = pre; cur = cur->next;"], 1, "Save the original next node before overwriting the link. A copy of cur points to the same node; it does not preserve the original link."], ["Why does reverse accept struct Node **head_ref?", ["To update the caller\u2019s head pointer", "To allocate two nodes", "To copy all nodes"], 0, "&head gives the function access to the actual pointer variable; *head_ref = pre updates the caller\u2019s head."], ["What is wrong with free(old_front); q->front = old_front->next;?", ["Nothing", "It reads freed memory", "It only fails on an empty queue"], 1, "Read and save the next link before freeing the node. Any later dereference of the freed node is invalid."], ["Removing the only node in a linked queue must\u2026", ["Set only front to NULL", "Set both front and back to NULL and decrement count", "Leave back pointing to the old node"], 1, "Both endpoint pointers must represent the empty queue. Otherwise back points at freed storage."], ["A shifting array queue contains n items. One dequeue costs\u2026", ["O(1)", "O(n)", "O(n\u00b2)"], 1, "It can shift n \u2212 1 values. Draining all n items with repeated shifting costs O(n\u00b2) in total."], ["A non-wrapping array queue has front = 2, back = 4, capacity = 5. Why can insertion fail?", ["All five slots must be occupied", "The next back index is out of bounds despite unused earlier slots", "Front must always be zero"], 1, "A moving front avoids shifting but does not reuse earlier slots unless the design wraps or compacts storage."], ["Circular capacity is 5 and back is 4. Next back is\u2026", ["5", "0", "1"], 1, "(4 + 1) % 5 = 0. This changes the index without shifting the stored values."], ["With count tracking, how is a circular queue full?", ["front == back", "count == capacity", "front == 0"], 1, "Count distinguishes full and empty states even when indices overlap. Empty is count == 0."], ["What should createQueue initialize for the dynamic array?", ["front=0, back=-1, count=0, size=CHUNKSIZE", "front=-1, back=0, count=CHUNKSIZE", "Only allocate the structure"], 0, "Allocate both the structure and sizeof(itemType) * CHUNKSIZE bytes for data, then initialize all four fields."], ["What does size(q) return in the lecture interface?", ["Allocated capacity", "Number of live items", "Bytes allocated"], 1, "size(q) returns count. The structure member q->size is array capacity; these names mean different things."], ["Why is increment declared static in queue.c?", ["It doubles the queue capacity", "It gives the helper internal linkage", "It makes the return value persist"], 1, "The function is private to that source file. It need not be part of the public queue.h interface."], ["Correct expansion of a wrapped queue copies item i from\u2026", ["old_data[i]", "old_data[(old_front + i) % old_capacity]", "old_data[old_back - i]"], 1, "Copy in logical FIFO order. Then free old storage and reset front=0 and back=count\u22121 before using the new capacity."], ["Which cleanup is correct for the dynamic array implementation?", ["free(q); free(q->data);", "free(q->data); free(q);", "Only free(q);"], 1, "Free the separate data allocation before freeing the structure that stores its address."], ["Linked-list isFull(q) returns false. Can malloc fail?", ["Yes", "No"], 0, "There is no fixed queue capacity, but available memory is finite. Every allocation still needs a failure check."], ["Six ticks, one arrival per tick, service every two ticks BEFORE arrivals: how many wait at the end?", ["0", "2", "3"], 2, "Requests 1, 2, and 3 are served at ticks 2, 4, and 6. Requests 4, 5, and 6 remain waiting."], ["Which implementation suits a fixed-size request buffer without per-request node allocation?", ["Circular array", "Singly linked list is the only choice", "Array that shifts every dequeue"], 0, "A circular array reuses its storage and provides O(1) enqueue/dequeue when no resizing occurs. Define a full-buffer policy."], ["Which module files should be linked for one executable?", ["queue.c and queueLL.c together", "main.c plus one of queue.c or queueLL.c", "Only queue.h"], 1, "Both implementations export the same functions. Compile one implementation with the client and include the shared header."], ["What is the recursive freeNodes helper\u2019s additional space cost?", ["O(1)", "O(n)", "O(n\u00b2)"], 1, "It makes one recursive call per node. An iterative traversal can free the nodes with O(1) extra space."], ["What is wrong with new_node->next = new_node during stack push?", ["It creates a self-link", "It updates the old head correctly", "Nothing if the value is nonzero"], 0, "The new node must point to the old head before the head is updated. A self-link can cause an infinite traversal."], ["At prob=0.6 and service once every two ticks, what tends to happen over a long run?", ["The queue tends to build a backlog", "The queue must stay empty", "Exactly three clients arrive every five ticks"], 0, "Average arrivals are 0.6 per tick versus at most 0.5 service opportunities per tick. Individual runs vary."], ["Why check isEmpty before front or dequeue?", ["To avoid dereferencing a NULL front / invalid access", "To sort the requests", "To increase array capacity"], 0, "Reading or removing from an empty queue causes underflow. Check first or use an interface that reports failure."]];let answers={};function score(){let keys=Object.keys(answers);$('score').textContent=keys.filter(k=>answers[k]===questions[k][2]).length+' correct · '+keys.length+' / '+questions.length+' answered';}
+const topicGroups={stacks:[0,21],queues:[2,10,23],server:[17,22],linked:[1,5,6,16,20],arrays:[7,8,9,14],memory:[11,12,13,15,19],comparison:[18],reverse:[3,4]};
+// Keep all 24 questions; each belongs to exactly one topic.
+function renderQuiz(){Object.entries(topicGroups).forEach(([topic,ids])=>{$('questions-'+topic).innerHTML=ids.map((i,k)=>{const q=questions[i];return '<div class="question"><p><strong>'+(k+1)+'. '+esc(q[0])+'</strong></p><div class="answers">'+q[1].map((a,j)=>'<button data-question="'+i+'" data-choice="'+j+'">'+String.fromCharCode(65+j)+'. '+esc(a)+'</button>').join('')+'</div><p id="feedback'+i+'" class="feedback" aria-live="polite"></p></div>';}).join('');});score();}
+document.addEventListener('click',e=>{let b=e.target.closest('button[data-question]');if(!b)return;let i=+b.dataset.question,j=+b.dataset.choice,q=questions[i];answers[i]=j;document.querySelectorAll('[data-question="'+i+'"]').forEach(x=>{x.classList.remove('correct','wrong');x.setAttribute('aria-pressed',String(+x.dataset.choice===j));if(+x.dataset.choice===q[2])x.classList.add('correct');else if(+x.dataset.choice===j)x.classList.add('wrong');});$('feedback'+i).textContent=(j===q[2]?'Correct. ':'Try again. Correct choice: '+String.fromCharCode(65+q[2])+'. ')+q[3];score();});$('quizReset').onclick=()=>{answers={};renderQuiz();};renderQuiz();
+</script></body></html>
