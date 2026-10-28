@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>October 28 — Generic Programming &amp; Stacks</title><style>*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:#f4f3ef;color:#202d36;font:17px/1.75 system-ui,-apple-system,sans-serif}header{background:#173a40;color:#fff;padding:42px max(24px,calc((100vw - 1000px)/2))}header p{margin:0;color:#c8e3df;font-size:14px;letter-spacing:.09em;text-transform:uppercase}header h1{font-size:clamp(28px,4vw,44px);line-height:1.2;margin:10px 0}header span{color:#d8e8e5}main{max-width:1000px;margin:0 auto;padding:32px 28px 70px;background:#fff}nav{border-bottom:1px solid #d6dfdf;padding-bottom:24px;margin-bottom:30px}nav strong{display:block;margin-bottom:8px}nav a{display:block;font-size:15px}h1{font-size:32px}h2{font-size:27px;line-height:1.35;margin:48px 0 18px;border-top:2px solid #b9d5ce;padding-top:25px;color:#174c4d}h3{font-size:21px;margin:30px 0 12px}h4{font-size:18px;margin:28px 0 10px}a{color:#146b70;text-underline-offset:3px}li{margin:8px 0}code{font: .9em/1.6 ui-monospace,SFMono-Regular,Consolas,monospace;background:#edf3f2;padding:2px 5px;border-radius:4px}pre{background:#142e36;color:#edf6f4;border-radius:7px;padding:22px;overflow:auto;line-height:1.65;tab-size:4}pre code{background:none;padding:0;border-radius:0;font-size:14px;color:inherit}.table-wrap{overflow-x:auto;margin:22px 0}table{border-collapse:collapse;width:100%;font-size:15px}th{text-align:left;background:#e5efeb;color:#173a40}th,td{padding:12px 14px;border:1px solid #d7e2df;vertical-align:top}tr:nth-child(even){background:#f7f9f8}footer{border-top:1px solid #d6dfdf;margin-top:40px;padding-top:18px;font-size:14px;color:#627178}@media(max-width:600px){main{padding:22px 18px}pre{padding:15px}h2{font-size:23px}}@media print{body,main{background:white}header{background:white;color:#173a40;padding:0 0 20px}header p,header span{color:#365a5c}main{max-width:none;padding:0}nav{display:none}pre{background:#f2f4f4;color:#111;white-space:pre-wrap;overflow:visible;border:1px solid #ccc}h2,h3,h4{break-after:avoid}tr{break-inside:avoid}a{color:inherit}body{font-size:11pt}footer{display:none}}</style></head><body><header><p>EGRE 246 · October 28</p><h1>Generic Programming &amp; Stacks</h1><span>Lecture notes · Slides 150–153 · Quiz review</span></header><main><nav aria-label="Contents"><strong>In these notes</strong><a href="#generic-programming">Generic programming</a><a href="#generic-stack-interface-slide-151">Generic stack interface — slide 151</a><a href="#generic-stack-implementation-slide-152">Generic stack implementation — slide 152</a><a href="#how-would-we-use-this-slide-153">How would we use this? — slide 153</a><a href="#things-to-remember-for-review">Things to remember for review</a></nav><h1 id="class-notes-october-28">Class Notes — October 28</h1>
+<p><strong>Reminder: Quiz on Monday.</strong></p>
+<h2 id="generic-programming">Generic programming</h2>
+<p>Based on <a href="../../Canvas/begre246.pdf#page=694">slides 150–153</a>, especially <strong>slide 152</strong> (PDF pages 696–697).</p>
+<ul><li>The idea is to write one container that can work with different types of data.</li><li>A stack still uses the same push/pop behavior whether it holds integers, floats, strings, or other objects.</li><li>The slides describe generic programming as determining the data types when the program runs instead of at compile time. More precisely for this C example, the stack accepts addresses of different object types; <strong>the caller must still know the correct type when reading each item</strong>.</li><li>In C, this example simulates generic behavior using <code>void *</code> pointers.</li></ul>
+<h3 id="what-is-a-void-pointer">What is a void pointer?</h3>
+<p>A <code>void *</code> is a pointer with no associated pointed-to data type. It stores an address and can be converted to and from a pointer to an object type, such as <code>int *</code> or <code>float *</code>.</p>
+<pre><code class="language-c">int number = 42;
+void *p = &amp;number;          // Store the address of an int
+printf(&quot;%d\n&quot;, *(int *)p); // Convert to int *, then dereference</code></pre>
+<ul><li><code>&amp;number</code> means “the address of number.”</li><li><code>(int *)p</code> treats the stored address as a pointer to an integer.</li><li><code>*(int *)p</code> reads the integer at that address.</li><li>We cannot directly dereference a <code>void *</code>; we must first convert it to the appropriate pointer type.</li><li>A <code>void *</code> does not record the original type or make an incorrect cast safe.</li></ul>
+<h2 id="generic-stack-interface-slide-151">Generic stack interface — slide 151</h2>
+<p>The key changes are that <code>push</code> accepts a <code>void *</code> and <code>top</code> returns a <code>void *</code>. The stack&#x27;s internal representation stays hidden from the caller.</p>
+<h3 id="stackgeneric-h">stackGeneric.h</h3>
+<pre><code class="language-c">#ifndef STACK_H
+#define STACK_H
+
+#include &lt;stdbool.h&gt;
+
+typedef struct stackType *stack;
+
+stack createStack(void);
+void freeStack(stack s);
+void push(stack s, void *p);
+void pop(stack s);
+void *top(stack s);
+bool isEmpty(stack s);
+bool isFull(stack s);
+
+#endif</code></pre>
+<p><code>typedef struct stackType *stack;</code> makes <code>stack</code> a pointer type. <code>stack s</code> holds the address of the stack structure. In <code>createStack(void)</code>, <code>void</code> means the function takes no arguments; in <code>void *</code>, it describes a generic object pointer.</p>
+<h2 id="generic-stack-implementation-slide-152">Generic stack implementation — slide 152</h2>
+<p>This is the slide&#x27;s fixed-capacity array implementation, formatted for readability. The allocation check is an added safeguard; the slide does not include it.</p>
+<h3 id="stackgeneric-c">stackGeneric.c</h3>
+<pre><code class="language-c">#include &lt;stdio.h&gt;
+#include &lt;stdlib.h&gt;
+#include &quot;stackGeneric.h&quot;
+
+#define STACKSIZE 10
+
+struct stackType {
+    void *data[STACKSIZE];
+    int top;
+};
+
+stack createStack(void) {
+    stack s = malloc(sizeof(struct stackType));
+    if (s == NULL) {
+        fprintf(stderr, &quot;Error: stack allocation failed\n&quot;);
+        exit(EXIT_FAILURE);
+    }
+    s-&gt;top = -1;
+    return s;
+}
+
+void freeStack(stack s) {
+    free(s);
+}
+
+void push(stack s, void *p) {
+    if (isFull(s)) {
+        printf(&quot;Error: stack overflow\n&quot;);
+        exit(EXIT_FAILURE);
+    }
+    s-&gt;data[++s-&gt;top] = p;
+}
+
+void pop(stack s) {
+    if (isEmpty(s)) {
+        printf(&quot;Error: stack underflow\n&quot;);
+        exit(EXIT_FAILURE);
+    }
+    s-&gt;top--;
+}
+
+void *top(stack s) {
+    if (isEmpty(s)) {
+        printf(&quot;Error: stack underflow\n&quot;);
+        exit(EXIT_FAILURE);
+    }
+    return s-&gt;data[s-&gt;top];
+}
+
+bool isEmpty(stack s) {
+    return s-&gt;top == -1;
+}
+
+bool isFull(stack s) {
+    return s-&gt;top == STACKSIZE - 1;
+}</code></pre>
+<h3 id="how-the-implementation-works">How the implementation works</h3>
+<div class="table-wrap"><table><thead><tr><th>Part</th><th>Meaning</th></tr></thead><tbody><tr><td><code>void *data[STACKSIZE]</code></td><td>Array of 10 generic pointers; stores addresses, not copies of the pointed-to objects</td></tr><tr><td><code>int top</code></td><td>Index of the most recently pushed item</td></tr><tr><td><code>top = -1</code></td><td>Empty stack; no valid top index</td></tr><tr><td><code>data[++s-&gt;top] = p</code></td><td>Increment the top index first, then store the address</td></tr><tr><td><code>s-&gt;top--</code></td><td>Logically remove the top item by lowering the index</td></tr><tr><td><code>data[s-&gt;top]</code></td><td>Return the address at the current top without removing it</td></tr><tr><td><code>top == STACKSIZE - 1</code></td><td>Full stack; with capacity 10, the final valid index is 9</td></tr></tbody></table></div>
+<ul><li><strong>LIFO: Last In, First Out.</strong> The most recently pushed item is removed first.</li><li>The first push changes <code>top</code> from <code>-1</code> to <code>0</code>.</li><li>The number of stored items is <code>s-&gt;top + 1</code>.</li><li><code>pop</code> returns no value. To use an item before removing it, call <code>top(s)</code> and then <code>pop(s)</code>.</li><li><strong>Overflow:</strong> pushing onto a full stack. <strong>Underflow:</strong> calling <code>top</code> or <code>pop</code> on an empty stack.</li><li><code>pop</code> does not erase the old array slot or free the object. Lowering the index makes that slot logically unused; a later push can overwrite it.</li><li>Push, pop, top, and the empty/full checks each take O(1) time. This stack has a fixed capacity of 10 pointers and does not resize.</li></ul>
+<h2 id="how-would-we-use-this-slide-153">How would we use this? — slide 153</h2>
+<p><strong>To get an item back out of this stack and use it, we must already know its data type.</strong> <code>top(s)</code> returns a <code>void *</code>, which carries an address but no information identifying whether the object is an <code>int</code>, <code>float</code>, string, or another type. The caller must convert that address to the correct pointer type before accessing the object. The stack cannot determine the type for us.</p>
+<p>In this example, we know the types because we know the order in which we pushed the items. If we could not predict that order, we would need to store type information alongside each item, such as a type tag, so we could choose the correct conversion when retrieving it. Guessing the type or using the wrong cast can cause undefined behavior.</p>
+<p>The slide demonstrates one stack holding addresses of integers, floats, and a string. This version adds <code>freeStack(s)</code> at the end to release the stack allocation.</p>
+<pre><code class="language-c">#include &lt;stdio.h&gt;
+#include &quot;stackGeneric.h&quot;
+
+int main(void) {
+    int l1[] = {1, 2, 3};
+    float l2[] = {10.0, 20.0, 30.0};
+    char *str = &quot;how now brown cow&quot;;
+    stack s = createStack();
+
+    for (int i = 0; i &lt; 3; i++) {
+        push(s, &amp;l1[i]);
+        push(s, &amp;l2[i]);
+    }
+    push(s, str);
+
+    printf(&quot;%s\n&quot;, (char *)top(s));
+    pop(s);
+
+    while (!isEmpty(s)) {
+        printf(&quot;%.2f\n&quot;, *(float *)top(s));
+        pop(s);
+        printf(&quot;%d\n&quot;, *(int *)top(s));
+        pop(s);
+    }
+
+    freeStack(s);
+    return 0;
+}</code></pre>
+<h3 id="trace-the-stack">Trace the stack</h3>
+<p>The following values describe the objects whose addresses are stored:</p>
+<pre><code class="language-text">Bottom -&gt; 1, 10.0, 2, 20.0, 3, 30.0, &quot;how now brown cow&quot; &lt;- Top</code></pre>
+<p>The string is printed and removed first. Then each loop iteration prints and removes a float followed by an integer.</p>
+<pre><code class="language-text">how now brown cow
+30.00
+3
+20.00
+2
+10.00
+1</code></pre>
+<ul><li><code>push(s, &amp;l1[i])</code> passes the address of an integer, not the integer itself.</li><li><code>push(s, &amp;l2[i])</code> passes the address of a float.</li><li><code>push(s, str)</code> passes the string&#x27;s character pointer. Using <code>&amp;str</code> would instead pass the address of the pointer variable, which is a different type.</li><li><code>%s</code> needs a <code>char *</code>, so the string pointer is converted but not dereferenced in the call.</li><li><code>*(float *)top(s)</code> and <code>*(int *)top(s)</code> convert the address and then read the corresponding numeric value.</li><li>This loop works because the caller knows the insertion order. After removing the string, every remaining pair is a float on top of an integer. <code>!isEmpty(s)</code> alone would not guarantee two items in a different stack.</li></ul>
+<h3 id="memory-and-type-responsibilities">Memory and type responsibilities</h3>
+<p><strong>The stack manages its own structure; the caller manages the pointed-to objects.</strong></p>
+<ul><li><code>freeStack(s)</code> frees the stack structure, including its embedded pointer array. It does not free the objects whose addresses were pushed.</li><li>The arrays in this example remain alive throughout their use in <code>main</code>, so their element addresses remain valid. Do not return from a function while keeping pointers to its local variables in a stack that will be used later.</li><li>If an object was allocated with <code>malloc</code>, the caller must arrange to free it when it is no longer needed. Do not call <code>free</code> on these local arrays or the string literal.</li><li>Because the stack stores addresses, changing an original object changes the value later read through its stored pointer.</li><li>Using the wrong pointer type to read an object can cause undefined behavior. A generic stack provides flexibility but does not automatically check types.</li></ul>
+<h3 id="is-free-s-enough-or-do-we-need-to-free-data-too">Is <code>free(s)</code> enough, or do we need to free <code>data</code> too?</h3>
+<p>**For our code, <code>free(s)</code> is enough to release all memory allocated by the stack.** <code>createStack</code> makes only one allocation:</p>
+<pre><code class="language-c">stack s = malloc(sizeof(struct stackType));</code></pre>
+<p>The structure contains <code>void *data[STACKSIZE]</code>, an array embedded directly inside the structure. Space for all 10 pointers is already included in <code>sizeof(struct stackType)</code>. It is not a separate allocation, so <code>free(s)</code> releases both the pointer array and the <code>top</code> member together.</p>
+<pre><code class="language-c">void freeStack(stack s) {
+    free(s);  // Releases the whole structure, including its data array
+}</code></pre>
+<p>**Do not call <code>free(s-&gt;data)</code> in this implementation.** The array was not separately allocated; passing it to <code>free</code> is invalid and causes undefined behavior.</p>
+<p>There are three different things to distinguish:</p>
+<div class="table-wrap"><table><thead><tr><th>Memory</th><th>How it is stored in our code</th><th>What to free</th></tr></thead><tbody><tr><td>Stack structure <code>s</code></td><td>Allocated with <code>malloc</code></td><td><code>free(s)</code></td></tr><tr><td>Array <code>s-&gt;data</code> containing the pointers</td><td>Embedded inside the structure</td><td>Already released by <code>free(s)</code></td></tr><tr><td>Objects addressed by those pointers</td><td>Stored somewhere else</td><td>Depends on how those objects were allocated and who owns them</td></tr></tbody></table></div>
+<p>In our <code>main</code> example, <code>l1</code> and <code>l2</code> are local arrays with automatic storage duration, and <code>str</code> points to a string literal. **None of these objects should be passed to <code>free</code>.** The local arrays&#x27; storage ends automatically when <code>main</code> returns; the string literal has static storage duration. Calling <code>freeStack(s)</code> is therefore enough for this example&#x27;s explicit cleanup.</p>
+<h4 id="if-we-push-an-object-allocated-with-malloc">If we push an object allocated with <code>malloc</code></h4>
+<p>Freeing a pointer does not automatically free the object it points to. If the caller separately allocates an integer, the caller must also arrange to free that integer:</p>
+<pre><code class="language-c">int *value = malloc(sizeof *value);
+if (value == NULL) {
+    freeStack(s);
+    exit(EXIT_FAILURE);
+}
+*value = 42;
+push(s, value);
+
+// Assume this item is still on top and no other code needs it.
+int *saved = top(s);
+printf(&quot;%d\n&quot;, *saved);
+pop(s);          // Removes the stored pointer; does not free the integer
+free(saved);     // Releases the separately allocated integer
+freeStack(s);    // Releases the stack structure</code></pre>
+<p>Only free an object once, when no code still needs it. A generic stack cannot safely free every stored address automatically: some may refer to local variables, string literals, shared objects, or the same allocation more than once.</p>
+<h4 id="what-if-data-were-a-separately-allocated-array">What if <code>data</code> were a separately allocated array?</h4>
+<p>If the structure instead used <code>void **data</code> and creation separately allocated that array, cleanup would need to release both allocations:</p>
+<pre><code class="language-c">// Alternative design only; this is NOT our slide 152 structure.
+struct stackType {
+    void **data;
+    int top;
+};
+
+// During creation, after allocating s and checking for failure:
+s-&gt;data = malloc(STACKSIZE * sizeof *s-&gt;data);
+// Check for allocation failure before using s-&gt;data.
+
+// During cleanup, after successful creation:
+free(s-&gt;data);   // Free the separately allocated pointer array first
+free(s);         // Then free the structure holding its address</code></pre>
+<p>Even in this alternative, freeing the pointer array does not free the objects it points to. <strong>Match cleanup to the actual allocations and ownership, not simply to the number of pointer variables.</strong></p>
+<h2 id="things-to-remember-for-review">Things to remember for review</h2>
+<ul><li>Why use <code>void *</code>? To let the same stack implementation accept addresses of different object types.</li><li>What is stored? Addresses, not independent copies of the objects.</li><li>How is empty represented? <code>top == -1</code>.</li><li>How is full represented? <code>top == 9</code> for this 10-slot stack.</li><li>Does <code>top(s)</code> remove an item? No; <code>pop(s)</code> removes it.</li><li>Who knows the actual type? The caller, which must convert the pointer correctly before reading the object.</li><li>Does freeing the stack free every pointed-to object? No.</li></ul><footer>Based on today’s class notes and the course slides. Code filenames match the files in this folder.</footer></main></body></html>
