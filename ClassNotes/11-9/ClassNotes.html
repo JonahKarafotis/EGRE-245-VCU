@@ -1,0 +1,826 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="description" content="November 9 EGRE 246 study notes: C pointers, callbacks, binary search tree traversal, insertion, and deletion. Slides 169–183."><title>November 9 · Binary Search Trees & C Pointers</title><style>
+:root{--bg:#f3f3ed;--paper:#fffef9;--ink:#193a38;--muted:#536b66;--line:#d4ded4;--accent:#176e5c;--gold:#f1c65e;--code:#102e31}*{box-sizing:border-box}html{scroll-behavior:smooth;scroll-padding-top:25px}body{margin:0;color:var(--ink);background:var(--bg);font:17px/1.75 system-ui,-apple-system,sans-serif}a{color:var(--accent);text-underline-offset:3px}button,select{font:inherit}button,select,summary{cursor:pointer}button{border:1px solid #8aa69b;border-radius:6px;padding:9px 16px;color:var(--ink);background:white}button:hover{background:#e5eee6}button:disabled{opacity:.45;cursor:default}a:focus-visible,button:focus-visible,select:focus-visible,summary:focus-visible{outline:3px solid #c68c1a;outline-offset:4px}.skip{position:absolute;left:20px;top:-80px;background:white;padding:12px;z-index:5}.skip:focus{top:10px}header{background:#123c37;color:#fffbed;padding:65px max(5vw,24px) 52px;border-bottom:7px solid var(--gold)}.header-inner{max-width:1260px;margin:auto}.eyebrow,.kicker{font-size:12px;font-weight:750;letter-spacing:2px}.eyebrow{color:var(--gold)}h1{font-size:clamp(40px,6vw,76px);line-height:1.08;letter-spacing:-2.5px;max-width:1050px;margin:20px 0}header p{max-width:810px;color:#d8e7dc;font-size:19px}header a{color:var(--gold)}.meta{font-size:14px;color:#b9d1c8}.layout{max-width:1450px;margin:auto;padding:38px 28px;display:grid;grid-template-columns:260px minmax(0,1fr);gap:45px}nav{position:sticky;top:22px;align-self:start;max-height:93vh;overflow:auto;padding-right:12px}nav h2{font-size:13px;letter-spacing:2px;text-transform:uppercase}nav a{display:flex;gap:10px;font-size:13px;line-height:1.5;text-decoration:none;padding:10px 4px;border-bottom:1px solid var(--line)}nav a span{color:#73867c;font-size:11px;padding-top:2px}main{min-width:0}section{background:var(--paper);border:1px solid var(--line);border-radius:9px;padding:35px;margin-bottom:28px;min-width:0}.kicker{color:var(--accent)}h2{font-size:29px;line-height:1.3;margin:12px 0 25px;letter-spacing:-.5px}h3{font-size:21px;line-height:1.4;margin-top:32px}p{margin:16px 0}li{margin:7px 0}pre{background:var(--code);color:#eef6ea;padding:24px;border-radius:7px;overflow:auto;font-size:13px;line-height:1.75;tab-size:4}code{font-family:ui-monospace,SFMono-Regular,Consolas,monospace}p code,li code,td code,h2 code,h3 code{font-size:.9em;background:#eaf0e5;border-radius:3px;padding:2px 5px;overflow-wrap:anywhere}pre code{background:none;padding:0}.table-scroll{overflow-x:auto;margin:22px 0}table{width:100%;border-collapse:collapse;font-size:14px}th,td{padding:12px;vertical-align:top;text-align:left;border-bottom:1px solid var(--line)}th{background:#e7efe4}blockquote{border-left:4px solid var(--gold);margin:22px 0;padding:1px 20px;background:#fbf4df}.intro{font-size:18px}.controls{display:flex;gap:10px;align-items:center;flex-wrap:wrap}select{padding:9px;background:white;border:1px solid #8aa69b;border-radius:5px;color:var(--ink)}.stage{background:#eef3e9;border:1px solid var(--line);border-radius:7px;padding:20px;margin-top:20px}.stage svg{display:block;width:100%;height:240px}.stage line{stroke:#8ca99b;stroke-width:2}.stage circle{fill:#fffef9;stroke:#3a7665;stroke-width:2}.stage text{fill:var(--ink);font:20px system-ui;text-anchor:middle}.stage .active circle{fill:var(--gold);stroke:#976e11}.stage .visited circle{stroke-width:4}.status{min-height:3.5em}.output{background:white;padding:12px;font-family:ui-monospace,monospace;min-height:54px;border-radius:5px}.legend{font-size:13px;color:var(--muted)}.review details{border-top:1px solid var(--line);padding:15px 0}.review summary{font-weight:650}.review details p{padding-left:18px}.top-actions{display:flex;gap:20px;flex-wrap:wrap;font-size:14px;margin-top:25px}.top-actions button{font-size:14px;background:transparent;color:#ffedb9;border-color:#62887a;padding:4px 12px}footer{text-align:center;padding:15px 25px 40px;color:var(--muted);font-size:14px}@media(max-width:950px){.layout{grid-template-columns:1fr;padding:22px 16px;gap:20px}nav{position:static;max-height:none}nav details:not([open]) a{display:none}nav .nav-links{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0 20px}section{padding:25px}h1{letter-spacing:-1.5px}}@media(max-width:550px){body{font-size:16px}header{padding-top:40px}section{padding:20px}h2{font-size:25px}nav .nav-links{grid-template-columns:1fr}pre{padding:17px;font-size:12px}.controls>*{max-width:100%}}@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}}@media print{nav,.controls,.top-actions,.skip{display:none!important}body{background:white;color:black;font-size:11pt}.layout{display:block;padding:0}header{background:white;color:black;padding:15px;border-color:#333}header p,.eyebrow,.meta{color:black}h1{font-size:30pt}section{border:0;padding:15px 0;break-inside:auto}h2,h3{break-after:avoid}pre{white-space:pre-wrap;overflow-wrap:anywhere;background:#f0f0f0;color:black;font-size:9pt}.table-scroll{overflow:visible}.stage{break-inside:avoid}details p{display:block}}
+</style></head><body><a class="skip" href="#main">Skip to notes</a><header><div class="header-inner"><div class="eyebrow">EGRE 246 / NOVEMBER 9, 2026 / CHAPTER 9</div><h1>Binary search trees.<br>Follow the pointers.</h1><p>From reading C declarations to tracing recursion, inserting nodes, and repairing a tree after deletion. A complete study guide built around today’s questions and examples.</p><div class="meta">PowerPoint sections 169–183 · commented C · worked tree examples</div><div class="top-actions"><a href="../../Canvas/begre246.pdf#page=787">Open course PowerPoint PDF</a><a href="ClassNotes.md">Original class notes</a><button id="print">Print / Save as PDF</button></div></div></header><div class="layout"><nav aria-label="Study guide contents"><details open><summary>On this page</summary><div class="nav-links"><a href="#traversal-lab"><span>↳</span>Interactive traversal</a><a href="#topic-0"><span>01</span>Pointer declarations: your class questions</a><a href="#topic-1"><span>02</span>Different node traversal methods — slide 169</a><a href="#topic-2"><span>03</span>Worked traversal example — slide 170</a><a href="#topic-3"><span>04</span>Passing functions into functions — slide 171</a><a href="#topic-4"><span>05</span>Function pointer example — slide 172</a><a href="#topic-5"><span>06</span>Recursive traversal code — slide 173</a><a href="#topic-6"><span>07</span>Implementing binary search trees — slide 174</a><a href="#topic-7"><span>08</span>BST interface (bst.h) — slide 175</a><a href="#topic-8"><span>09</span>Insertion into a binary search tree — slide 176</a><a href="#topic-9"><span>10</span>Recursive insertion in C — slide 177</a><a href="#topic-10"><span>11</span>Removing an item: three cases — slide 178</a><a href="#topic-11"><span>12</span>Case 1: remove a leaf — slide 179</a><a href="#topic-12"><span>13</span>Case 2: remove a node with one child — slide 180</a><a href="#topic-13"><span>14</span>Case 3: remove a node with two children — slide 181</a><a href="#topic-14"><span>15</span>Recursive removal in C — slide 182</a><a href="#topic-15"><span>16</span>Minimum-node helpers and item types — slide 183</a><a href="#topic-16"><span>17</span>Quick review</a><a href="#self-check"><span>↳</span>Self-check questions</a></div></details></nav><main id="main"><section class="intro"><div class="kicker">TODAY’S CONNECTIONS</div><h2>One structure, three ideas</h2><p><strong>Pointers connect nodes.</strong> Each node stores data plus left and right child addresses. <strong>Recursion follows those links.</strong> Each call handles a smaller subtree and returns to its waiting parent. <strong>Callbacks process the data.</strong> Passing a function lets the same traversal perform different actions.</p><p>BST traversal visits every node; searching, inserting, and removing follow comparisons down a path. The full notes below retain the document’s examples and distinguish added explanations from slide code.</p></section><section id="traversal-lab"><div class="kicker">INTERACTIVE WALKTHROUGH</div><h2>Watch the recursion, one step at a time</h2><p>Use the same small BST as the notes: root <strong>4</strong>, left child <strong>2</strong>, right child <strong>6</strong>. Reaching a node and visiting its data are separate events. Watch the NULL calls and returns, too.</p><div class="controls"><label for="order">Traversal </label><select id="order"><option value="VLR">Preorder · VLR</option><option value="LVR">Inorder · LVR</option><option value="LRV">Postorder · LRV</option></select><button id="reset">Reset</button><button id="next">Next step</button></div><div class="stage"><svg viewBox="0 0 500 240" role="img" aria-label="Binary search tree with root 4, left child 2, and right child 6"><line x1="250" y1="50" x2="130" y2="170"/><line x1="250" y1="50" x2="370" y2="170"/><g data-node="4"><circle cx="250" cy="50" r="30"/><text x="250" y="57">4</text></g><g data-node="2"><circle cx="130" cy="170" r="30"/><text x="130" y="177">2</text></g><g data-node="6"><circle cx="370" cy="170" r="30"/><text x="370" y="177">6</text></g></svg><p class="legend">Gold = current node · thick outline = already visited. Only a visit adds a value to the output.</p><p id="trace" class="status" aria-live="polite"></p><div class="output" aria-label="Printed output">Output: <span id="output">—</span></div><p class="legend" id="progress"></p></div></section><section id="topic-0" class="topic"><div class="kicker">YOUR QUESTIONS / 01</div><h2>Pointer declarations: your class questions</h2><p>Parentheses change what a pointer refers to. Read outward from the variable name, remembering that <code>[]</code> and the function-call parentheses bind more tightly than <code>*</code> unless grouping parentheses override them.</p>
+<table>
+<thead>
+<tr>
+<th>Declaration</th>
+<th>Meaning</th>
+<th>Example access</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>int (*ptr)[5];</code></td>
+<td>One pointer to an array of five integers</td>
+<td><code>(*ptr)[2]</code> accesses the third integer</td>
+</tr>
+<tr>
+<td><code>int *ptr[5];</code></td>
+<td>An array containing five pointers to integers</td>
+<td><code>*ptr[2]</code> accesses the integer pointed to by the third pointer</td>
+</tr>
+<tr>
+<td><code>int (*ptr)(int);</code></td>
+<td>A pointer to a function taking an int and returning an int</td>
+<td><code>ptr(4)</code> calls that function</td>
+</tr>
+<tr>
+<td><code>int *ptr(int);</code></td>
+<td>A function taking an int and returning an int pointer</td>
+<td>Call it to obtain an address</td>
+</tr>
+</tbody></table>
+<h3>Pointer to an array versus array of pointers</h3>
+<pre><code class="language-c">int numbers[5] = {10, 20, 30, 40, 50};
+int (*arrayPtr)[5] = &amp;numbers; // &amp;numbers points to the WHOLE array of five ints.
+printf(&quot;%d&quot;, (*arrayPtr)[2]); // Dereference to get the array, then index it: 30.
+// arrayPtr + 1 advances by one whole five-int array (to the one-past position here).
+
+int a = 10, b = 20;
+int *pointers[5] = {&amp;a, &amp;b, NULL, NULL, NULL}; // Five separate pointer slots.
+printf(&quot;%d&quot;, *pointers[1]); // Select slot 1, then dereference its address: 20.
+// Do not dereference the NULL entries. An array itself cannot be reassigned.
+</code></pre>
+<h3>A function pointer can change which operation runs</h3>
+<pre><code class="language-c">int square(int n) { return n * n; }
+int doubleIt(int n) { return n * 2; }
+
+// Inside a function:
+int (*operation)(int) = square; // Store the function address; no call yet.
+int first = operation(4);       // Calls square(4): first becomes 16.
+operation = doubleIt;           // Same parameter/return types, so this assignment matches.
+int second = operation(4);      // Now calls doubleIt(4): second becomes 8.
+</code></pre>
+<p><strong>Address versus call:</strong> <code>operation = square;</code> stores an address. <code>operation(4)</code> executes the function. <code>(*operation)(4)</code> is an equivalent call. The pointer must refer to a valid function with a compatible signature before it is called.</p>
+<h3>Passing the operation as a callback</h3>
+<pre><code class="language-c">void showResult(int value, int (*operation)(int)) {
+    printf(&quot;%d\n&quot;, operation(value)); // Call whichever function the caller supplied.
+}
+
+// Inside a function:
+showResult(4, square);   // operation points to square; prints 16.
+showResult(4, doubleIt); // operation points to doubleIt; prints 8.
+</code></pre>
+<p>A <strong>callback</strong> is a function passed to another function to be called during its work. In tree traversal, the recursive function chooses <strong>when</strong> to visit; the callback chooses <strong>what to do</strong> at that visit. A function pointer points to code; an <code>int *</code> points to integer data.</p>
+</section><section id="topic-1" class="topic"><div class="kicker">CLASS NOTES / 02</div><h2>Different node traversal methods — slide 169</h2><p><strong>Traversal</strong> means visiting every node in a tree in a specific order. Visiting a node means processing its data, such as printing it. Searching for a single key can stop early; a complete traversal processes every node.</p>
+<p>At each node, there are three tasks:</p>
+<ul>
+<li><strong>V — Visit</strong> the current node.</li>
+<li><strong>L — Traverse the left subtree.</strong></li>
+<li><strong>R — Traverse the right subtree.</strong></li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>Method</th>
+<th>Pattern</th>
+<th>Steps at each node</th>
+<th>When is the current node visited?</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>Preorder</strong></td>
+<td><strong>VLR</strong></td>
+<td>Visit, left subtree, right subtree</td>
+<td>Before its subtrees</td>
+</tr>
+<tr>
+<td><strong>Inorder</strong></td>
+<td><strong>LVR</strong></td>
+<td>Left subtree, visit, right subtree</td>
+<td>Between its subtrees</td>
+</tr>
+<tr>
+<td><strong>Postorder</strong></td>
+<td><strong>LRV</strong></td>
+<td>Left subtree, right subtree, visit</td>
+<td>After its subtrees</td>
+</tr>
+</tbody></table>
+<p><strong>Apply the same pattern recursively at every node.</strong> L and R mean completing the entire corresponding subtree, not just visiting the immediate child. All three methods finish the left subtree before starting the right subtree.</p>
+<p><strong>Memory aid:</strong> “pre,” “in,” and “post” tell us where <strong>V</strong> goes relative to <strong>L</strong> and <strong>R</strong>.</p>
+</section><section id="topic-2" class="topic"><div class="kicker">CLASS NOTES / 03</div><h2>Worked traversal example — slide 170</h2><p><a href="../../Canvas/begre246.pdf#page=791">Tree diagram on slide 170</a></p>
+<p>The slide&#39;s tree has <strong>Jim</strong> as its root:</p>
+<pre><code class="language-text">                 Jim
+              /       \
+            Dot       Ron
+           /   \     /   \
+         Amy   Guy  Kay   Tim
+           \   / \  / \   / \
+           Ann Eva Jan Jon Kim Roy Tom
+</code></pre>
+<h3>Preorder — VLR</h3>
+<p>Visit Jim first, complete Dot&#39;s subtree, then complete Ron&#39;s subtree:</p>
+<pre><code class="language-text">Jim, Dot, Amy, Ann, Guy, Eva, Jan, Ron, Kay, Jon, Kim, Tim, Roy, Tom
+</code></pre>
+<h3>Inorder — LVR</h3>
+<p>Complete Dot&#39;s subtree, visit Jim, then complete Ron&#39;s subtree:</p>
+<pre><code class="language-text">Amy, Ann, Dot, Eva, Guy, Jan, Jim, Jon, Kay, Kim, Ron, Roy, Tim, Tom
+</code></pre>
+<p><strong>Inorder traversal of a BST produces sorted keys</strong> — alphabetical order for this example. This follows from the BST rule: every key in the left subtree is smaller than the current key, and every key in the right subtree is larger. An arbitrary binary tree does not necessarily give sorted output.</p>
+<h3>Postorder — LRV</h3>
+<p>Complete Dot&#39;s subtree, complete Ron&#39;s subtree, then visit Jim last:</p>
+<pre><code class="language-text">Ann, Amy, Eva, Jan, Guy, Dot, Jon, Kim, Kay, Roy, Tom, Tim, Ron, Jim
+</code></pre>
+<h3>How to trace a traversal</h3>
+<p>For the small subtree rooted at Guy:</p>
+<pre><code class="language-text">     Guy
+    /   \
+  Eva   Jan
+</code></pre>
+<ul>
+<li>Preorder: <strong>Guy, Eva, Jan</strong>.</li>
+<li>Inorder: <strong>Eva, Guy, Jan</strong>.</li>
+<li>Postorder: <strong>Eva, Jan, Guy</strong>.</li>
+</ul>
+<p>Treat that whole result as the traversal of Guy&#39;s subtree when working back up to Dot. Reaching a missing child does nothing; return to the calling node and continue its remaining steps.</p>
+</section><section id="topic-3" class="topic"><div class="kicker">CLASS NOTES / 04</div><h2>Passing functions into functions — slide 171</h2><p><a href="../../Canvas/begre246.pdf#page=792">Function pointers</a></p>
+<p>The traversal decides <strong>when</strong> to visit each node. A function passed into the traversal decides <strong>what to do</strong> during a visit. This lets us reuse the traversal with different processing functions.</p>
+<p>In C, we can store a function&#39;s address in a <strong>function pointer</strong>:</p>
+<pre><code class="language-c">int (*p2)(float n);
+</code></pre>
+<p>Read this as: <code>p2</code> is a pointer to a function that accepts a <code>float</code> and returns an <code>int</code>.</p>
+<ul>
+<li>A function name without a call, such as <code>printItem</code>, supplies a pointer to the function.</li>
+<li><code>f(value)</code> and <code>(*f)(value)</code> both call the function through pointer <code>f</code>.</li>
+<li><strong>Parentheses matter:</strong> <code>int (*p2)(float n)</code> declares a function pointer; <code>int *p2(float n)</code> declares a function returning a pointer to <code>int</code>.</li>
+<li>The pointer&#39;s parameter and return types must match the function being passed.</li>
+</ul>
+</section><section id="topic-4" class="topic"><div class="kicker">CLASS NOTES / 05</div><h2>Function pointer example — slide 172</h2><p><a href="../../Canvas/begre246.pdf#page=808">Slide 172 example</a></p>
+<p>The slide uses an array to demonstrate passing an operation into another function. This expanded, runnable version follows the slide&#39;s example and uses <code>(void)</code> to explicitly declare functions that take no arguments:</p>
+<pre><code class="language-c">#include &lt;stdio.h&gt;  // Provides printf for displaying results.
+
+void fun(void) {
+    printf(&quot;this is fun!\n&quot;);  // This function takes no arguments and returns nothing.
+}
+
+void twoUp(int *n) {  // n receives the address of an integer, not a copy of its value.
+    *n += 2;         // Dereference n and add 2 to the original integer at that address.
+}
+
+void threeUp(int *n) {
+    *n += 3;         // Same idea as twoUp, but add 3 to the original integer.
+}
+
+// f: pointer to a function accepting an int * and returning void.
+// data: the array to process (an array parameter is adjusted to a pointer in C).
+// n: the number of elements; this is separate from the pointer parameter in twoUp.
+void apply(void (*f)(int *), int data[], int n) {
+    for (int i = 0; i &lt; n; i++) {  // Process each array element in index order.
+        f(&amp;data[i]);  // Pass this element&#39;s ADDRESS to the function stored in f.
+                     // If f is twoUp, this acts like twoUp(&amp;data[i]).
+                     // The called function changes the original array element.
+    }
+}
+
+void printList(int data[], int n) {
+    for (int i = 0; i &lt; n; i++) {
+        printf(&quot;%d &quot;, data[i]);  // Print the current value of each element.
+    }
+    printf(&quot;\n&quot;);
+}
+
+int main(void) {
+    void (*fp)(void);  // fp can point to a function with no arguments and no return value.
+    fp = fun;         // Store fun&#39;s address. No () here: we are not calling fun yet.
+    (*fp)();          // Call fun through fp; fp() would do the same thing.
+
+    int list1[5] = {2, 4, 6, 8, 10};
+
+    for (int i = 0; i &lt; 5; i++) {
+        threeUp(&amp;list1[i]);  // Direct call: add 3 to each element using its address.
+    }
+    printList(list1, 5);     // Array now contains: 5 7 9 11 13.
+
+    apply(twoUp, list1, 5);  // Pass twoUp&#39;s address, the array, and its length to apply.
+                            // Inside apply, f points to twoUp for this call.
+    printList(list1, 5);     // Each value increased by 2: 7 9 11 13 15.
+
+    return 0;  // Report successful completion.
+}
+</code></pre>
+<ul>
+<li><code>void (*f)(int *)</code> means <code>f</code> points to a function taking an <code>int *</code> and returning nothing.</li>
+<li><code>apply</code> passes each element&#39;s address to <code>f</code>, so the function can change the original element.</li>
+<li><code>apply(twoUp, list1, 5)</code> passes <strong>the function</strong>, without calling it at the point it is passed.</li>
+</ul>
+<h3>Follow one callback call</h3>
+<p>For the first iteration of <code>apply(twoUp, list1, 5)</code>:</p>
+<ol>
+<li><code>f</code> points to <code>twoUp</code>, and <code>i</code> is 0.</li>
+<li><code>data[0]</code> currently contains 5, because the earlier loop already added 3.</li>
+<li><code>&amp;data[0]</code> produces the address of that element.</li>
+<li><code>f(&amp;data[0])</code> calls <code>twoUp</code> with that address.</li>
+<li>Inside <code>twoUp</code>, pointer <code>n</code> points to that same element. <code>*n += 2</code> changes its value from 5 to 7.</li>
+<li>Control returns to <code>apply</code>, which moves on to the next element.</li>
+</ol>
+<p><strong>Two kinds of pointers are involved:</strong> <code>f</code> points to executable function code; the <code>int *</code> passed to that function points to integer data. The callback&#39;s <code>void</code> return type means it returns no value; it still changes the array through the supplied address.</p>
+<p>The slide starts with <code>{2, 4, 6, 8, 10}</code>, applies <code>threeUp</code> in a loop, then calls <code>apply(twoUp, list1, 5)</code>:</p>
+<pre><code class="language-text">Initial values:       2  4  6  8 10
+After threeUp:        5  7  9 11 13
+After apply(twoUp):   7  9 11 13 15
+</code></pre>
+<p>The tree traversals use the same idea: pass in a function and call it once for each node&#39;s data.</p>
+</section><section id="topic-5" class="topic"><div class="kicker">CLASS NOTES / 06</div><h2>Recursive traversal code — slide 173</h2><p><a href="../../Canvas/begre246.pdf#page=810">Traversal implementations</a></p>
+<p>Each node stores data and pointers to its left and right children:</p>
+<pre><code class="language-c">struct node {
+    itemType data;
+    struct node *left, *right;
+};
+</code></pre>
+<p>The following follows the slide&#39;s logic, with an explicit callback parameter type. The slide writes <code>void (*f)()</code>; here, <code>void (*f)(itemType)</code> makes the expected argument clear. <code>itemType</code> must be defined by the surrounding program.</p>
+<pre><code class="language-c">// t points to the root of the subtree handled by THIS call.
+// f points to the action to perform when visiting a node, such as printItem.
+void preOrder(struct node *t, void (*f)(itemType)) {
+    if (t != NULL) {              // Only access data/children if a node exists.
+        f(t-&gt;data);               // V: process this node BEFORE either subtree.
+        preOrder(t-&gt;left, f);     // L: pause this call while the left subtree finishes.
+        preOrder(t-&gt;right, f);    // R: after the left call returns, finish the right subtree.
+    }
+    // A NULL call skips the body. Every call returns to its caller when finished.
+}
+
+void inOrder(struct node *t, void (*f)(itemType)) {
+    if (t != NULL) {              // NULL means an empty subtree: do nothing and return.
+        inOrder(t-&gt;left, f);      // L: finish ALL of the left subtree before visiting t.
+        f(t-&gt;data);               // V: process t after the left call has returned.
+        inOrder(t-&gt;right, f);     // R: finish ALL of the right subtree next.
+    }
+    // In a BST, this places smaller values before t and larger values after t.
+}
+
+void postOrder(struct node *t, void (*f)(itemType)) {
+    if (t != NULL) {              // Guard against dereferencing a missing node.
+        postOrder(t-&gt;left, f);    // L: finish the left subtree; this call waits.
+        postOrder(t-&gt;right, f);   // R: finish the right subtree; this call waits again.
+        f(t-&gt;data);               // V: process t only AFTER both subtree calls return.
+    }
+    // The subtree&#39;s root is the last node visited within that subtree.
+}
+</code></pre>
+<ul>
+<li><strong>Base case:</strong> <code>t == NULL</code>. Do nothing and return. This handles an empty tree and missing children.</li>
+<li><strong>Recursive step:</strong> traverse the child subtrees, passing the same function <code>f</code> to each call.</li>
+<li><strong>Visit:</strong> <code>f(t-&gt;data)</code> processes the current node&#39;s data.</li>
+<li>Moving the visit call before, between, or after the recursive calls changes the traversal order.</li>
+<li>A call such as <code>inOrder(root, printItem)</code> visits the BST in sorted order and uses <code>printItem</code> to process each value. The supplied function must accept an <code>itemType</code> and return <code>void</code>.</li>
+</ul>
+<h3>Example setup for all three functions</h3>
+<p>These are <strong>BST traversal functions</strong>: they process every node rather than search for one target value. Use this simple BST and let the visit function print each integer:</p>
+<pre><code class="language-text">       4
+      / \
+     2   6
+</code></pre>
+<pre><code class="language-c">// Define itemType as int BEFORE the struct node and traversal definitions above.
+typedef int itemType;
+
+// Define this callback before main. Its signature matches void (*f)(itemType).
+void printItem(itemType value) {
+    printf(&quot;%d &quot;, value);  // Visiting a node prints its data, not its address.
+}
+
+// Inside main, after including &lt;stdio.h&gt; and defining the functions/struct:
+struct node left  = {2, NULL, NULL};  // Leaf: both child pointers are NULL.
+struct node right = {6, NULL, NULL};  // Another leaf.
+struct node top   = {4, &amp;left, &amp;right}; // Root points to the two child nodes.
+struct node *root = &amp;top;             // Starting address passed to a traversal.
+
+preOrder(root, printItem);   // Prints: 4 2 6
+printf(&quot;\n&quot;);
+inOrder(root, printItem);    // Prints: 2 4 6
+printf(&quot;\n&quot;);
+postOrder(root, printItem);  // Prints: 2 6 4
+printf(&quot;\n&quot;);
+</code></pre>
+<p><strong>How recursion resumes:</strong> each call has its own <code>t</code> parameter. Calling a traversal on node 2 does not change the waiting call&#39;s <code>t</code>, which still points to node 4. When the child call finishes, execution resumes at the next statement in the waiting parent call. The same callback pointer <code>f</code> is passed to every child call.</p>
+<h3>Preorder workflow — visit, left, right</h3>
+<p>Start with <code>preOrder(root, printItem)</code>:</p>
+<ol>
+<li>At <strong>4</strong>, <code>t != NULL</code>, so <code>f(t-&gt;data)</code> calls <code>printItem(4)</code>. Output: <code>4</code>.</li>
+<li>Call <code>preOrder(t-&gt;left, f)</code> on <strong>2</strong>. The call at 4 waits before its right-subtree call.</li>
+<li>At <strong>2</strong>, print 2. Its left call receives <code>NULL</code> and immediately returns; its right call also receives <code>NULL</code> and returns. Node 2&#39;s call is finished. Output: <code>4 2</code>.</li>
+<li>Resume at <strong>4</strong>, then call <code>preOrder(t-&gt;right, f)</code> on <strong>6</strong>.</li>
+<li>At <strong>6</strong>, print 6. Both NULL child calls return, then node 6&#39;s call returns to node 4.</li>
+<li>Node <strong>4</strong> has no steps left, so the original call returns. Final output: <strong><code>4 2 6</code></strong>.</li>
+</ol>
+<h3>Inorder workflow — left, visit, right</h3>
+<p>Start with <code>inOrder(root, printItem)</code>:</p>
+<ol>
+<li>At <strong>4</strong>, call <code>inOrder(t-&gt;left, f)</code> on <strong>2</strong>. Nothing has been printed yet; node 4&#39;s visit waits for this call to finish.</li>
+<li>At <strong>2</strong>, call its left subtree (<code>NULL</code>), which immediately returns.</li>
+<li>Resume at <strong>2</strong> and print 2. Call its right subtree (<code>NULL</code>), then return to node 4. Output: <code>2</code>.</li>
+<li>Resume at <strong>4</strong> and print 4. Then call its right subtree on <strong>6</strong>. Output: <code>2 4</code>.</li>
+<li>At <strong>6</strong>, its NULL left call returns, then print 6, then its NULL right call returns.</li>
+<li>Return from node 6 to node 4, then finish the original call. Final output: <strong><code>2 4 6</code></strong>.</li>
+</ol>
+<p>Node 4 is reached first, but <strong>reaching a node is not necessarily visiting it</strong>. In inorder, the print statement runs only after its left subtree finishes.</p>
+<h3>Postorder workflow — left, right, visit</h3>
+<p>Start with <code>postOrder(root, printItem)</code>:</p>
+<ol>
+<li>At <strong>4</strong>, call the left subtree on <strong>2</strong>. Node 4 has not been printed.</li>
+<li>At <strong>2</strong>, its left NULL call returns, then its right NULL call returns. Only now print 2 and return to node 4. Output: <code>2</code>.</li>
+<li>Resume at <strong>4</strong> and call the right subtree on <strong>6</strong>. Node 4 still has not been printed.</li>
+<li>At <strong>6</strong>, both NULL child calls return, then print 6 and return to node 4. Output: <code>2 6</code>.</li>
+<li>Resume at <strong>4</strong>. Both subtrees are finished, so print 4 and return. Final output: <strong><code>2 6 4</code></strong>.</li>
+</ol>
+<p>For a larger tree, each child call repeats this same workflow for its own subtree. A leaf still follows the full pattern; its subtree calls simply encounter <code>NULL</code> immediately.</p>
+<h3>Additional study notes: cost and uses</h3>
+<ul>
+<li>Each complete traversal visits all <code>n</code> nodes once: <strong>O(n) time</strong>, assuming O(1) work per visit.</li>
+<li>Recursion uses <strong>O(h) stack space</strong>, where <code>h</code> is the tree height: O(log n) for a balanced tree and O(n) for a chain.</li>
+<li><strong>Inorder</strong> is useful for displaying BST keys in sorted order.</li>
+<li><strong>Postorder</strong> is useful when children must be handled before their parent, such as freeing an entire tree. A deletion routine must free the node itself after its children; the data-only callback above does not by itself free tree nodes.</li>
+</ul>
+</section><section id="topic-6" class="topic"><div class="kicker">CLASS NOTES / 07</div><h2>Implementing binary search trees — slide 174</h2><p><a href="../../Canvas/begre246.pdf#page=811">Slide 174 — Implementing Binary Search Trees</a></p>
+<p>The first step in implementing a BST is to <strong>define a node</strong>, just as we did for linked lists. Each node has three fields: the stored data and two pointers connecting it to other nodes.</p>
+<table>
+<thead>
+<tr>
+<th>Structure</th>
+<th>Data field</th>
+<th>First pointer</th>
+<th>Second pointer</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Doubly linked list node</td>
+<td><code>data</code></td>
+<td><code>prev</code>: previous node</td>
+<td><code>next</code>: next node</td>
+</tr>
+<tr>
+<td>Binary search tree node</td>
+<td><code>data</code></td>
+<td><code>left</code>: root of the left subtree</td>
+<td><code>right</code>: root of the right subtree</td>
+</tr>
+</tbody></table>
+<p>A list&#39;s pointers connect items in a sequence. A tree&#39;s pointers create branches. Each child node can itself be the root of another subtree.</p>
+<h3>Node definition</h3>
+<pre><code class="language-c">struct node {
+    itemType data;       // The value stored in this particular node.
+    struct node *left;   // Address of the left child, or NULL if there is none.
+    struct node *right;  // Address of the right child, or NULL if there is none.
+};
+</code></pre>
+<p>The slide combines the pointer declarations as <code>struct node *left, *right;</code>. Splitting them above makes it clear that <strong>both fields are pointers</strong>.</p>
+<ul>
+<li><strong><code>itemType</code></strong> stands for the type of data being stored. It must be defined elsewhere, for example with <code>typedef int itemType;</code>. This makes the node definition reusable for a chosen data type; it does not automatically allow mixed types in one tree.</li>
+<li><strong><code>struct node *</code></strong> means a pointer to another node of this same structure type. The node stores the other node&#39;s address rather than containing a complete child node inside itself.</li>
+<li><strong>A leaf</strong> has both <code>left == NULL</code> and <code>right == NULL</code>.</li>
+<li><strong>A node with one child</strong> has one valid child pointer and one NULL pointer.</li>
+<li><strong>A node with two children</strong> has two valid child pointers.</li>
+<li>A separate <strong>root pointer</strong> identifies where the tree starts. <code>root == NULL</code> represents an empty tree.</li>
+</ul>
+<p><strong>C clarification:</strong> the slide describes these fields as private. A plain C <code>struct</code> has no <code>private</code> access modifier. An implementation can hide its node definition inside a source file and expose operations through a header to keep the representation internal.</p>
+<h3>Added example: connecting three nodes</h3>
+<p>With <code>itemType</code> defined as <code>int</code>, the following statements inside a function build the same small tree used in our traversal examples:</p>
+<pre><code class="language-c">struct node small = {2, NULL, NULL};  // Store 2; initially no children.
+struct node large = {6, NULL, NULL};  // Store 6; initially no children.
+struct node top = {4, &amp;small, &amp;large}; // Store 4 and link it to the two existing nodes.
+struct node *root = &amp;top;             // Keep the address of the starting node.
+
+// root-&gt;data is 4: the data in the root node.
+// root-&gt;left is &amp;small: the address of the node containing 2.
+// root-&gt;left-&gt;data is 2: follow the left link, then access that node&#39;s data.
+// root-&gt;right-&gt;data is 6: follow the right link, then access its data.
+// root-&gt;left-&gt;left is NULL: the node containing 2 has no left child.
+</code></pre>
+<pre><code class="language-text">              root
+                |
+                v
+        [ left | 4 | right ]
+            /           \
+           v             v
+    [NULL | 2 | NULL] [NULL | 6 | NULL]
+</code></pre>
+<p>The pointer fields describe the tree&#39;s <strong>shape</strong>. To make it a <strong>binary search tree</strong>, we must also preserve its ordering rule: all keys in a node&#39;s left subtree are smaller, and all keys in its right subtree are larger, using the course&#39;s no-duplicates definition. The structure declaration alone does not enforce this rule.</p>
+<p>The example nodes live within their enclosing scope; their addresses must not be used after their lifetimes end. Later insertion code can allocate nodes dynamically so that nodes remain available until explicitly freed.</p>
+</section><section id="topic-7" class="topic"><div class="kicker">CLASS NOTES / 08</div><h2>BST interface (<code>bst.h</code>) — slide 175</h2><p><a href="../../Canvas/begre246.pdf#page=817">Slide 175 — Implementing Binary Search Trees continued</a></p>
+<p>The document separates the <strong>interface</strong> (operations callers can use) from the implementation (how nodes and links are managed). Its <code>bst.h</code> example declares these operations:</p>
+<pre><code class="language-c">#ifndef BST_H                  // Include guard: process these declarations only once.
+#define BST_H
+
+#include &lt;stdbool.h&gt;           // Defines bool, true, and false.
+#include &quot;itemType.h&quot;           // Supplies the chosen itemType and related declarations.
+
+typedef struct bstType *bst;   // bst is a POINTER type referring to a hidden tree structure.
+
+bst createBST(void);           // Create an empty tree and return its handle.
+void freeBST(bst);             // Release the tree&#39;s allocated storage when finished.
+void insertItem(bst, itemType); // Insert an item while preserving BST ordering.
+void removeItem(bst, itemType); // Remove an item from the tree.
+bool contains(bst, itemType);  // Report whether the tree contains the requested item.
+
+// Each traversal receives a tree and a callback that processes one stored item.
+void preorder(bst, void (*f)(itemType));
+void inorder(bst, void (*f)(itemType));
+void postorder(bst, void (*f)(itemType));
+
+int size(bst);                 // Return the number of items stored in the tree.
+bool isEmpty(bst);             // Report whether the tree has no items.
+
+#endif                        // End the include guard.
+</code></pre>
+<p>This follows the slide&#39;s declarations, with the includes placed inside the guard and <code>createBST(void)</code> explicitly declaring no parameters.</p>
+<h3>Understanding the tree handle</h3>
+<ul>
+<li><code>typedef struct bstType *bst;</code> makes <code>bst</code> an alias for a pointer to <code>struct bstType</code>.</li>
+<li>In a declaration such as <code>bst tree;</code>, <strong>tree is already a pointer</strong> even though there is no visible <code>*</code> next to its name.</li>
+<li>The header does not reveal the fields of <code>struct bstType</code>. Callers use the functions instead of directly manipulating its internal representation. This is an <strong>opaque type</strong>.</li>
+<li>A <code>bst</code> handle and a <code>struct node *</code> serve different roles: the public handle represents the tree object; a node pointer identifies a particular node/subtree inside the implementation.</li>
+<li>These lines are <strong>function declarations</strong>, not definitions: they describe argument and return types but contain no function bodies.</li>
+<li>The public names <code>preorder</code>, <code>inorder</code>, and <code>postorder</code> differ in capitalization from the earlier recursive helpers <code>preOrder</code>, <code>inOrder</code>, and <code>postOrder</code>. C treats those as different names.</li>
+</ul>
+<h3>Example use of the document&#39;s interface</h3>
+<p>The following added usage example calls the operations declared on slide 175. It assumes an integer <code>itemType</code>, a compatible <code>printItem</code> callback, and a linked BST implementation:</p>
+<pre><code class="language-c">bst tree = createBST();         // Obtain an empty tree through the public interface.
+insertItem(tree, 4);            // First item becomes the root.
+insertItem(tree, 2);            // Smaller than 4: goes in the left subtree.
+insertItem(tree, 6);            // Larger than 4: goes in the right subtree.
+
+bool found = contains(tree, 2); // true: 2 is stored in this tree.
+int count = size(tree);         // 3 items have been inserted.
+bool empty = isEmpty(tree);    // false: the tree contains items.
+inorder(tree, printItem);      // With an integer-printing callback, prints 2 4 6.
+
+removeItem(tree, 2);            // Remove the item 2; 4 and 6 remain.
+freeBST(tree);                 // Release the tree; do not use its handle afterward.
+</code></pre>
+</section><section id="topic-8" class="topic"><div class="kicker">CLASS NOTES / 09</div><h2>Insertion into a binary search tree — slide 176</h2><p><a href="../../Canvas/begre246.pdf#page=818">Slide 176 — Insertion into a Binary Search Tree</a></p>
+<p>To insert item <code>n</code>, start at the root of tree/subtree <code>t</code>. Compare <code>n</code> with the current root&#39;s value and follow <strong>one branch</strong> at a time until an empty subtree is reached.</p>
+<p>The document gives this recursive algorithm:</p>
+<pre><code class="language-text">insert item n into subtree t:
+    if t is empty:
+        return a one-node tree containing n  // Base case: this is the insertion spot.
+    else if n &lt; the value at t&#39;s root:
+        return t with n inserted into its left subtree
+                                            // Reapply the algorithm on the left.
+    else if n &gt; the value at t&#39;s root:
+        return t with n inserted into its right subtree
+                                            // Reapply the algorithm on the right.
+    else:
+        error — duplicates are not allowed  // Equality: do not add another node.
+</code></pre>
+<ul>
+<li><strong>Empty tree:</strong> the new node becomes the overall root.</li>
+<li><strong>Missing child:</strong> the new node becomes that parent&#39;s child, starting as a leaf with two NULL child pointers.</li>
+<li><strong>Smaller item:</strong> recurse left. <strong>Larger item:</strong> recurse right.</li>
+<li><strong>Equal item:</strong> reject the duplicate; the course&#39;s BST does not store duplicate keys.</li>
+<li>Returning the updated subtree lets the caller keep or update the link to its root. In the next slide&#39;s C implementation, this appears as <code>t-&gt;left = insertNode(t-&gt;left, item)</code> or the corresponding assignment to <code>t-&gt;right</code>.</li>
+</ul>
+<h3>Document example: insert 6</h3>
+<p>Slide 176 provides the algorithm; the document&#39;s worked numeric example appears immediately afterward on <a href="../../Canvas/begre246.pdf#page=820">slide 177</a>. It inserts <strong>6</strong> into this tree:</p>
+<pre><code class="language-text">Before insertion:             After insertion:
+
+        7                            7
+       / \                          / \
+      2   9                        2   9
+     / \                          / \
+    1   5                        1   5
+       /                            / \
+      3                            3   6
+</code></pre>
+<table>
+<thead>
+<tr>
+<th>Step</th>
+<th>Current node/subtree</th>
+<th>Comparison</th>
+<th>Next action</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>1</td>
+<td>Root 7</td>
+<td>6 &lt; 7</td>
+<td>Recurse into the left subtree rooted at 2</td>
+</tr>
+<tr>
+<td>2</td>
+<td>Node 2</td>
+<td>6 &gt; 2</td>
+<td>Recurse into the right subtree rooted at 5</td>
+</tr>
+<tr>
+<td>3</td>
+<td>Node 5</td>
+<td>6 &gt; 5</td>
+<td>Recurse into its right subtree, which is empty</td>
+</tr>
+<tr>
+<td>4</td>
+<td>Empty subtree (<code>NULL</code>)</td>
+<td>No value to compare</td>
+<td>Create a node containing 6, with NULL left and right children</td>
+</tr>
+<tr>
+<td>5</td>
+<td>Returning to node 5</td>
+<td>New subtree root returned</td>
+<td>Set node 5&#39;s right pointer to the new node</td>
+</tr>
+<tr>
+<td>6</td>
+<td>Returning through 2 and 7</td>
+<td>Their subtree roots stay the same</td>
+<td>Preserve the existing links and finish insertion</td>
+</tr>
+</tbody></table>
+<p>Only the path <strong>7 → 2 → 5 → NULL</strong> is followed. Nodes 1, 3, and 9 are not examined. After insertion, inorder traversal produces <strong>1, 2, 3, 5, 6, 7, 9</strong>, confirming the ordering is preserved.</p>
+<p>If we try to insert <strong>6 again</strong>, we follow 7 → 2 → 5 → 6 and find equality. Slide 176 calls this an error; slide 177&#39;s implementation handles it by printing a warning and ignoring the duplicate.</p>
+<p><strong>Added efficiency note:</strong> insertion takes O(h) time, where h is the height of the tree. This is O(log n) for a balanced tree but can become O(n) for a chain. The basic insertion algorithm does not automatically rebalance the tree.</p>
+</section><section id="topic-9" class="topic"><div class="kicker">CLASS NOTES / 10</div><h2>Recursive insertion in C — slide 177</h2><p><a href="../../Canvas/begre246.pdf#page=820">Slide 177 — Insertion continued</a></p>
+<p>The document implements slide 176&#39;s algorithm with a helper that <strong>returns the root of the updated subtree</strong>. This is different from the public <code>insertItem(bst, itemType)</code> interface, which returns <code>void</code>.</p>
+<pre><code class="language-c">// Slide logic with descriptive comments; assumes allocation succeeds.
+struct node *insertNode(struct node *t, itemType item) {
+    if (t == NULL) {                    // Empty subtree: create the new leaf here.
+        t = malloc(sizeof(struct node)); // Allocate storage for ONE complete node.
+        t-&gt;data = item;                 // Store the item in that new node.
+        t-&gt;left = t-&gt;right = NULL;      // The new leaf has no children yet.
+    } else if (itemcmp(item, t-&gt;data) &lt; 0) {
+        t-&gt;left = insertNode(t-&gt;left, item); // Insert left and save its returned root.
+    } else if (itemcmp(item, t-&gt;data) &gt; 0) {
+        t-&gt;right = insertNode(t-&gt;right, item); // Insert right and save its returned root.
+    } else {
+        printf(&quot;Warning: duplicate item &#39;%s&#39; ignored\n&quot;, toItemString(item));
+        // Equal key: leave this tree unchanged rather than create a duplicate.
+    }
+    return t;                          // Give the caller this subtree&#39;s root address.
+}
+</code></pre>
+<ul>
+<li><code>itemcmp(a, b)</code> compares the chosen item type: negative means <code>a &lt; b</code>, zero means equal, and positive means <code>a &gt; b</code>. Do not assume its nonzero results must be exactly -1 or 1.</li>
+<li><code>toItemString(item)</code> supplies a string representation for the warning&#39;s <code>%s</code>.</li>
+<li><code>malloc</code> is declared in <code>&lt;stdlib.h&gt;</code>. A complete implementation must check for <code>NULL</code> before writing through the allocated pointer; the slide omits that check.</li>
+<li>At the overall node-root level, use <code>root = insertNode(root, item)</code>. Saving the return value is essential when an empty tree gains its first node.</li>
+</ul>
+<h3>Follow the document&#39;s insertion of 6</h3>
+<p>Using the tree shown in the preceding section:</p>
+<pre><code class="language-text">insertNode(7, 6)
+  6 &lt; 7: update 7&#39;s left link using insertNode(2, 6)
+    6 &gt; 2: update 2&#39;s right link using insertNode(5, 6)
+      6 &gt; 5: update 5&#39;s right link using insertNode(NULL, 6)
+        allocate node 6; return its address
+      save that address in 5-&gt;right; return node 5
+    save/retain node 5 in 2-&gt;right; return node 2
+  save/retain node 2 in 7-&gt;left; return node 7
+</code></pre>
+<p><strong>Why assign the returned pointer?</strong> Each call receives its own copy of <code>t</code>. Allocating a node changes that local pointer; the caller must save its returned address to connect the new node into the tree.</p>
+</section><section id="topic-10" class="topic"><div class="kicker">CLASS NOTES / 11</div><h2>Removing an item: three cases — slide 178</h2><p><a href="../../Canvas/begre246.pdf#page=821">Slide 178 — Removing an Item from a Binary Search Tree</a></p>
+<p>Removal is harder than insertion because an internal node can hold entire subtrees together. We must preserve those subtrees and their ordering, while avoiding unnecessary increases in depth.</p>
+<p>First locate the item using comparisons, just as in insertion: go left for a smaller key and right for a larger key. Once found, choose the case based on <strong>the node&#39;s number of children</strong>, not the number of descendants.</p>
+<table>
+<thead>
+<tr>
+<th>Children</th>
+<th>Removal strategy</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>0 — leaf</td>
+<td>Replace its incoming link with <code>NULL</code></td>
+</tr>
+<tr>
+<td>1</td>
+<td>Replace its incoming link with its only child&#39;s address</td>
+</tr>
+<tr>
+<td>2</td>
+<td>Replace its data with the smallest key in its right subtree, then remove that minimum node</td>
+</tr>
+</tbody></table>
+<p>The <strong>incoming link</strong> is the parent&#39;s child pointer, or the overall root pointer when removing the root. Removed node storage must also be released.</p>
+</section><section id="topic-11" class="topic"><div class="kicker">CLASS NOTES / 12</div><h2>Case 1: remove a leaf — slide 179</h2><p><a href="../../Canvas/begre246.pdf#page=828">Slide 179 — <code>removeNode(bst, 3)</code></a></p>
+<p>The slide starts with root 7, children 2 and 9, node 2&#39;s children 1 and 5, and node 5&#39;s left child 3:</p>
+<pre><code class="language-text">Before:                 After removing 3:
+       7                       7
+      / \                     / \
+     2   9                   2   9
+    / \                     / \
+   1   5                   1   5
+      /
+     3
+</code></pre>
+<ol>
+<li>Follow comparisons: <strong>7 → 2 → 5 → 3</strong>.</li>
+<li>Node 3 has no children, so its replacement subtree is <code>NULL</code>.</li>
+<li>Set node 5&#39;s left pointer to <code>NULL</code> and release node 3&#39;s storage.</li>
+<li>All other links remain the same. Inorder output is now <strong>1, 2, 5, 7, 9</strong>.</li>
+</ol>
+</section><section id="topic-12" class="topic"><div class="kicker">CLASS NOTES / 13</div><h2>Case 2: remove a node with one child — slide 180</h2><p><a href="../../Canvas/begre246.pdf#page=830">Slide 180 — <code>removeNode(bst, 5)</code></a></p>
+<p>This is a separate example starting from the original tree above, with node 3 still present:</p>
+<pre><code class="language-text">Before:                 After removing 5:
+       7                       7
+      / \                     / \
+     2   9                   2   9
+    / \                     / \
+   1   5                   1   3
+      /
+     3
+</code></pre>
+<ol>
+<li>Follow <strong>7 → 2 → 5</strong> and find the target.</li>
+<li>Node 5 has one child: node 3 on its left.</li>
+<li>Return node 3&#39;s address as the replacement for the subtree previously rooted at 5.</li>
+<li>Set <code>2-&gt;right</code> to that address and release node 5&#39;s storage.</li>
+</ol>
+<p>Node 3 is <strong>linked directly to node 2</strong>; there is no need to copy every descendant. A sole right child would be promoted in the same way.</p>
+</section><section id="topic-13" class="topic"><div class="kicker">CLASS NOTES / 14</div><h2>Case 3: remove a node with two children — slide 181</h2><p><a href="../../Canvas/begre246.pdf#page=833">Slide 181 — <code>removeNode(bst, 2)</code></a></p>
+<p>The document&#39;s two-child example includes an extra node <strong>4</strong>, which is the right child of 3:</p>
+<pre><code class="language-text">Before:                 After removing 2:
+       7                       7
+      / \                     / \
+     2   9                   3   9
+    / \                     / \
+   1   5                   1   5
+      /                       /
+     3                       4
+      \
+       4
+</code></pre>
+<ol>
+<li>Find node <strong>2</strong>, which has both left and right children.</li>
+<li>Find the <strong>smallest item in its right subtree</strong>: start at 5, then follow left to <strong>3</strong>. This is node 2&#39;s <strong>inorder successor</strong>.</li>
+<li>Copy item 3 into the node that previously held 2. That node keeps its existing child links for now.</li>
+<li>Remove the original minimum node 3 from the right subtree. It has no left child, but it has right child <strong>4</strong>.</li>
+<li>Replace the original node 3 with node 4: node 5&#39;s left pointer now points to 4.</li>
+</ol>
+<p>Final inorder output: <strong>1, 3, 4, 5, 7, 9</strong>. The successor is larger than every item in the left subtree and smaller than the remaining items in the right subtree, so the BST ordering is preserved.</p>
+<p><strong>The minimum node need not be a leaf.</strong> It cannot have a left child, but it can have a right child, as this example shows.</p>
+</section><section id="topic-14" class="topic"><div class="kicker">CLASS NOTES / 15</div><h2>Recursive removal in C — slide 182</h2><p><a href="../../Canvas/begre246.pdf#page=836">Slide 182 — <code>removeNode</code></a></p>
+<p>The following is the slide&#39;s logic with comments. Like insertion, it returns the updated subtree root:</p>
+<pre><code class="language-c">struct node *removeNode(struct node *t, itemType item) {
+    if (t == NULL) {                    // Empty subtree: the target was not found.
+        printf(&quot;Warning: item &#39;%s&#39; not found\n&quot;, toItemString(item));
+    } else if (itemcmp(item, t-&gt;data) &lt; 0) {
+        t-&gt;left = removeNode(t-&gt;left, item);   // Search left; save its updated link.
+    } else if (itemcmp(item, t-&gt;data) &gt; 0) {
+        t-&gt;right = removeNode(t-&gt;right, item); // Search right; save its updated link.
+    } else {                           // Comparison is zero: this is the target node.
+        if (t-&gt;left != NULL &amp;&amp; t-&gt;right != NULL) {
+            t-&gt;data = findMin(t-&gt;right)-&gt;data; // Two children: copy successor&#39;s data.
+            t-&gt;right = removeMin(t-&gt;right);   // Remove original successor; repair link.
+        } else {
+            t = (t-&gt;left != NULL) ? t-&gt;left : t-&gt;right;
+            // One child: return that child. Leaf: both are NULL, so return NULL.
+            // Slide omission: this loses the old node address without freeing it.
+        }
+    }
+    return t;                          // Caller replaces its link with this address.
+}
+</code></pre>
+<p>The conditional expression <code>condition ? a : b</code> chooses <code>a</code> when the condition is true and <code>b</code> otherwise. Here it selects the left child if present; otherwise it selects the right child (possibly NULL).</p>
+<p><strong>Memory cleanup note:</strong> the slide&#39;s zero/one-child branch updates the tree correctly but does not free the removed node. For integer data, the branch should retain the old address and release it:</p>
+<pre><code class="language-c">struct node *old = t;                   // Keep the node address before bypassing it.
+t = (t-&gt;left != NULL) ? t-&gt;left : t-&gt;right; // Select the replacement subtree.
+free(old);                             // Free the removed node, not its surviving child.
+</code></pre>
+<p>At the overall node-root level, use <code>root = removeNode(root, item)</code> because deleting the root can change the starting address. Public <code>removeItem</code> can manage that internal update for callers.</p>
+</section><section id="topic-15" class="topic"><div class="kicker">CLASS NOTES / 16</div><h2>Minimum-node helpers and item types — slide 183</h2><p><a href="../../Canvas/begre246.pdf#page=837">Slide 183 — <code>findMin</code>, <code>removeMin</code>, and <code>itemType.h</code></a></p>
+<h3><code>findMin</code>: follow left links</h3>
+<p>The slide writes <code>return ((t-&gt;left==NULL)?t:findMin(t-&gt;left));</code>. Expanded for readability:</p>
+<pre><code class="language-c">static struct node *findMin(struct node *t) {
+    // Precondition: t is not NULL. The two-child removal case guarantees this.
+    if (t-&gt;left == NULL) {
+        return t;                      // No smaller node exists to this node&#39;s left.
+    }
+    return findMin(t-&gt;left);           // Keep searching down the leftmost path.
+}
+</code></pre>
+<ul>
+<li>Returns a <strong>node pointer</strong>, not just its data. <code>findMin(t)-&gt;data</code> accesses the minimum item.</li>
+<li>In slide 181&#39;s right subtree, the workflow is <strong>5 → 3 → return node 3</strong>. Node 3&#39;s right child 4 does not affect which key is smallest.</li>
+<li><code>static</code> on these functions gives them internal linkage: they are helpers available within their implementation source file.</li>
+</ul>
+<h3><code>removeMin</code>: bypass and free the minimum node</h3>
+<pre><code class="language-c">static struct node *removeMin(struct node *t) {
+    if (t != NULL) {                   // Empty subtree needs no changes.
+        if (t-&gt;left != NULL) {
+            t-&gt;left = removeMin(t-&gt;left); // Minimum is farther left; repair that link.
+        } else {                      // This node IS the minimum: no left child.
+            struct node *ptr = t;     // Remember the node that will be freed.
+            t = t-&gt;right;             // Promote its right child, or NULL if a leaf.
+#ifdef NEED_TO_FREE
+            freeItemType(ptr-&gt;data);  // Optional cleanup for dynamically owned data.
+#endif
+            free(ptr);                // Release the minimum node&#39;s storage.
+        }
+    }
+    return t;                         // Return the replacement subtree root.
+}
+</code></pre>
+<p>For the slide 181 example: <code>removeMin(5)</code> calls <code>removeMin(3)</code>. Node 3 has no left child, so save its address, select its right child 4, free the old node 3, and return node 4. The waiting call sets <strong>5-&gt;left = node 4</strong> and returns node 5.</p>
+<h3>The document&#39;s <code>itemType.h</code> example</h3>
+<pre><code class="language-c">#ifndef ITEMTYPE_H
+#define ITEMTYPE_H
+
+#include &lt;limits.h&gt;                   // Supplies the minimum representable int.
+#define NULLITEM INT_MIN              // Sentinel value chosen by this item interface.
+// #define NEED_TO_FREE                // Disabled for this integer item type.
+
+typedef int itemType;                  // This version stores integers.
+void freeItemType(itemType);           // Type-specific cleanup operation.
+int itemcmp(itemType, itemType);       // Type-specific key comparison.
+char *toItemString(itemType);          // Type-specific string representation.
+
+#endif
+</code></pre>
+<p><code>NULLITEM</code> is an item-value sentinel; it is different from the <strong>NULL pointer</strong> marking an absent child. If the interface reserves <code>INT_MIN</code> as a sentinel, that value cannot also unambiguously represent ordinary stored data through that convention.</p>
+<p><strong>Ownership detail:</strong> with the slide&#39;s integer <code>itemType</code>, copying successor data copies an integer, so freeing the successor node does not invalidate the copied value. If items instead own dynamically allocated memory, the two-child case requires a consistent copy/transfer policy: copying the successor&#39;s pointer and then freeing its data in <code>removeMin</code> would leave a dangling pointer. The removed target&#39;s previous data also needs appropriate cleanup. The slide&#39;s optional macro alone does not solve those ownership issues.</p>
+<p><strong>Added efficiency note:</strong> insertion, removal, <code>findMin</code>, and <code>removeMin</code> follow paths whose lengths depend on tree height: O(h) time, O(log n) for balanced trees, and O(n) in the worst case for a chain. Their recursive implementations can use O(h) stack space. They do not rebalance the tree.</p>
+</section><section id="topic-16" class="topic"><div class="kicker">CLASS NOTES / 17</div><h2>Quick review</h2><table>
+<thead>
+<tr>
+<th>Question</th>
+<th>Answer</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>What are the three traversal patterns?</td>
+<td>Preorder VLR, inorder LVR, postorder LRV</td>
+</tr>
+<tr>
+<td>Which traversal visits the root first?</td>
+<td>Preorder</td>
+</tr>
+<tr>
+<td>Which traversal visits the root last?</td>
+<td>Postorder</td>
+</tr>
+<tr>
+<td>Which traversal produces sorted output for a BST?</td>
+<td>Inorder</td>
+</tr>
+<tr>
+<td>Does L mean only visiting the left child?</td>
+<td>No; traverse the entire left subtree</td>
+</tr>
+<tr>
+<td>What ends a recursive branch?</td>
+<td>Reaching <code>NULL</code></td>
+</tr>
+<tr>
+<td>What does the function pointer control?</td>
+<td>The action performed when a node is visited</td>
+</tr>
+<tr>
+<td>Does a balanced tree make a complete traversal O(log n)?</td>
+<td>No; visiting every node still takes O(n) time</td>
+</tr>
+<tr>
+<td>What three fields make up a BST node?</td>
+<td><code>data</code>, <code>left</code>, and <code>right</code></td>
+</tr>
+<tr>
+<td>What does a child pointer store?</td>
+<td>The address of the root node of that child subtree</td>
+</tr>
+<tr>
+<td>How do we represent an empty tree?</td>
+<td>A root pointer equal to <code>NULL</code></td>
+</tr>
+<tr>
+<td>Does defining the node structure enforce BST ordering?</td>
+<td>No; tree operations must preserve the ordering rule</td>
+</tr>
+<tr>
+<td>What does the typedef <code>bst</code> represent?</td>
+<td>A pointer to the hidden <code>struct bstType</code></td>
+</tr>
+<tr>
+<td>Where does insertion create a new node?</td>
+<td>At the empty subtree reached by following comparisons</td>
+</tr>
+<tr>
+<td>What happens when insertion finds an equal key?</td>
+<td>The duplicate is rejected</td>
+</tr>
+<tr>
+<td>What does an insertion/removal helper return?</td>
+<td>The updated subtree root pointer</td>
+</tr>
+<tr>
+<td>How do we remove a node with one child?</td>
+<td>Replace its incoming link with its child</td>
+</tr>
+<tr>
+<td>What replaces a two-child node in the slides?</td>
+<td>The minimum item from its right subtree</td>
+</tr>
+<tr>
+<td>Can the minimum node have a right child?</td>
+<td>Yes; promote that child when removing the minimum</td>
+</tr>
+</tbody></table>
+<p><strong>Next slide:</strong> 184.</p>
+</section><section class="review" id="self-check"><div class="kicker">ACTIVE RECALL</div><h2>Explain it without looking</h2><details><summary>How is int (*p)[5] different from int *p[5]?</summary><p>The first is one pointer to a five-int array. The second is an array of five int pointers.</p></details><details><summary>What is passed by apply(twoUp, list1, 5)?</summary><p>The address of twoUp, the address of the first array element, and the number of elements. apply calls twoUp with each element’s address.</p></details><details><summary>When does the parent recursive call continue?</summary><p>After its child call has fully returned. It resumes at the next statement, with its own t still identifying the parent.</p></details><details><summary>Why does inorder produce sorted output?</summary><p>For a BST, all left-subtree keys are smaller and all right-subtree keys are larger. LVR visits them in that order.</p></details><details><summary>Why save the pointer returned by insertNode or removeNode?</summary><p>The root of that subtree can change. The caller must store the returned address in its child link or overall root pointer.</p></details><details><summary>In the document’s two-child deletion, why does 4 become the left child of 5?</summary><p>After copying successor 3 over target 2, the original node 3 is removed. Its right child 4 replaces it in node 5’s left link.</p></details><details><summary>What memory issue exists in slide 182?</summary><p>The zero/one-child branch bypasses the removed node without freeing it. Retain the old node address, select its replacement, then free the old node.</p></details><details><summary>Does balance make a full traversal O(log n)?</summary><p>No. Visiting every node costs O(n). Balance helps operations that follow a path: search, insertion, and removal.</p></details></section></main></div><footer>November 9 class study guide · Slides 169–183 · Works offline; source PDF links use the course folder.</footer><script>
+if(window.matchMedia('(max-width:950px)').matches) document.querySelector('nav details').open=false;
+const order=document.querySelector('#order'), next=document.querySelector('#next');
+let events=[],position=0,output=[],visited=new Set();
+function makeTrace(pattern){const result=[];function walk(node,parent,side){if(node===null){result.push({node:parent,text:'The '+side+' child is NULL: skip the body and return. No value is printed.'});return;}result.push({node,text:'Enter the call for node '+node+'. Its t points to this node.'});for(const task of pattern){if(task==='V')result.push({node,visit:node,text:'Visit node '+node+': f(t->data) calls printItem('+node+'). Append '+node+' to the output.'});else{const direction=task==='L'?'left':'right';const child=node===4?(task==='L'?2:6):null;result.push({node,text:'At '+node+', call the '+direction+' subtree. This call waits for that child call to finish.'});walk(child,node,direction);result.push({node,text:'Resume the waiting call at node '+node+' after its '+direction+' subtree returns.'});}}result.push({node,text:'All steps for node '+node+' are complete. Return to '+(parent===null?'the original caller.':'the waiting call at node '+parent+'.')});}walk(4,null,'');return result;}
+function reset(){events=makeTrace(order.value);position=0;output=[];visited.clear();document.querySelector('#output').textContent='—';document.querySelector('#trace').textContent='Ready. Select Next step to enter the call at root 4.';document.querySelector('#progress').textContent='0 / '+events.length+' steps';document.querySelectorAll('[data-node]').forEach(n=>n.setAttribute('class',''));next.disabled=false;}
+next.addEventListener('click',()=>{const event=events[position++];if(event.visit!==undefined){output.push(event.visit);visited.add(event.visit);}document.querySelectorAll('[data-node]').forEach(n=>{const value=Number(n.dataset.node);n.setAttribute('class',(visited.has(value)?'visited ':'')+(value===event.node?'active':''));});document.querySelector('#trace').textContent=event.text;document.querySelector('#output').textContent=output.join(' → ')||'—';document.querySelector('#progress').textContent=position+' / '+events.length+' steps'+(position===events.length?' · Traversal complete.':'');next.disabled=position===events.length;});
+order.addEventListener('change',reset);document.querySelector('#reset').addEventListener('click',reset);document.querySelector('#print').addEventListener('click',()=>{document.querySelectorAll('.review details').forEach(d=>d.open=true);window.print();});
+document.querySelectorAll('table').forEach(table=>{const wrap=document.createElement('div');wrap.className='table-scroll';table.before(wrap);wrap.append(table);});reset();
+</script></body></html>
